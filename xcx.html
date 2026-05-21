@@ -1,0 +1,3024 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>安责险小程序原型</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        body {
+            font-family: 'Source Han Sans SC', 'Microsoft YaHei', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: #F5F5F5;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+            padding: 20px;
+        }
+
+        /* 手机容器模拟 */
+        .phone-container {
+            width: 375px;
+            min-height: 812px;
+            background: #FFFFFF;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.15);
+            overflow: hidden;
+            position: relative;
+        }
+
+        /* ========== 视图切换 ========== */
+        .view {
+            display: none;
+            width: 100%;
+            height: 812px;
+            min-height: 812px;
+            position: absolute;
+            top: 0;
+            left: 0;
+            background: #FFFFFF;
+        }
+        .view.active {
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* ========== 首页导航栏 ========== */
+        .nav-bar-home {
+            background: linear-gradient(180deg, #E6F4FF 0%, #FFFFFF 100%);
+            padding: 12px 16px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid rgba(0,0,0,0.05);
+            position: relative;
+            z-index: 100;
+            flex-shrink: 0;
+        }
+
+        .nav-brand {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .nav-logo {
+            width: 32px;
+            height: 32px;
+            background: linear-gradient(135deg, #1890FF 0%, #096DD9 100%);
+            border-radius: 6px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            box-shadow: 0 2px 4px rgba(24,144,255,0.3);
+            position: relative;
+        }
+
+        .nav-logo-text {
+            color: #FFFFFF;
+            font-size: 10px;
+            font-weight: bold;
+            position: relative;
+            z-index: 1;
+        }
+
+        .nav-title {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .nav-main-title {
+            font-size: 18px;
+            font-weight: bold;
+            color: #333333;
+            line-height: 1.2;
+        }
+
+        .nav-sub-title {
+            font-size: 12px;
+            color: #999999;
+            font-weight: normal;
+            line-height: 1.2;
+            margin-top: 2px;
+        }
+
+        .nav-controls {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            color: #999999;
+            font-size: 16px;
+        }
+
+        .nav-controls span {
+            cursor: pointer;
+            padding: 4px;
+        }
+
+        /* ========== 首页欢迎区域 ========== */
+        .welcome-section {
+            padding: 20px 16px;
+            text-align: center;
+            background: #FFFFFF;
+            flex-shrink: 0;
+        }
+
+        .welcome-title {
+            font-size: 24px;
+            font-weight: bold;
+            color: #000000;
+            line-height: 1.4;
+            margin: 20px 0;
+        }
+
+        /* ========== 首页功能按钮区 ========== */
+        .function-section {
+            padding: 0 16px 24px;
+            background: #FFFFFF;
+            flex-shrink: 0;
+        }
+
+        .module-spacing {
+            height: 24px;
+        }
+
+        /* 快速申报 - 核心功能 */
+        .quick-declare {
+            width: 100%;
+            height: 100px;
+            background: linear-gradient(135deg, #1890FF 0%, #096DD9 100%);
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+            display: flex;
+            align-items: center;
+            padding: 0 24px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .quick-declare:active {
+            transform: scale(0.98);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+
+        .quick-declare::after {
+            content: '';
+            position: absolute;
+            top: -50%;
+            right: -20%;
+            width: 200px;
+            height: 200px;
+            background: rgba(255,255,255,0.1);
+            border-radius: 50%;
+        }
+
+        .declare-icon {
+            width: 40px;
+            height: 40px;
+            background: rgba(255,255,255,0.2);
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-right: 16px;
+            flex-shrink: 0;
+            position: relative;
+            z-index: 1;
+        }
+
+        .declare-icon::before {
+            content: '申';
+            color: #FFFFFF;
+            font-size: 18px;
+            font-weight: bold;
+        }
+
+        .declare-text {
+            display: flex;
+            flex-direction: column;
+            position: relative;
+            z-index: 1;
+        }
+
+        .declare-main {
+            font-size: 18px;
+            font-weight: bold;
+            color: #FFFFFF;
+            line-height: 1.4;
+        }
+
+        .declare-sub {
+            font-size: 12px;
+            color: #E6F4FF;
+            font-weight: normal;
+            line-height: 1.4;
+            margin-top: 4px;
+        }
+
+        /* 辅助功能双列 */
+        .auxiliary-functions {
+            display: flex;
+            gap: 12px;
+            margin-top: 24px;
+        }
+
+        .aux-card {
+            flex: 1;
+            height: 80px;
+            background: #FFFFFF;
+            border-radius: 8px;
+            box-shadow: 0 1px 4px rgba(0,0,0,0.03);
+            display: flex;
+            align-items: center;
+            padding: 0 12px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            border: 1px solid #F0F0F0;
+        }
+
+        .aux-card:active {
+            transform: scale(0.98);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+
+        .record-icon {
+            width: 32px;
+            height: 32px;
+            background: #F0F0F0;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-right: 12px;
+            flex-shrink: 0;
+        }
+
+        .record-icon::before {
+            content: '查';
+            color: #999999;
+            font-size: 14px;
+            font-weight: bold;
+        }
+
+        .login-icon {
+            width: 32px;
+            height: 32px;
+            background: #F0F9EB;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-right: 12px;
+            flex-shrink: 0;
+        }
+
+        .login-icon::before {
+            content: '登';
+            color: #52C41A;
+            font-size: 14px;
+            font-weight: bold;
+        }
+
+        .aux-text {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .aux-main {
+            font-size: 16px;
+            font-weight: bold;
+            color: #333333;
+            line-height: 1.4;
+        }
+
+        .aux-sub {
+            font-size: 12px;
+            color: #999999;
+            font-weight: normal;
+            line-height: 1.4;
+            margin-top: 2px;
+        }
+
+        /* ========== 申报页导航栏 ========== */
+        .nav-bar-declare {
+            background: #FFFFFF;
+            height: 44px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            border-bottom: 1px solid #F0F0F0;
+            padding: 0 16px;
+            flex-shrink: 0;
+        }
+
+        .nav-back {
+            position: absolute;
+            left: 16px;
+            display: flex;
+            align-items: center;
+            cursor: pointer;
+            padding: 8px;
+            margin-left: -8px;
+        }
+
+        .back-arrow {
+            width: 12px;
+            height: 12px;
+            border-left: 2px solid #333333;
+            border-bottom: 2px solid #333333;
+            transform: rotate(45deg);
+        }
+
+        .nav-title-declare {
+            font-size: 18px;
+            font-weight: bold;
+            color: #000000;
+            text-align: center;
+        }
+
+        .nav-capsule {
+            position: absolute;
+            right: 16px;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            color: #999999;
+            font-size: 14px;
+        }
+
+        /* ========== 申报页表单区域 ========== */
+        .form-scroll {
+            flex: 1;
+            overflow-y: auto;
+            background: #F5F7FA;
+            padding-bottom: 20px;
+        }
+
+        .form-container {
+            padding: 10px 16px;
+        }
+
+        /* 卡片样式 */
+        .form-card {
+            background: #FFFFFF;
+            border-radius: 12px;
+            padding: 0 16px;
+            margin-bottom: 10px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.02);
+        }
+
+        /* 表单行 */
+        .form-row {
+            display: flex;
+            align-items: center;
+            min-height: 50px;
+            padding: 12px 0;
+            border-bottom: 1px solid #EEEEEE;
+            position: relative;
+        }
+
+        .form-row:last-child {
+            border-bottom: none;
+        }
+
+        .form-label {
+            width: 80px;
+            flex-shrink: 0;
+            font-size: 15px;
+            color: #333333;
+            font-weight: 400;
+        }
+
+        .form-input-wrapper {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            justify-content: flex-end;
+            position: relative;
+        }
+
+        .form-input {
+            width: 100%;
+            border: none;
+            outline: none;
+            background: transparent;
+            font-size: 15px;
+            color: #000000;
+            text-align: right;
+            padding-right: 8px;
+        }
+
+        .form-input::placeholder {
+            color: #CCCCCC;
+            font-size: 14px;
+        }
+
+        /* 清空按钮 */
+        .clear-btn {
+            width: 16px;
+            height: 16px;
+            background: #CCCCCC;
+            border-radius: 50%;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            flex-shrink: 0;
+            font-size: 10px;
+            color: #FFFFFF;
+            line-height: 1;
+        }
+
+        .clear-btn.show {
+            display: flex;
+        }
+
+        .clear-btn::before {
+            content: '×';
+        }
+
+        /* Picker选择器 */
+        .form-picker {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            justify-content: flex-end;
+            cursor: pointer;
+            padding: 8px 0;
+        }
+
+        .picker-text {
+            font-size: 15px;
+            color: #CCCCCC;
+            margin-right: 6px;
+        }
+
+        .picker-text.has-value {
+            color: #000000;
+        }
+
+        .picker-arrow {
+            width: 0;
+            height: 0;
+            border-left: 5px solid transparent;
+            border-right: 5px solid transparent;
+            border-top: 6px solid #999999;
+            transition: transform 0.2s ease;
+        }
+
+        .form-picker:active .picker-arrow {
+            transform: rotate(180deg);
+        }
+
+        /* ========== 申报页操作区域 ========== */
+        .action-section {
+            padding: 30px 30px 20px;
+        }
+
+        .submit-btn {
+            width: 100%;
+            height: 50px;
+            background: linear-gradient(135deg, #0052D9 0%, #1890FF 100%);
+            border: none;
+            border-radius: 25px;
+            color: #FFFFFF;
+            font-size: 18px;
+            font-weight: bold;
+            cursor: pointer;
+            box-shadow: 0 4px 12px rgba(0,82,217,0.25);
+            transition: all 0.2s ease;
+            letter-spacing: 2px;
+        }
+
+        .submit-btn:active {
+            transform: scale(0.98);
+            box-shadow: 0 2px 8px rgba(0,82,217,0.35);
+        }
+
+        /* ========== 申报页底部辅助功能 ========== */
+        .footer-section {
+            padding: 20px 30px 34px;
+            display: flex;
+            justify-content: center;
+        }
+
+        .secondary-btn {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            background: transparent;
+            border: none;
+            color: #1890FF;
+            font-size: 14px;
+            cursor: pointer;
+            padding: 8px 16px;
+            border-radius: 20px;
+            transition: all 0.2s ease;
+        }
+
+        .secondary-btn:active {
+            background: rgba(24,144,255,0.05);
+        }
+
+        .icon-clock {
+            width: 16px;
+            height: 16px;
+            border: 2px solid #1890FF;
+            border-radius: 50%;
+            position: relative;
+        }
+
+        .icon-clock::before {
+            content: '';
+            position: absolute;
+            width: 2px;
+            height: 5px;
+            background: #1890FF;
+            top: 3px;
+            left: 50%;
+            transform: translateX(-50%);
+        }
+
+        .icon-clock::after {
+            content: '';
+            position: absolute;
+            width: 4px;
+            height: 2px;
+            background: #1890FF;
+            top: 7px;
+            left: 50%;
+            transform: translateX(-50%);
+        }
+
+        /* 底部安全距离 */
+        .safe-area-bottom {
+            height: 34px;
+            flex-shrink: 0;
+        }
+
+        /* ========== 申报记录页 Tab 栏 ========== */
+        .tab-bar {
+            display: flex;
+            background: #FFFFFF;
+            border-bottom: 1px solid #F0F0F0;
+            box-shadow: 0 1px 4px rgba(0,0,0,0.04);
+            flex-shrink: 0;
+            position: relative;
+        }
+
+        .tab-item {
+            flex: 1;
+            height: 44px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 15px;
+            color: #999999;
+            cursor: pointer;
+            position: relative;
+            transition: color 0.2s ease;
+        }
+
+        .tab-item.active {
+            color: #333333;
+            font-weight: bold;
+        }
+
+        .tab-item.active::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 24px;
+            height: 3px;
+            background: #1890FF;
+            border-radius: 2px;
+        }
+
+        /* ========== 申报记录页 - 列表容器 ========== */
+        .record-scroll {
+            flex: 1;
+            overflow-y: auto;
+            background: #F5F7FA;
+        }
+
+        .record-panel {
+            display: none;
+            padding: 12px 16px 20px;
+        }
+
+        .record-panel.active {
+            display: block;
+        }
+
+        /* ========== 通用悬浮卡片 ========== */
+        .rec-card {
+            background: #FFFFFF;
+            border-radius: 12px;
+            padding: 16px;
+            margin-bottom: 12px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+            position: relative;
+            animation: fadeIn 0.3s ease;
+        }
+
+        /* 卡片头部：企业名 + 状态 */
+        .rec-header {
+            display: flex;
+            align-items: flex-start;
+            justify-content: space-between;
+            margin-bottom: 12px;
+        }
+
+        .rec-enterprise {
+            font-size: 16px;
+            font-weight: bold;
+            color: #333333;
+            line-height: 1.3;
+            max-width: 220px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        /* 状态胶囊标签 */
+        .rec-status {
+            flex-shrink: 0;
+            font-size: 11px;
+            padding: 2px 8px;
+            border-radius: 10px;
+            font-weight: 500;
+            line-height: 1.5;
+        }
+
+        .rec-status.pending {
+            background: #FFF7E6;
+            color: #FA8C16;
+        }
+
+        .rec-status.approved {
+            background: #F6FFED;
+            color: #52C41A;
+        }
+
+        .rec-status.rejected {
+            background: #FFF2F0;
+            color: #FF4D4F;
+        }
+
+        .rec-status.expired {
+            background: #FFF2F0;
+            color: #FF4D4F;
+        }
+
+        /* 卡片中部信息行 */
+        .rec-info {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .rec-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .rec-label {
+            font-size: 12px;
+            color: #999999;
+            flex-shrink: 0;
+        }
+
+        .rec-value {
+            font-size: 14px;
+            color: #333333;
+            text-align: right;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+            max-width: 200px;
+        }
+
+        .rec-value.mono {
+            font-family: 'Courier New', monospace;
+            letter-spacing: 0.5px;
+        }
+
+        /* 金额高亮 */
+        .rec-amount {
+            font-size: 16px;
+            font-weight: bold;
+            color: #FF6B00;
+        }
+
+        /* 日期行 */
+        .rec-date-value {
+            font-size: 13px;
+            color: #666666;
+        }
+
+        /* 复制图标 */
+        .copy-icon {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 18px;
+            height: 18px;
+            margin-left: 6px;
+            cursor: pointer;
+            color: #CCCCCC;
+            font-size: 12px;
+            flex-shrink: 0;
+        }
+
+        .copy-icon:active {
+            color: #1890FF;
+        }
+
+        /* 自主申报小标签 */
+        .rec-self-tag {
+            display: inline-block;
+            font-size: 10px;
+            color: #BBBBBB;
+            border: 1px solid #EEEEEE;
+            border-radius: 3px;
+            padding: 0 4px;
+            margin-left: 6px;
+            vertical-align: middle;
+        }
+
+        /* ========== 卡片底部操作区 ========== */
+        .rec-footer {
+            display: flex;
+            align-items: center;
+            justify-content: flex-end;
+            gap: 16px;
+            margin-top: 14px;
+            padding-top: 12px;
+            border-top: 1px solid #F5F5F5;
+        }
+
+        .rec-action {
+            font-size: 13px;
+            color: #1890FF;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 2px;
+            padding: 4px 0;
+            transition: opacity 0.2s;
+        }
+
+        .rec-action:active {
+            opacity: 0.7;
+        }
+
+        .rec-action .arrow {
+            font-size: 12px;
+        }
+
+        /* 实心小按钮 */
+        .rec-btn {
+            font-size: 13px;
+            color: #FFFFFF;
+            background: #1890FF;
+            border: none;
+            border-radius: 4px;
+            padding: 5px 12px;
+            cursor: pointer;
+            transition: opacity 0.2s;
+        }
+
+        .rec-btn:active {
+            opacity: 0.8;
+        }
+
+        .rec-btn.primary {
+            background: #0052D9;
+        }
+
+        /* ========== 批单申请 - 类型标签 ========== */
+        .rec-type-tag {
+            display: inline-block;
+            font-size: 11px;
+            color: #1890FF;
+            background: #E6F7FF;
+            border-radius: 3px;
+            padding: 1px 6px;
+        }
+
+        /* 原因折叠 */
+        .rec-reason {
+            font-size: 13px;
+            color: #999999;
+            line-height: 1.5;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+
+        .rec-reason.expanded {
+            -webkit-line-clamp: unset;
+        }
+
+        .rec-reason-toggle {
+            font-size: 12px;
+            color: #1890FF;
+            cursor: pointer;
+            margin-top: 4px;
+        }
+
+        /* ========== 服务申报 - 审核说明条 ========== */
+        .rec-warning-bar {
+            background: #FFF7E6;
+            border-radius: 6px;
+            padding: 8px 10px;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: flex-start;
+            gap: 6px;
+        }
+
+        .rec-warning-bar .warn-icon {
+            font-size: 14px;
+            flex-shrink: 0;
+            line-height: 1.4;
+        }
+
+        .rec-warning-bar .warn-text {
+            font-size: 13px;
+            color: #FA8C16;
+            line-height: 1.5;
+            cursor: pointer;
+        }
+
+        /* ========== 空状态 ========== */
+        .empty-state {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 80px 20px;
+        }
+
+        .empty-icon {
+            width: 120px;
+            height: 120px;
+            background: #F5F5F5;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 48px;
+            margin-bottom: 16px;
+        }
+
+        .empty-text {
+            font-size: 15px;
+            color: #999999;
+            margin-bottom: 4px;
+        }
+
+        .empty-hint {
+            font-size: 13px;
+            color: #CCCCCC;
+            margin-bottom: 20px;
+        }
+
+        .empty-btn {
+            background: #1890FF;
+            color: #FFFFFF;
+            border: none;
+            border-radius: 20px;
+            padding: 8px 24px;
+            font-size: 14px;
+            cursor: pointer;
+        }
+
+        .empty-btn:active {
+            opacity: 0.8;
+        }
+
+        /* 加载更多 */
+        .load-more {
+            text-align: center;
+            font-size: 13px;
+            color: #CCCCCC;
+            padding: 16px 0 8px;
+        }
+
+        /* ========== 动画 ========== */
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .form-card {
+            animation: fadeIn 0.3s ease;
+        }
+
+        .form-card:nth-child(2) {
+            animation-delay: 0.1s;
+        }
+
+        /* ========== 响应式 ========== */
+        @media (max-width: 420px) {
+            body {
+                padding: 0;
+            }
+            .phone-container {
+                width: 100%;
+                height: 100vh;
+                border-radius: 0;
+            }
+            .view {
+                border-radius: 0;
+            }
+        }
+
+        /* ========== 登录页样式 ========== */
+        .login-view {
+            background: #F5F7FA;
+            min-height: 812px;
+        }
+
+        /* 返回按钮浮层 */
+        .login-back-layer {
+            position: absolute;
+            top: 12px;
+            left: 12px;
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            background: rgba(255,255,255,0.25);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            z-index: 10;
+            transition: background 0.2s;
+        }
+        .login-back-layer:active {
+            background: rgba(255,255,255,0.4);
+        }
+        .login-back-layer .back-arrow {
+            border-left-color: #FFFFFF;
+            border-bottom-color: #FFFFFF;
+            width: 10px;
+            height: 10px;
+        }
+
+        /* 顶部品牌区域 30-35% */
+        .login-brand-area {
+            height: 280px;
+            min-height: 280px;
+            background: linear-gradient(180deg, #1890FF 0%, #40A9FF 40%, #91D5FF 100%);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            flex-shrink: 0;
+        }
+
+        /* 品牌Logo */
+        .login-logo {
+            width: 64px;
+            height: 64px;
+            background: rgba(255,255,255,0.95);
+            border-radius: 16px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            box-shadow: 0 8px 24px rgba(0,0,0,0.12);
+            margin-bottom: 16px;
+            animation: logoFadeIn 0.6s ease;
+        }
+        .login-logo-text {
+            font-size: 20px;
+            font-weight: bold;
+            background: linear-gradient(135deg, #0052D9 0%, #1890FF 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .login-brand-title {
+            font-size: 22px;
+            font-weight: bold;
+            color: #FFFFFF;
+            margin-bottom: 6px;
+            letter-spacing: 1px;
+            animation: logoFadeIn 0.6s ease 0.1s both;
+        }
+        .login-brand-subtitle {
+            font-size: 13px;
+            color: rgba(255,255,255,0.8);
+            letter-spacing: 2px;
+            animation: logoFadeIn 0.6s ease 0.2s both;
+        }
+
+        @keyframes logoFadeIn {
+            from { opacity: 0; transform: translateY(12px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* 底部曲线分割 */
+        .login-brand-area::after {
+            content: '';
+            position: absolute;
+            bottom: -1px;
+            left: 0;
+            right: 0;
+            height: 28px;
+            background: #F5F7FA;
+            border-radius: 24px 24px 0 0;
+        }
+
+        /* 中部表单区域 */
+        .login-form-area {
+            flex: 1;
+            background: #F5F7FA;
+            padding: 0 24px;
+            margin-top: -4px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        /* 分段控制器 Segmented Control */
+        .login-seg-control {
+            display: flex;
+            background: #E8E8E8;
+            border-radius: 8px;
+            padding: 3px;
+            margin-bottom: 28px;
+            margin-top: 20px;
+            animation: logoFadeIn 0.5s ease 0.3s both;
+        }
+        .login-seg-item {
+            width: 130px;
+            height: 36px;
+            border-radius: 6px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 14px;
+            color: #666666;
+            cursor: pointer;
+            transition: all 0.25s ease;
+            font-weight: 500;
+        }
+        .login-seg-item.active {
+            background: #FFFFFF;
+            color: #1890FF;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.08);
+            font-weight: 600;
+        }
+        .login-seg-item:active {
+            transform: scale(0.97);
+        }
+
+        /* 账号登录面板 */
+        .login-panel {
+            width: 100%;
+            display: none;
+            flex-direction: column;
+            align-items: center;
+        }
+        .login-panel.active {
+            display: flex;
+        }
+
+        /* 输入框卡片容器 */
+        .login-input-card {
+            width: 100%;
+            background: #FFFFFF;
+            border-radius: 12px;
+            padding: 4px 16px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.03);
+            margin-bottom: 12px;
+        }
+        .login-input-row {
+            display: flex;
+            align-items: center;
+            height: 52px;
+            position: relative;
+        }
+        .login-input-row + .login-input-row {
+            border-top: 1px solid #F0F0F0;
+        }
+
+        /* 输入框图标 */
+        .login-input-icon {
+            width: 20px;
+            height: 20px;
+            margin-right: 12px;
+            flex-shrink: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        /* 用户图标 SVG */
+        .login-input-icon.user-icon {
+            color: #1890FF;
+        }
+        /* 锁图标 SVG */
+        .login-input-icon.lock-icon {
+            color: #1890FF;
+        }
+
+        .login-input {
+            flex: 1;
+            border: none;
+            outline: none;
+            background: transparent;
+            font-size: 15px;
+            color: #333333;
+            height: 52px;
+        }
+        .login-input::placeholder {
+            color: #CCCCCC;
+            font-size: 14px;
+        }
+
+        /* 密码可见性切换 */
+        .pwd-toggle {
+            width: 28px;
+            height: 28px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            color: #BBBBBB;
+            flex-shrink: 0;
+            border-radius: 50%;
+            transition: color 0.2s, background 0.2s;
+            padding: 4px;
+        }
+        .pwd-toggle:active {
+            background: #F0F0F0;
+        }
+        .pwd-toggle:hover {
+            color: #1890FF;
+        }
+
+        /* 辅助功能行 */
+        .login-aux-row {
+            width: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-top: 16px;
+            margin-bottom: 24px;
+        }
+
+        /* 现代勾选框 */
+        .login-checkbox {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            cursor: pointer;
+        }
+        .login-checkbox .cb-box {
+            width: 16px;
+            height: 16px;
+            border: 1.5px solid #D9D9D9;
+            border-radius: 4px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s;
+            flex-shrink: 0;
+        }
+        .login-checkbox .cb-box.checked {
+            background: #1890FF;
+            border-color: #1890FF;
+        }
+        .login-checkbox .cb-box.checked::after {
+            content: '';
+            width: 4px;
+            height: 8px;
+            border: 2px solid #FFFFFF;
+            border-top: none;
+            border-left: none;
+            transform: rotate(45deg) translateY(-1px);
+        }
+        .login-checkbox .cb-label {
+            font-size: 13px;
+            color: #666666;
+        }
+
+        /* 忘记密码 */
+        .login-forgot {
+            font-size: 13px;
+            color: #1890FF;
+            cursor: pointer;
+            transition: opacity 0.2s;
+        }
+        .login-forgot:active {
+            opacity: 0.6;
+        }
+
+        /* 主登录按钮 */
+        .login-submit-btn {
+            width: 100%;
+            height: 50px;
+            background: linear-gradient(135deg, #0052D9 0%, #1890FF 100%);
+            border: none;
+            border-radius: 25px;
+            color: #FFFFFF;
+            font-size: 17px;
+            font-weight: 600;
+            cursor: pointer;
+            box-shadow: 0 6px 16px rgba(0,82,217,0.3);
+            transition: all 0.2s ease;
+            letter-spacing: 2px;
+        }
+        .login-submit-btn:active {
+            transform: scale(0.98);
+            box-shadow: 0 3px 10px rgba(0,82,217,0.35);
+        }
+
+        /* 注册链接 */
+        .login-register-link {
+            margin-top: 16px;
+            font-size: 14px;
+            color: #999999;
+            cursor: pointer;
+            transition: color 0.2s;
+        }
+        .login-register-link:active {
+            color: #1890FF;
+        }
+
+        /* 底部快速申报引导 */
+        .login-quick-guide {
+            margin-top: auto;
+            padding-bottom: 40px;
+            font-size: 13px;
+            color: #BBBBBB;
+            text-align: center;
+        }
+        .login-quick-guide a {
+            color: #1890FF;
+            text-decoration: none;
+            font-weight: 500;
+        }
+
+        /* ========== 微信登录面板 ========== */
+        .wx-login-panel {
+            width: 100%;
+            display: none;
+            flex-direction: column;
+            align-items: center;
+            padding-top: 20px;
+        }
+        .wx-login-panel.active {
+            display: flex;
+        }
+
+        .wx-login-desc {
+            font-size: 12px;
+            color: #999999;
+            text-align: center;
+            line-height: 1.6;
+            margin-bottom: 32px;
+            padding: 0 20px;
+        }
+
+        /* 微信复合按钮 */
+        .wx-login-btn {
+            width: 100%;
+            height: 50px;
+            background: #07C160;
+            border: none;
+            border-radius: 25px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            cursor: pointer;
+            box-shadow: 0 4px 12px rgba(7,193,96,0.25);
+            transition: all 0.2s ease;
+            color: #FFFFFF;
+            font-size: 17px;
+            font-weight: 600;
+            letter-spacing: 1px;
+        }
+        .wx-login-btn:active {
+            transform: scale(0.98);
+            box-shadow: 0 2px 8px rgba(7,193,96,0.35);
+        }
+
+        /* 微信Logo图标 */
+        .wx-logo-icon {
+            width: 24px;
+            height: 24px;
+            flex-shrink: 0;
+        }
+
+        /* 隐私协议 */
+        .wx-privacy {
+            margin-top: 20px;
+            display: flex;
+            align-items: flex-start;
+            gap: 6px;
+            padding: 0 10px;
+        }
+        .wx-privacy .login-checkbox {
+            flex-shrink: 0;
+        }
+        .wx-privacy .privacy-text {
+            font-size: 12px;
+            color: #999999;
+            line-height: 1.6;
+        }
+        .wx-privacy .privacy-text a {
+            color: #1890FF;
+            text-decoration: none;
+        }
+        .wx-privacy .privacy-text a:active {
+            text-decoration: underline;
+        }
+
+        /* ========== 登录页 Toast 提示 ========== */
+        .login-toast {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: rgba(0,0,0,0.7);
+            color: #FFFFFF;
+            padding: 10px 20px;
+            border-radius: 6px;
+            font-size: 14px;
+            z-index: 9999;
+            pointer-events: none;
+            animation: toastIn 0.3s ease;
+        }
+        @keyframes toastIn {
+            from { opacity: 0; transform: translate(-50%, -50%) scale(0.9); }
+            to { opacity: 1; transform: translate(-50%, -50%) scale(1); }
+        }
+
+        /* ========== 确认弹窗 ========== */
+        .modal-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0,0,0,0.45);
+            z-index: 200;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            animation: modalFadeIn 0.25s ease;
+        }
+        .modal-overlay.show {
+            display: flex;
+        }
+        @keyframes modalFadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        .modal-dialog {
+            width: 300px;
+            background: #FFFFFF;
+            border-radius: 16px;
+            padding: 28px 24px 20px;
+            text-align: center;
+            animation: modalSlideUp 0.3s ease;
+            box-shadow: 0 12px 40px rgba(0,0,0,0.15);
+        }
+        @keyframes modalSlideUp {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .modal-icon {
+            width: 48px;
+            height: 48px;
+            background: #FFF7E6;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 16px;
+        }
+        .modal-title {
+            font-size: 16px;
+            font-weight: 600;
+            color: #333333;
+            margin-bottom: 8px;
+            line-height: 1.5;
+        }
+        .modal-body {
+            font-size: 13px;
+            color: #666666;
+            line-height: 1.7;
+            margin-bottom: 24px;
+        }
+        .modal-actions {
+            display: flex;
+            gap: 12px;
+        }
+        .modal-btn {
+            flex: 1;
+            height: 42px;
+            border-radius: 21px;
+            border: none;
+            font-size: 15px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .modal-btn:active {
+            transform: scale(0.97);
+        }
+        .modal-btn.cancel {
+            background: #F5F5F5;
+            color: #666666;
+        }
+        .modal-btn.confirm {
+            background: linear-gradient(135deg, #0052D9, #1890FF);
+            color: #FFFFFF;
+            box-shadow: 0 4px 12px rgba(0,82,217,0.25);
+        }
+
+        /* ========== 服务申报页样式 ========== */
+        .service-page {
+            background: #F5F7FA;
+            min-height: 812px;
+            overflow: hidden;
+        }
+
+        .service-scroll {
+            flex: 1;
+            overflow-y: auto;
+            overflow-x: hidden;
+            padding: 12px 16px 100px;
+            -webkit-overflow-scrolling: touch;
+            overscroll-behavior-y: contain;
+        }
+        .service-scroll::-webkit-scrollbar {
+            width: 3px;
+        }
+        .service-scroll::-webkit-scrollbar-thumb {
+            background: rgba(0,0,0,0.15);
+            border-radius: 3px;
+        }
+        .service-scroll::-webkit-scrollbar-track {
+            background: transparent;
+        }
+
+        /* 服务卡片通用 */
+        .svc-card {
+            background: #FFFFFF;
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 12px;
+            box-shadow: 0 1px 4px rgba(0,0,0,0.04);
+        }
+
+        /* 卡片标题栏 */
+        .svc-card-title {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 16px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid #F5F5F5;
+        }
+        .svc-card-title .title-icon {
+            width: 28px;
+            height: 28px;
+            border-radius: 6px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+        .svc-card-title .title-icon.blue {
+            background: #E6F7FF;
+            color: #1890FF;
+        }
+        .svc-card-title .title-icon.orange {
+            background: #FFF7E6;
+            color: #FA8C16;
+        }
+        .svc-card-title .title-icon.green {
+            background: #F6FFED;
+            color: #52C41A;
+        }
+        .svc-card-title .title-text {
+            font-size: 16px;
+            font-weight: 600;
+            color: #333333;
+            flex: 1;
+        }
+        .svc-card-title .title-badge {
+            font-size: 12px;
+            color: #999999;
+            background: #F5F5F5;
+            padding: 2px 8px;
+            border-radius: 10px;
+        }
+
+        /* 卡片1 - 只读信息行 */
+        .svc-info-row {
+            display: flex;
+            flex-direction: column;
+            padding: 10px 0;
+            border-bottom: 1px dashed #F0F0F0;
+        }
+        .svc-info-row:last-child {
+            border-bottom: none;
+            padding-bottom: 0;
+        }
+        .svc-info-row:first-of-type {
+            padding-top: 0;
+        }
+        .svc-info-label {
+            font-size: 12px;
+            color: #999999;
+            margin-bottom: 4px;
+        }
+        .svc-info-value {
+            font-size: 14px;
+            color: #333333;
+            font-weight: 500;
+        }
+        .svc-info-value.highlight {
+            color: #1890FF;
+            font-weight: 600;
+        }
+
+        /* 卡片2 - 联系人信息 */
+        .svc-contact-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 12px 0;
+            border-bottom: 1px solid #F8F8F8;
+        }
+        .svc-contact-row:last-child {
+            border-bottom: none;
+            padding-bottom: 0;
+        }
+        .svc-contact-row:first-of-type {
+            padding-top: 0;
+        }
+        .svc-contact-label {
+            font-size: 14px;
+            color: #666666;
+            flex-shrink: 0;
+            width: 90px;
+        }
+        .svc-contact-value {
+            flex: 1;
+            text-align: right;
+            font-size: 14px;
+            color: #333333;
+            display: flex;
+            align-items: center;
+            justify-content: flex-end;
+            gap: 6px;
+        }
+        .svc-contact-value .editable {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        .svc-contact-value .edit-icon {
+            color: #1890FF;
+            cursor: pointer;
+            flex-shrink: 0;
+        }
+        .svc-contact-input {
+            border: none;
+            outline: none;
+            text-align: right;
+            font-size: 14px;
+            color: #333333;
+            background: transparent;
+            flex: 1;
+        }
+        .svc-contact-input::placeholder {
+            color: #CCCCCC;
+        }
+
+        /* 卡片3 - 服务详情 */
+        .svc-detail-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 16px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid #F5F5F5;
+        }
+        .svc-detail-header .svc-card-title {
+            margin-bottom: 0;
+            padding-bottom: 0;
+            border-bottom: none;
+        }
+        .svc-detail-delete {
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            background: #FFF2F0;
+            color: #FF4D4F;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            flex-shrink: 0;
+        }
+        .svc-detail-delete:active {
+            background: #FFCCC7;
+        }
+
+        /* 表单行 */
+        .svc-form-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 13px 0;
+            border-bottom: 1px solid #F8F8F8;
+        }
+        .svc-form-row:last-child {
+            border-bottom: none;
+        }
+        .svc-form-label {
+            font-size: 14px;
+            color: #333333;
+            flex-shrink: 0;
+        }
+        .svc-form-label .required {
+            color: #FF4D4F;
+            margin-right: 2px;
+            font-size: 12px;
+        }
+        .svc-form-value {
+            flex: 1;
+            text-align: right;
+            display: flex;
+            align-items: center;
+            justify-content: flex-end;
+            gap: 6px;
+            font-size: 14px;
+            color: #333333;
+        }
+
+        /* 数字步进器 Stepper */
+        .svc-stepper {
+            display: flex;
+            align-items: center;
+            gap: 0;
+            background: #F5F5F5;
+            border-radius: 6px;
+            overflow: hidden;
+        }
+        .svc-stepper .step-btn {
+            width: 32px;
+            height: 32px;
+            border: none;
+            background: transparent;
+            color: #333333;
+            font-size: 18px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: background 0.15s;
+        }
+        .svc-stepper .step-btn:active {
+            background: #E0E0E0;
+        }
+        .svc-stepper .step-btn.disabled {
+            color: #CCCCCC;
+            pointer-events: none;
+        }
+        .svc-stepper .step-num {
+            width: 36px;
+            height: 32px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 15px;
+            font-weight: 600;
+            color: #333333;
+            background: #FFFFFF;
+            border-left: 1px solid #E8E8E8;
+            border-right: 1px solid #E8E8E8;
+        }
+
+        /* 选择器行 */
+        .svc-picker-row {
+            cursor: pointer;
+        }
+        .svc-picker-row:active {
+            background: #FAFAFA;
+        }
+        .svc-picker-arrow {
+            color: #CCCCCC;
+            flex-shrink: 0;
+        }
+        .svc-picker-placeholder {
+            color: #CCCCCC;
+        }
+
+        /* 日期选择器 */
+        .svc-date-input {
+            border: none;
+            outline: none;
+            text-align: right;
+            font-size: 14px;
+            color: #333333;
+            background: transparent;
+        }
+
+        /* 上传区域 */
+        .svc-upload-section {
+            padding: 13px 0 4px;
+        }
+        .svc-upload-section .svc-form-label {
+            margin-bottom: 12px;
+        }
+        .svc-upload-grid {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+        .svc-upload-item {
+            width: 90px;
+            height: 90px;
+            border-radius: 8px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.15s;
+        }
+        .svc-upload-item:active {
+            transform: scale(0.96);
+        }
+        .svc-upload-item.empty {
+            border: 1.5px dashed #D9D9D9;
+            background: #FAFAFA;
+        }
+        .svc-upload-item.empty .upload-plus {
+            font-size: 24px;
+            color: #BBBBBB;
+            margin-bottom: 4px;
+        }
+        .svc-upload-item.empty .upload-text {
+            font-size: 10px;
+            color: #BBBBBB;
+        }
+        .svc-upload-item.filled {
+            background: #F5F5F5;
+            position: relative;
+            overflow: hidden;
+        }
+        .svc-upload-item.filled .upload-thumb {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            border-radius: 8px;
+        }
+        .svc-upload-item.filled .upload-remove {
+            position: absolute;
+            top: 2px;
+            right: 2px;
+            width: 18px;
+            height: 18px;
+            background: rgba(0,0,0,0.5);
+            border-radius: 50%;
+            color: #FFFFFF;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 11px;
+            cursor: pointer;
+        }
+
+        /* 星级评价 */
+        .svc-rating-section {
+            padding: 13px 0;
+        }
+        .svc-rating-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 8px 0;
+        }
+        .svc-rating-label {
+            font-size: 14px;
+            color: #333333;
+        }
+        .svc-stars {
+            display: flex;
+            gap: 4px;
+        }
+        .svc-star {
+            width: 28px;
+            height: 28px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: transform 0.15s;
+        }
+        .svc-star:active {
+            transform: scale(1.2);
+        }
+        .svc-star .star-empty {
+            color: #D9D9D9;
+        }
+        .svc-star .star-filled {
+            color: #FA8C16;
+            display: none;
+        }
+        .svc-star.active .star-empty {
+            display: none;
+        }
+        .svc-star.active .star-filled {
+            display: block;
+        }
+
+        /* 底部操作栏 */
+        .svc-bottom-bar {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: #FFFFFF;
+            padding: 10px 16px;
+            padding-bottom: calc(10px + env(safe-area-inset-bottom, 20px));
+            box-shadow: 0 -2px 8px rgba(0,0,0,0.06);
+            z-index: 50;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+        .svc-btn-add {
+            width: 100%;
+            height: 42px;
+            border-radius: 21px;
+            border: 1px solid #1890FF;
+            background: #FFFFFF;
+            color: #1890FF;
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 4px;
+            transition: all 0.2s;
+        }
+        .svc-btn-add:active {
+            background: #F0F5FF;
+            transform: scale(0.98);
+        }
+        .svc-btn-group {
+            display: flex;
+            gap: 10px;
+        }
+        .svc-btn-preview {
+            flex: 0 0 35%;
+            height: 46px;
+            border-radius: 23px;
+            border: 1px solid #D9D9D9;
+            background: #FFFFFF;
+            color: #666666;
+            font-size: 15px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .svc-btn-preview:active {
+            background: #F5F5F5;
+            transform: scale(0.98);
+        }
+        .svc-btn-submit {
+            flex: 1;
+            height: 46px;
+            border-radius: 23px;
+            border: none;
+            background: linear-gradient(135deg, #0052D9, #1890FF);
+            color: #FFFFFF;
+            font-size: 15px;
+            font-weight: 600;
+            cursor: pointer;
+            box-shadow: 0 4px 12px rgba(0,82,217,0.25);
+            transition: all 0.2s;
+        }
+        .svc-btn-submit:active {
+            transform: scale(0.98);
+            box-shadow: 0 2px 8px rgba(0,82,217,0.35);
+        }
+    </style>
+</head>
+<body>
+    <div class="phone-container">
+
+        <!-- ========== 视图1：首页 ========== -->
+        <div id="view-home" class="view active">
+            <!-- 顶部导航栏 -->
+            <div class="nav-bar-home">
+                <div class="nav-brand">
+                    <div class="nav-logo">
+                        <span class="nav-logo-text">ZL</span>
+                    </div>
+                    <div class="nav-title">
+                        <div class="nav-main-title">安责险 AN ZE XIAN</div>
+                        <div class="nav-sub-title">安全生产责任保险信息平台</div>
+                    </div>
+                </div>
+                <div class="nav-controls">
+                    <span>···</span>
+                    <span>|</span>
+                    <span>—</span>
+                    <span>⊙</span>
+                </div>
+            </div>
+
+            <!-- 欢迎区域 -->
+            <div class="welcome-section">
+                <div class="welcome-title">惠州市安责险平台</div>
+            </div>
+
+            <!-- 功能按钮区 -->
+            <div class="function-section">
+                <div class="quick-declare" onclick="showView('declare')">
+                    <div class="declare-icon"></div>
+                    <div class="declare-text">
+                        <div class="declare-main">快速申报</div>
+                        <div class="declare-sub">快速完成保单申报流程</div>
+                    </div>
+                </div>
+
+                <div class="module-spacing"></div>
+
+                <div class="auxiliary-functions">
+                    <div class="aux-card" onclick="showView('record')">
+                        <div class="record-icon"></div>
+                        <div class="aux-text">
+                            <div class="aux-main">申报记录</div>
+                            <div class="aux-sub">查看历史申报记录</div>
+                        </div>
+                    </div>
+
+                    <div class="aux-card" onclick="showView('login')">
+                        <div class="login-icon"></div>
+                        <div class="aux-text">
+                            <div class="aux-main">账号登录</div>
+                            <div class="aux-sub">登陆已有帐号</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="safe-area-bottom"></div>
+        </div>
+
+        <!-- ========== 视图2：快速申报 ========== -->
+        <div id="view-declare" class="view">
+            <!-- 顶部导航栏 -->
+            <div class="nav-bar-declare">
+                <div class="nav-back" onclick="showView('home')">
+                    <div class="back-arrow"></div>
+                </div>
+                <div class="nav-title-declare">快速申报</div>
+                <div class="nav-capsule">
+                    <span>⊙</span>
+                </div>
+            </div>
+
+            <!-- 表单区域 -->
+            <div class="form-scroll">
+                <div class="form-container">
+                    <!-- 第一组卡片：保单基础信息 -->
+                    <div class="form-card">
+                        <div class="form-row">
+                            <label class="form-label">企业名称</label>
+                            <div class="form-input-wrapper">
+                                <input type="text" class="form-input" placeholder="请输入企业全称" id="enterpriseName">
+                            </div>
+                        </div>
+
+                        <div class="form-row">
+                            <label class="form-label">保单编号</label>
+                            <div class="form-input-wrapper">
+                                <input type="text" class="form-input" placeholder="请输入保单编号" id="policyNumber">
+                            </div>
+                        </div>
+
+                        <div class="form-row">
+                            <label class="form-label">管理分类</label>
+                            <div class="form-picker" onclick="handlePicker()">
+                                <span class="picker-text" id="categoryText">请选择</span>
+                                <div class="picker-arrow"></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 第二组卡片：人员验证信息 -->
+                    <div class="form-card">
+                        <div class="form-row">
+                            <label class="form-label">姓名</label>
+                            <div class="form-input-wrapper">
+                                <input type="text" class="form-input" placeholder="请输入姓名" id="personName">
+                            </div>
+                        </div>
+
+                        <div class="form-row">
+                            <label class="form-label">手机号码</label>
+                            <div class="form-input-wrapper">
+                                <input type="tel" class="form-input" placeholder="请输入手机号码" id="phoneNumber" oninput="handlePhoneInput()">
+                                <div class="clear-btn" id="clearPhone" onclick="clearPhone()"></div>
+                            </div>
+                        </div>
+
+                        <div class="form-row">
+                            <label class="form-label">岗位</label>
+                            <div class="form-input-wrapper">
+                                <input type="text" class="form-input" placeholder="请输入岗位" id="position">
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 操作区域 -->
+                    <div class="action-section">
+                        <button class="submit-btn" onclick="handleSubmit()">立即申报</button>
+                    </div>
+
+                    <!-- 底部辅助功能 -->
+                    <div class="footer-section">
+                        <button class="secondary-btn" onclick="showView('record')">
+                            <div class="icon-clock"></div>
+                            <span>查看历史申报记录</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ========== 视图3：申报记录 ========== -->
+        <div id="view-record" class="view">
+            <div class="nav-bar-declare">
+                <div class="nav-back" onclick="showView('home')">
+                    <div class="back-arrow"></div>
+                </div>
+                <div class="nav-title-declare">申报记录</div>
+                <div class="nav-capsule">
+                    <span>⊙</span>
+                </div>
+            </div>
+
+            <!-- Tab 切换栏 -->
+            <div class="tab-bar">
+                <div class="tab-item active" data-tab="policy" onclick="switchTab('policy')">保单申报</div>
+                <div class="tab-item" data-tab="batch" onclick="switchTab('batch')">批单申请</div>
+                <div class="tab-item" data-tab="service" onclick="switchTab('service')">服务申报</div>
+            </div>
+
+            <!-- 列表滚动区 -->
+            <div class="record-scroll">
+
+                <!-- ====== Tab1：保单申报 ====== -->
+                <div class="record-panel active" id="panel-policy"></div>
+
+                <!-- ====== Tab2：批单申请 ====== -->
+                <div class="record-panel" id="panel-batch"></div>
+
+                <!-- ====== Tab3：服务申报 ====== -->
+                <div class="record-panel" id="panel-service"></div>
+            </div>
+        </div>
+
+        <!-- ========== 视图4：账号登录 ========== -->
+        <div id="view-login" class="view login-view">
+            <!-- 返回按钮浮层 -->
+            <div class="login-back-layer" onclick="showView('home')">
+                <div class="back-arrow"></div>
+            </div>
+
+            <!-- 顶部品牌区域 -->
+            <div class="login-brand-area">
+                <div class="login-logo">
+                    <span class="login-logo-text">ZL</span>
+                </div>
+                <div class="login-brand-title">安责险信息平台</div>
+                <div class="login-brand-subtitle">安全生产 · 责任 · 保障</div>
+            </div>
+
+            <!-- 中部表单区域 -->
+            <div class="login-form-area">
+                <!-- 分段控制器 -->
+                <div class="login-seg-control">
+                    <div class="login-seg-item active" data-logintab="account" onclick="switchLoginTab('account')">账号登录</div>
+                    <div class="login-seg-item" data-logintab="wechat" onclick="switchLoginTab('wechat')">微信登录</div>
+                </div>
+
+                <!-- ===== 账号登录面板 ===== -->
+                <div class="login-panel active" id="loginPanel-account">
+                    <!-- 输入框卡片 -->
+                    <div class="login-input-card">
+                        <div class="login-input-row">
+                            <div class="login-input-icon user-icon">
+                                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+                            </div>
+                            <input type="text" class="login-input" placeholder="手机号/用户名" id="loginUsername" autocomplete="username">
+                        </div>
+                        <div class="login-input-row">
+                            <div class="login-input-icon lock-icon">
+                                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+                            </div>
+                            <input type="password" class="login-input" placeholder="请输入密码" id="loginPassword" autocomplete="current-password">
+                            <div class="pwd-toggle" id="pwdToggle" onclick="togglePwdVisibility()">
+                                <!-- 默认隐藏图标 -->
+                                <svg class="eye-off" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"/><line x1="1" y1="1" x2="23" y2="23"/></svg>
+                                <!-- 显示图标 -->
+                                <svg class="eye-on" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="display:none;"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 辅助功能行 -->
+                    <div class="login-aux-row">
+                        <div class="login-checkbox" id="rememberCheckbox" onclick="toggleRememberMe()">
+                            <div class="cb-box" id="rememberBox"></div>
+                            <span class="cb-label">30天免登录</span>
+                        </div>
+                        <span class="login-forgot" onclick="showLoginToast('请联系管理员重置密码')">忘记密码？</span>
+                    </div>
+
+                    <!-- 登录按钮 -->
+                    <button class="login-submit-btn" onclick="handleLogin()">立即登录</button>
+
+                    <!-- 注册链接 -->
+                    <div class="login-register-link" onclick="showLoginToast('注册功能开发中')">注册新账号</div>
+
+                    <!-- 底部引导 -->
+                    <div class="login-quick-guide">
+                        没有账号？<a onclick="showView('declare')">快速申报入口 &gt;</a>
+                    </div>
+                </div>
+
+                <!-- ===== 微信登录面板 ===== -->
+                <div class="wx-login-panel" id="loginPanel-wechat">
+                    <!-- 引导文案 -->
+                    <div class="wx-login-desc">
+                        我们将依据《微信小程序规范》获取您的公开信息（昵称、头像），用于快速完成身份认证。
+                    </div>
+
+                    <!-- 微信登录按钮 -->
+                    <button class="wx-login-btn" onclick="handleWxLogin()">
+                        <!-- 微信Logo -->
+                        <svg class="wx-logo-icon" viewBox="0 0 24 24" fill="#FFFFFF">
+                            <path d="M8.691 2.188C3.891 2.188 0 5.476 0 9.53c0 2.212 1.17 4.203 3.002 5.55a.59.59 0 0 1 .213.665l-.39 1.48c-.019.07-.048.141-.048.213 0 .163.13.295.29.295a.326.326 0 0 0 .167-.054l1.903-1.114a.864.864 0 0 1 .717-.098 10.16 10.16 0 0 0 2.837.403c.276 0 .543-.027.811-.05a6.127 6.127 0 0 1-.253-1.726c0-3.573 3.282-6.47 7.328-6.47.274 0 .543.02.811.05C16.469 4.726 12.936 2.188 8.691 2.188zm-2.8 4.658a.963.963 0 1 1 0 1.926.963.963 0 0 1 0-1.926zm5.6 0a.963.963 0 1 1 0 1.926.963.963 0 0 1 0-1.926zM16.167 9.83c-3.432 0-6.218 2.393-6.218 5.345 0 2.95 2.786 5.346 6.218 5.346.677 0 1.331-.098 1.944-.276a.724.724 0 0 1 .597.082l1.278.748a.272.272 0 0 0 .14.045c.134 0 .243-.11.243-.247 0-.06-.024-.12-.04-.179l-.262-.994a.496.496 0 0 1 .18-.56c1.454-1.07 2.38-2.674 2.38-4.465.001-2.952-2.785-5.345-6.218-5.345h-.69zm-2.263 3.49a.79.79 0 1 1 0 1.579.79.79 0 0 1 0-1.579zm4.525 0a.79.79 0 1 1 0 1.579.79.79 0 0 1 0-1.579z"/>
+                        </svg>
+                        <span>微信一键登录</span>
+                    </button>
+
+                    <!-- 隐私协议 -->
+                    <div class="wx-privacy">
+                        <div class="login-checkbox" id="privacyCheckbox" onclick="togglePrivacyAgree()">
+                            <div class="cb-box" id="privacyBox"></div>
+                        </div>
+                        <div class="privacy-text">
+                            我已阅读并同意<a onclick="showLoginToast('《用户协议》详情页开发中')">《用户协议》</a>和<a onclick="showLoginToast('《隐私政策》详情页开发中')">《隐私政策》</a>
+                        </div>
+                    </div>
+
+                    <!-- 底部引导 -->
+                    <div class="login-quick-guide">
+                        没有账号？<a onclick="showView('declare')">快速申报入口 &gt;</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ========== 填报预防服务确认弹窗 ========== -->
+        <div class="modal-overlay" id="serviceModal">
+            <div class="modal-dialog">
+                <div class="modal-icon">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#FA8C16" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+                </div>
+                <div class="modal-title" id="modalTitle">尊敬的广东艾普亿达软件科技有限公司</div>
+                <div class="modal-body">填写前，请先联系您的承保公司获取事故预防相关资料。</div>
+                <div class="modal-actions">
+                    <button class="modal-btn cancel" onclick="closeServiceModal()">取消</button>
+                    <button class="modal-btn confirm" onclick="confirmServiceModal()">确定</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- ========== 视图5：服务申报 ========== -->
+        <div id="view-service" class="view service-page">
+            <!-- 导航栏 -->
+            <div class="nav-bar-declare">
+                <div class="nav-back" onclick="showView('record')">
+                    <div class="back-arrow"></div>
+                </div>
+                <div class="nav-title-declare">服务申报</div>
+                <div class="nav-capsule">
+                    <span>⊙</span>
+                </div>
+            </div>
+
+            <div class="service-scroll">
+                <!-- 卡片1：保单关联信息（只读） -->
+                <div class="svc-card">
+                    <div class="svc-card-title">
+                        <div class="title-icon blue">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
+                        </div>
+                        <span class="title-text">保单关联信息</span>
+                        <span class="title-badge">只读</span>
+                    </div>
+                    <div id="svcPolicyInfo">
+                        <!-- JS动态渲染 -->
+                    </div>
+                </div>
+
+                <!-- 卡片2：联系人信息 -->
+                <div class="svc-card">
+                    <div class="svc-card-title">
+                        <div class="title-icon orange">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+                        </div>
+                        <span class="title-text">联系人信息</span>
+                    </div>
+                    <div class="svc-contact-row">
+                        <span class="svc-contact-label">填报人姓名</span>
+                        <div class="svc-contact-value">
+                            <div class="editable">
+                                <span id="svcReporterName">张三</span>
+                                <span class="edit-icon" onclick="editContactField('svcReporterName')">
+                                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="svc-contact-row">
+                        <span class="svc-contact-label">联系电话</span>
+                        <div class="svc-contact-value">
+                            <div class="editable">
+                                <span id="svcReporterPhone">13800138000</span>
+                                <span class="edit-icon" onclick="editContactField('svcReporterPhone')">
+                                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="svc-contact-row">
+                        <span class="svc-contact-label">办公固定电话</span>
+                        <div class="svc-contact-value">
+                            <input type="tel" class="svc-contact-input" placeholder="请输入办公电话" id="svcOfficePhone">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 卡片3：服务内容详情 -->
+                <div class="svc-card" id="svcDetailCard">
+                    <div class="svc-detail-header">
+                        <div class="svc-card-title" style="border:none;margin:0;padding:0;">
+                            <div class="title-icon green">
+                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+                            </div>
+                            <span class="title-text" id="svcDetailTitle">服务项目 #1</span>
+                        </div>
+                        <div class="svc-detail-delete" onclick="showServiceToast('删除服务项功能开发中')">
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>
+                        </div>
+                    </div>
+
+                    <!-- 提供服务次数 -->
+                    <div class="svc-form-row">
+                        <span class="svc-form-label"><span class="required">*</span>服务次数</span>
+                        <div class="svc-form-value">
+                            <div class="svc-stepper">
+                                <button class="step-btn disabled" onclick="stepServiceCount(-1)">−</button>
+                                <div class="step-num" id="svcServiceCount">1</div>
+                                <button class="step-btn" onclick="stepServiceCount(1)">+</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 提供服务项目 -->
+                    <div class="svc-form-row svc-picker-row" onclick="pickServiceProject()">
+                        <span class="svc-form-label"><span class="required">*</span>服务项目</span>
+                        <div class="svc-form-value">
+                            <span class="svc-picker-placeholder" id="svcProjectText">请选择</span>
+                            <svg class="svc-picker-arrow" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
+                        </div>
+                    </div>
+
+                    <!-- 服务机构名称 -->
+                    <div class="svc-form-row svc-picker-row" onclick="pickServiceOrg()">
+                        <span class="svc-form-label">服务机构</span>
+                        <div class="svc-form-value">
+                            <span class="svc-picker-placeholder" id="svcOrgText">请选择</span>
+                            <svg class="svc-picker-arrow" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
+                        </div>
+                    </div>
+
+                    <!-- 开展时间 -->
+                    <div class="svc-form-row">
+                        <span class="svc-form-label"><span class="required">*</span>开展时间</span>
+                        <div class="svc-form-value">
+                            <input type="date" class="svc-date-input" id="svcServiceDate" value="">
+                        </div>
+                    </div>
+
+                    <!-- 上传证明 -->
+                    <div class="svc-upload-section">
+                        <span class="svc-form-label">上传证明材料</span>
+                        <div class="svc-upload-grid">
+                            <div class="svc-upload-item empty" id="uploadPhoto" onclick="simulateUpload('uploadPhoto','照片')">
+                                <span class="upload-plus">+</span>
+                                <span class="upload-text">现场照片</span>
+                            </div>
+                            <div class="svc-upload-item empty" id="uploadCert" onclick="simulateUpload('uploadCert','证书')">
+                                <span class="upload-plus">+</span>
+                                <span class="upload-text">资质证书</span>
+                            </div>
+                            <div class="svc-upload-item empty" id="uploadReport" onclick="simulateUpload('uploadReport','报告')">
+                                <span class="upload-plus">+</span>
+                                <span class="upload-text">服务报告</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 服务评价 -->
+                    <div class="svc-rating-section">
+                        <div class="svc-rating-row">
+                            <span class="svc-rating-label">专业能力</span>
+                            <div class="svc-stars" id="ratingAbility">
+                                <div class="svc-star" onclick="setRating('ratingAbility',1)">
+                                    <svg class="star-empty" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+                                    <svg class="star-filled" width="24" height="24" viewBox="0 0 24 24" fill="currentColor" stroke="currentColor" stroke-width="1.5"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+                                </div>
+                                <div class="svc-star" onclick="setRating('ratingAbility',2)">
+                                    <svg class="star-empty" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+                                    <svg class="star-filled" width="24" height="24" viewBox="0 0 24 24" fill="currentColor" stroke="currentColor" stroke-width="1.5"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+                                </div>
+                                <div class="svc-star" onclick="setRating('ratingAbility',3)">
+                                    <svg class="star-empty" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+                                    <svg class="star-filled" width="24" height="24" viewBox="0 0 24 24" fill="currentColor" stroke="currentColor" stroke-width="1.5"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+                                </div>
+                                <div class="svc-star" onclick="setRating('ratingAbility',4)">
+                                    <svg class="star-empty" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+                                    <svg class="star-filled" width="24" height="24" viewBox="0 0 24 24" fill="currentColor" stroke="currentColor" stroke-width="1.5"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+                                </div>
+                                <div class="svc-star" onclick="setRating('ratingAbility',5)">
+                                    <svg class="star-empty" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+                                    <svg class="star-filled" width="24" height="24" viewBox="0 0 24 24" fill="currentColor" stroke="currentColor" stroke-width="1.5"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="svc-rating-row">
+                            <span class="svc-rating-label">服务态度</span>
+                            <div class="svc-stars" id="ratingAttitude">
+                                <div class="svc-star" onclick="setRating('ratingAttitude',1)">
+                                    <svg class="star-empty" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+                                    <svg class="star-filled" width="24" height="24" viewBox="0 0 24 24" fill="currentColor" stroke="currentColor" stroke-width="1.5"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+                                </div>
+                                <div class="svc-star" onclick="setRating('ratingAttitude',2)">
+                                    <svg class="star-empty" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+                                    <svg class="star-filled" width="24" height="24" viewBox="0 0 24 24" fill="currentColor" stroke="currentColor" stroke-width="1.5"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+                                </div>
+                                <div class="svc-star" onclick="setRating('ratingAttitude',3)">
+                                    <svg class="star-empty" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+                                    <svg class="star-filled" width="24" height="24" viewBox="0 0 24 24" fill="currentColor" stroke="currentColor" stroke-width="1.5"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+                                </div>
+                                <div class="svc-star" onclick="setRating('ratingAttitude',4)">
+                                    <svg class="star-empty" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+                                    <svg class="star-filled" width="24" height="24" viewBox="0 0 24 24" fill="currentColor" stroke="currentColor" stroke-width="1.5"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+                                </div>
+                                <div class="svc-star" onclick="setRating('ratingAttitude',5)">
+                                    <svg class="star-empty" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+                                    <svg class="star-filled" width="24" height="24" viewBox="0 0 24 24" fill="currentColor" stroke="currentColor" stroke-width="1.5"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 底部固定操作栏 -->
+            <div class="svc-bottom-bar">
+                <button class="svc-btn-add" onclick="showServiceToast('继续添加服务项功能开发中')">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+                    继续添加服务项
+                </button>
+                <div class="svc-btn-group">
+                    <button class="svc-btn-preview" onclick="showServiceToast('预览功能开发中')">预览</button>
+                    <button class="svc-btn-submit" onclick="handleServiceSubmit()">确认提交</button>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <script>
+        // ========== 视图切换 ==========
+        function showView(name) {
+            document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
+            var target = document.getElementById('view-' + name);
+            if (target) {
+                target.classList.add('active');
+            }
+            // 切换到申报页时滚动到顶部
+            if (name === 'declare') {
+                var scrollArea = target.querySelector('.form-scroll');
+                if (scrollArea) scrollArea.scrollTop = 0;
+            }
+            // 切换到服务申报页时滚动到顶部
+            if (name === 'service') {
+                var svcScroll = target.querySelector('.service-scroll');
+                if (svcScroll) svcScroll.scrollTop = 0;
+            }
+        }
+
+        // ========== 管理分类选择器 ==========
+        function handlePicker() {
+            var categories = ['化工行业', '建筑行业', '矿山行业', '金属冶炼', '烟花爆竹', '民用爆破', '其他'];
+            var categoryText = document.getElementById('categoryText');
+            var selected = prompt(
+                '请选择管理分类：\n\n1. 化工行业\n2. 建筑行业\n3. 矿山行业\n4. 金属冶炼\n5. 烟花爆竹\n6. 民用爆破\n7. 其他\n\n请输入序号 (1-7):'
+            );
+            if (selected >= 1 && selected <= categories.length) {
+                categoryText.textContent = categories[selected - 1];
+                categoryText.classList.add('has-value');
+            }
+        }
+
+        // ========== 手机号码输入处理 ==========
+        function handlePhoneInput() {
+            var phoneInput = document.getElementById('phoneNumber');
+            var clearBtn = document.getElementById('clearPhone');
+            if (phoneInput.value.length > 0) {
+                clearBtn.classList.add('show');
+            } else {
+                clearBtn.classList.remove('show');
+            }
+        }
+
+        // ========== 清空手机号码 ==========
+        function clearPhone() {
+            var phoneInput = document.getElementById('phoneNumber');
+            var clearBtn = document.getElementById('clearPhone');
+            phoneInput.value = '';
+            clearBtn.classList.remove('show');
+            phoneInput.focus();
+        }
+
+        // ========== 提交申报 ==========
+        function handleSubmit() {
+            var enterpriseName = document.getElementById('enterpriseName').value;
+            var policyNumber = document.getElementById('policyNumber').value;
+            var categoryText = document.getElementById('categoryText').textContent;
+            var personName = document.getElementById('personName').value;
+            var phoneNumber = document.getElementById('phoneNumber').value;
+            var position = document.getElementById('position').value;
+
+            if (!enterpriseName.trim()) { alert('⚠️ 请输入企业全称'); return; }
+            if (!policyNumber.trim()) { alert('⚠️ 请输入保单编号'); return; }
+            if (categoryText === '请选择') { alert('⚠️ 请选择管理分类'); return; }
+            if (!personName.trim()) { alert('⚠️ 请输入姓名'); return; }
+            if (!phoneNumber.trim()) { alert('⚠️ 请输入手机号码'); return; }
+            if (!/^1[3-9]\d{9}$/.test(phoneNumber)) { alert('⚠️ 手机号码格式不正确'); return; }
+            if (!position.trim()) { alert('⚠️ 请输入岗位'); return; }
+
+            alert(
+                '✅ 申报成功！\n\n企业名称：' + enterpriseName +
+                '\n保单编号：' + policyNumber +
+                '\n管理分类：' + categoryText +
+                '\n姓名：' + personName +
+                '\n手机号码：' + phoneNumber +
+                '\n岗位：' + position
+            );
+        }
+
+        // ========== 触摸反馈 ==========
+        document.querySelectorAll('.quick-declare, .aux-card, .submit-btn, .secondary-btn').forEach(function(el) {
+            el.addEventListener('touchstart', function() { this.style.transition = 'all 0.1s ease'; });
+            el.addEventListener('touchend', function() { this.style.transition = 'all 0.2s ease'; });
+        });
+
+        // ========== 申报记录 - Tab 切换 ==========
+        function switchTab(tab) {
+            document.querySelectorAll('.tab-item').forEach(function(t) {
+                t.classList.toggle('active', t.getAttribute('data-tab') === tab);
+            });
+            document.querySelectorAll('.record-panel').forEach(function(p) {
+                p.classList.toggle('active', p.id === 'panel-' + tab);
+            });
+        }
+
+        // ========== 申报记录 - 模拟数据 ==========
+        var mockPolicy = [
+            {
+                enterprise: '惠州市正隆化工有限公司',
+                status: 'pending', statusText: '未审核',
+                policyNo: 'AZX202511250001',
+                period: '2025.11.25 - 2026.11.25',
+                amount: '28,500.00',
+                self: true,
+                actions: [{ text: '查看清单', type: 'link' }, { text: '填报预防服务', type: 'link' }]
+            },
+            {
+                enterprise: '惠州市建安建筑工程有限公司',
+                status: 'approved', statusText: '已审核',
+                policyNo: 'AZX202510150002',
+                period: '2025.10.15 - 2026.10.15',
+                amount: '45,000.00',
+                self: false,
+                actions: [{ text: '查看清单', type: 'link' }, { text: '填报预防服务', type: 'link' }]
+            },
+            {
+                enterprise: '惠州市鸿源矿业有限公司',
+                status: 'expired', statusText: '脱保',
+                policyNo: 'AZX202408030003',
+                period: '2024.08.03 - 2025.08.03',
+                amount: '62,000.00',
+                self: false,
+                actions: [{ text: '查看清单', type: 'link' }]
+            },
+            {
+                enterprise: '惠州市鑫达金属冶炼有限公司',
+                status: 'approved', statusText: '已审核',
+                policyNo: 'AZX202506200004',
+                period: '2025.06.20 - 2026.06.20',
+                amount: '33,800.00',
+                self: true,
+                actions: [{ text: '查看清单', type: 'link' }, { text: '填报预防服务', type: 'link' }]
+            }
+        ];
+
+        var mockBatch = [
+            {
+                enterprise: '惠州市正隆化工有限公司',
+                status: 'pending', statusText: '申请中',
+                type: '信息批改',
+                relatedNo: 'AZX202511250001',
+                time: '2026-05-10',
+                reason: '企业名称变更：由"惠州市正隆化工有限公司"变更为"惠州市正隆新材料科技有限公司"，需同步更新保单信息。',
+                btnText: '查看详情'
+            },
+            {
+                enterprise: '惠州市建安建筑工程有限公司',
+                status: 'approved', statusText: '已完成',
+                type: '退费批改',
+                relatedNo: 'AZX202510150002',
+                time: '2026-04-22',
+                reason: '',
+                btnText: '查看批单'
+            },
+            {
+                enterprise: '惠州市鸿源矿业有限公司',
+                status: 'rejected', statusText: '驳回',
+                type: '保费批改',
+                relatedNo: 'AZX202408030003',
+                time: '2026-03-15',
+                reason: '批改原因说明不够详细，请补充具体批改内容及对应证明材料后重新提交。',
+                btnText: '查看详情'
+            }
+        ];
+
+        var mockService = [
+            {
+                orgName: '惠州安泰安全技术服务有限公司',
+                status: 'approved', statusText: '已完成',
+                category: '安全培训',
+                form: '现场培训',
+                time: '2026-05-08',
+                warning: null,
+                btnText: '查看详情'
+            },
+            {
+                orgName: '广东中安安全生产检测检验中心',
+                status: 'rejected', statusText: '驳回',
+                category: '隐患排查',
+                form: '上门检查',
+                time: '2026-04-28',
+                warning: '请补充隐患排查报告原件扫描件，并重新提交审核。',
+                btnText: '重新提交'
+            },
+            {
+                orgName: '惠州市正信安全评价有限公司',
+                status: 'pending', statusText: '审核中',
+                category: '应急演练指导',
+                form: '现场指导',
+                time: '2026-05-18',
+                warning: null,
+                btnText: '编辑'
+            }
+        ];
+
+        // ========== 申报记录 - 渲染函数 ==========
+        function renderPolicyCard(d) {
+            var h = '<div class="rec-card">';
+            // 头部
+            h += '<div class="rec-header">';
+            h += '<div><span class="rec-enterprise">' + d.enterprise + '</span>';
+            if (d.self) h += '<span class="rec-self-tag">自主申报</span>';
+            h += '</div>';
+            h += '<span class="rec-status ' + d.status + '">' + d.statusText + '</span>';
+            h += '</div>';
+            // 中部信息
+            h += '<div class="rec-info">';
+            // 保单编号
+            h += '<div class="rec-row"><span class="rec-label">保单编号</span><div style="display:flex;align-items:center;"><span class="rec-value mono">' + d.policyNo + '</span><span class="copy-icon" onclick="copyText(\'' + d.policyNo + '\')" title="复制">&#x2398;</span></div></div>';
+            // 保障期限
+            h += '<div class="rec-row"><span class="rec-label">保障期限</span><span class="rec-value rec-date-value">' + d.period + '</span></div>';
+            // 实收保费
+            h += '<div class="rec-row"><span class="rec-label">实收保费</span><span class="rec-value rec-amount">&yen; ' + d.amount + '</span></div>';
+            h += '</div>';
+            // 底部操作
+            if (d.actions.length) {
+                h += '<div class="rec-footer">';
+                d.actions.forEach(function(a) {
+                    if (a.text === '填报预防服务') {
+                        h += '<span class="rec-action" onclick="openServiceModal(\'' + d.enterprise.replace(/'/g, "\\'") + '\',\'' + d.policyNo + '\')">' + a.text + ' <span class="arrow">&gt;</span></span>';
+                    } else {
+                        h += '<span class="rec-action">' + a.text + ' <span class="arrow">&gt;</span></span>';
+                    }
+                });
+                h += '</div>';
+            }
+            h += '</div>';
+            return h;
+        }
+
+        function renderBatchCard(d) {
+            var h = '<div class="rec-card">';
+            h += '<div class="rec-header">';
+            h += '<span class="rec-enterprise">' + d.enterprise + '</span>';
+            h += '<span class="rec-status ' + d.status + '">' + d.statusText + '</span>';
+            h += '</div>';
+            h += '<div class="rec-info">';
+            h += '<div class="rec-row"><span class="rec-label">批单类型</span><span class="rec-type-tag">' + d.type + '</span></div>';
+            h += '<div class="rec-row"><span class="rec-label">关联保单</span><span class="rec-value mono" style="font-size:13px;">' + d.relatedNo + '</span></div>';
+            h += '<div class="rec-row"><span class="rec-label">批改时间</span><span class="rec-value rec-date-value">' + d.time + '</span></div>';
+            // 原因
+            if (d.reason) {
+                h += '<div class="rec-row" style="align-items:flex-start;flex-direction:column;gap:2px;">';
+                h += '<span class="rec-label" style="margin-bottom:2px;">原因</span>';
+                h += '<span class="rec-reason" id="reason-' + d.relatedNo + '">' + d.reason + '</span>';
+                if (d.reason.length > 40) {
+                    h += '<span class="rec-reason-toggle" onclick="toggleReason(\'' + d.relatedNo + '\',this)">展开全文</span>';
+                }
+                h += '</div>';
+            } else {
+                h += '<div class="rec-row"><span class="rec-label">原因</span><span class="rec-value" style="color:#CCCCCC;">无备注</span></div>';
+            }
+            h += '</div>';
+            // 底部
+            h += '<div class="rec-footer"><span class="rec-btn primary">' + d.btnText + '</span></div>';
+            h += '</div>';
+            return h;
+        }
+
+        function renderServiceCard(d) {
+            var h = '<div class="rec-card">';
+            // 审核说明（如有）
+            if (d.warning) {
+                h += '<div class="rec-warning-bar"><span class="warn-icon">&#9888;</span><span class="warn-text">' + d.warning + '</span></div>';
+            }
+            h += '<div class="rec-header">';
+            h += '<span class="rec-enterprise">' + d.orgName + '</span>';
+            h += '<span class="rec-status ' + d.status + '">' + d.statusText + '</span>';
+            h += '</div>';
+            h += '<div class="rec-info">';
+            h += '<div class="rec-row"><span class="rec-label">服务分类</span><span class="rec-value" style="font-weight:bold;">' + d.category + '</span></div>';
+            h += '<div class="rec-row"><span class="rec-label">服务形式</span><span class="rec-value" style="color:#999999;">' + d.form + '</span></div>';
+            h += '<div class="rec-row"><span class="rec-label">申报时间</span><span class="rec-value rec-date-value">' + d.time + '</span></div>';
+            h += '</div>';
+            h += '<div class="rec-footer"><span class="rec-btn">' + d.btnText + '</span></div>';
+            h += '</div>';
+            return h;
+        }
+
+        // ========== 申报记录 - 页面初始化渲染 ==========
+        function renderRecordPanels() {
+            // 保单申报
+            var policyPanel = document.getElementById('panel-policy');
+            if (mockPolicy.length) {
+                var html = '';
+                mockPolicy.forEach(function(d) { html += renderPolicyCard(d); });
+                html += '<div class="load-more">没有更多了</div>';
+                policyPanel.innerHTML = html;
+            } else {
+                policyPanel.innerHTML = emptyStateHTML('保单申报记录');
+            }
+            // 批单申请
+            var batchPanel = document.getElementById('panel-batch');
+            if (mockBatch.length) {
+                var html2 = '';
+                mockBatch.forEach(function(d) { html2 += renderBatchCard(d); });
+                html2 += '<div class="load-more">没有更多了</div>';
+                batchPanel.innerHTML = html2;
+            } else {
+                batchPanel.innerHTML = emptyStateHTML('批单申请记录');
+            }
+            // 服务申报
+            var servicePanel = document.getElementById('panel-service');
+            if (mockService.length) {
+                var html3 = '';
+                mockService.forEach(function(d) { html3 += renderServiceCard(d); });
+                html3 += '<div class="load-more">没有更多了</div>';
+                servicePanel.innerHTML = html3;
+            } else {
+                servicePanel.innerHTML = emptyStateHTML('服务申报记录');
+            }
+        }
+
+        function emptyStateHTML(type) {
+            return '<div class="empty-state">' +
+                '<div class="empty-icon">&#128203;</div>' +
+                '<div class="empty-text">暂无' + type + '</div>' +
+                '<div class="empty-hint">完成申报后，记录将显示在此处</div>' +
+                '<button class="empty-btn" onclick="showView(\'declare\')">去申报</button>' +
+                '</div>';
+        }
+
+        // ========== 辅助交互 ==========
+        function copyText(text) {
+            if (navigator.clipboard) {
+                navigator.clipboard.writeText(text).then(function() {
+                    showToast('已复制: ' + text);
+                });
+            } else {
+                showToast('已复制: ' + text);
+            }
+        }
+
+        function toggleReason(id, el) {
+            var reasonEl = document.getElementById('reason-' + id);
+            if (reasonEl.classList.contains('expanded')) {
+                reasonEl.classList.remove('expanded');
+                el.textContent = '展开全文';
+            } else {
+                reasonEl.classList.add('expanded');
+                el.textContent = '收起';
+            }
+        }
+
+        function showToast(msg) {
+            var t = document.createElement('div');
+            t.textContent = msg;
+            t.style.cssText = 'position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);background:rgba(0,0,0,0.7);color:#fff;padding:10px 20px;border-radius:6px;font-size:14px;z-index:9999;pointer-events:none;';
+            document.body.appendChild(t);
+            setTimeout(function() { t.remove(); }, 1500);
+        }
+
+        // 页面加载时渲染申报记录
+        renderRecordPanels();
+
+        // ========== 登录页 - Tab 切换 ==========
+        function switchLoginTab(tab) {
+            // 切换分段控制器样式
+            document.querySelectorAll('.login-seg-item').forEach(function(item) {
+                item.classList.toggle('active', item.getAttribute('data-logintab') === tab);
+            });
+            // 切换面板
+            var accountPanel = document.getElementById('loginPanel-account');
+            var wechatPanel = document.getElementById('loginPanel-wechat');
+            if (tab === 'account') {
+                accountPanel.classList.add('active');
+                wechatPanel.classList.remove('active');
+            } else {
+                accountPanel.classList.remove('active');
+                wechatPanel.classList.add('active');
+            }
+        }
+
+        // ========== 登录页 - 密码可见性切换 ==========
+        var pwdVisible = false;
+        function togglePwdVisibility() {
+            pwdVisible = !pwdVisible;
+            var pwdInput = document.getElementById('loginPassword');
+            var eyeOff = document.querySelector('.eye-off');
+            var eyeOn = document.querySelector('.eye-on');
+            if (pwdVisible) {
+                pwdInput.type = 'text';
+                eyeOff.style.display = 'none';
+                eyeOn.style.display = 'block';
+            } else {
+                pwdInput.type = 'password';
+                eyeOff.style.display = 'block';
+                eyeOn.style.display = 'none';
+            }
+        }
+
+        // ========== 登录页 - 30天免登录切换 ==========
+        var rememberMe = false;
+        function toggleRememberMe() {
+            rememberMe = !rememberMe;
+            var box = document.getElementById('rememberBox');
+            box.classList.toggle('checked', rememberMe);
+        }
+
+        // ========== 登录页 - 隐私协议勾选 ==========
+        var privacyAgreed = false;
+        function togglePrivacyAgree() {
+            privacyAgreed = !privacyAgreed;
+            var box = document.getElementById('privacyBox');
+            box.classList.toggle('checked', privacyAgreed);
+        }
+
+        // ========== 登录页 - 账号登录 ==========
+        function handleLogin() {
+            var username = document.getElementById('loginUsername').value.trim();
+            var password = document.getElementById('loginPassword').value.trim();
+            if (!username) { showLoginToast('请输入手机号/用户名'); return; }
+            if (!password) { showLoginToast('请输入密码'); return; }
+            if (password.length < 6) { showLoginToast('密码长度不能少于6位'); return; }
+            showLoginToast('登录功能对接中...');
+        }
+
+        // ========== 登录页 - 微信登录 ==========
+        function handleWxLogin() {
+            if (!privacyAgreed) {
+                showLoginToast('请先同意用户协议和隐私政策');
+                return;
+            }
+            showLoginToast('微信登录对接中...');
+        }
+
+        // ========== 登录页 - Toast 提示 ==========
+        function showLoginToast(msg) {
+            // 移除已有 toast
+            var existing = document.querySelector('.login-toast');
+            if (existing) existing.remove();
+            var loginView = document.getElementById('view-login');
+            var t = document.createElement('div');
+            t.className = 'login-toast';
+            t.textContent = msg;
+            loginView.appendChild(t);
+            setTimeout(function() { t.remove(); }, 1800);
+        }
+
+        // ========== 服务申报 - 当前选中的保单数据 ==========
+        var currentServicePolicy = null;
+
+        // ========== 服务申报 - 弹窗控制 ==========
+        function openServiceModal(enterpriseName, policyNo) {
+            document.getElementById('modalTitle').textContent = '尊敬的' + enterpriseName;
+            // 找到对应保单数据
+            currentServicePolicy = mockPolicy.find(function(p) { return p.policyNo === policyNo; }) || mockPolicy[0];
+            var modal = document.getElementById('serviceModal');
+            modal.classList.add('show');
+        }
+        function closeServiceModal() {
+            document.getElementById('serviceModal').classList.remove('show');
+        }
+        function confirmServiceModal() {
+            closeServiceModal();
+            // 填充保单信息并跳转
+            renderServicePolicyInfo();
+            showView('service');
+        }
+
+        // ========== 服务申报 - 渲染保单关联信息 ==========
+        function renderServicePolicyInfo() {
+            if (!currentServicePolicy) return;
+            var d = currentServicePolicy;
+            var h = '';
+            h += '<div class="svc-info-row"><span class="svc-info-label">企业名称</span><span class="svc-info-value">' + d.enterprise + '</span></div>';
+            h += '<div class="svc-info-row"><span class="svc-info-label">信用代码</span><span class="svc-info-value">91441300MA5XXXXX</span></div>';
+            h += '<div class="svc-info-row"><span class="svc-info-label">保险单号码</span><span class="svc-info-value highlight">' + d.policyNo + '</span></div>';
+            h += '<div class="svc-info-row"><span class="svc-info-label">保险期限</span><span class="svc-info-value highlight">' + d.period + '</span></div>';
+            document.getElementById('svcPolicyInfo').innerHTML = h;
+        }
+
+        // ========== 服务申报 - 步进器 ==========
+        var serviceCount = 1;
+        function stepServiceCount(delta) {
+            serviceCount += delta;
+            if (serviceCount < 1) serviceCount = 1;
+            if (serviceCount > 99) serviceCount = 99;
+            document.getElementById('svcServiceCount').textContent = serviceCount;
+            // 更新按钮状态
+            var btns = document.querySelectorAll('.svc-stepper .step-btn');
+            btns[0].classList.toggle('disabled', serviceCount <= 1);
+        }
+
+        // ========== 服务申报 - 服务项目选择器 ==========
+        function pickServiceProject() {
+            var projects = ['安全培训', '隐患排查', '应急演练指导', '安全评估', '安全咨询', '其他'];
+            var selected = prompt(
+                '请选择服务项目：\n\n1. 安全培训\n2. 隐患排查\n3. 应急演练指导\n4. 安全评估\n5. 安全咨询\n6. 其他\n\n请输入序号 (1-6):'
+            );
+            if (selected >= 1 && selected <= projects.length) {
+                document.getElementById('svcProjectText').textContent = projects[selected - 1];
+                document.getElementById('svcProjectText').classList.remove('svc-picker-placeholder');
+                document.getElementById('svcProjectText').style.color = '#333333';
+            }
+        }
+
+        // ========== 服务申报 - 服务机构选择器 ==========
+        function pickServiceOrg() {
+            var orgs = ['惠州安泰安全技术服务有限公司', '广东中安安全生产检测检验中心', '惠州市正信安全评价有限公司'];
+            var selected = prompt(
+                '请选择服务机构：\n\n1. 惠州安泰安全技术服务有限公司\n2. 广东中安安全生产检测检验中心\n3. 惠州市正信安全评价有限公司\n\n请输入序号 (1-3):'
+            );
+            if (selected >= 1 && selected <= orgs.length) {
+                document.getElementById('svcOrgText').textContent = orgs[selected - 1];
+                document.getElementById('svcOrgText').classList.remove('svc-picker-placeholder');
+                document.getElementById('svcOrgText').style.color = '#333333';
+            }
+        }
+
+        // ========== 服务申报 - 联系人字段编辑 ==========
+        function editContactField(fieldId) {
+            var el = document.getElementById(fieldId);
+            var currentVal = el.textContent;
+            var newVal = prompt('请输入新的值：', currentVal);
+            if (newVal !== null && newVal.trim()) {
+                el.textContent = newVal.trim();
+            }
+        }
+
+        // ========== 服务申报 - 模拟上传 ==========
+        function simulateUpload(uploadId, type) {
+            var el = document.getElementById(uploadId);
+            if (el.classList.contains('empty')) {
+                // 模拟上传成功，显示缩略图
+                el.classList.remove('empty');
+                el.classList.add('filled');
+                // 根据类型显示不同颜色占位
+                var colors = { '照片': '#E6F7FF', '证书': '#F6FFED', '报告': '#FFF7E6' };
+                var icons = { '照片': '📷', '证书': '📜', '报告': '📊' };
+                el.innerHTML = '<div style="width:100%;height:100%;background:' + colors[type] + ';border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:28px;">' + icons[type] + '</div>' +
+                    '<div class="upload-remove" onclick="event.stopPropagation();removeUpload(\'' + uploadId + '\',\'' + type + '\')">×</div>';
+                showServiceToast(type + '上传成功');
+            }
+        }
+        function removeUpload(uploadId, type) {
+            var el = document.getElementById(uploadId);
+            el.classList.remove('filled');
+            el.classList.add('empty');
+            el.innerHTML = '<span class="upload-plus">+</span><span class="upload-text">' + type + '</span>';
+        }
+
+        // ========== 服务申报 - 星级评价 ==========
+        function setRating(groupId, rating) {
+            var stars = document.getElementById(groupId).querySelectorAll('.svc-star');
+            stars.forEach(function(star, index) {
+                star.classList.toggle('active', index < rating);
+            });
+        }
+
+        // ========== 服务申报 - 确认提交 ==========
+        function handleServiceSubmit() {
+            var project = document.getElementById('svcProjectText').textContent;
+            var date = document.getElementById('svcServiceDate').value;
+            if (project === '请选择') { showServiceToast('请选择服务项目'); return; }
+            if (!date) { showServiceToast('请选择开展时间'); return; }
+            showServiceToast('提交成功！');
+        }
+
+        // ========== 服务申报 - Toast ==========
+        function showServiceToast(msg) {
+            var existing = document.querySelector('.svc-toast-temp');
+            if (existing) existing.remove();
+            var serviceView = document.getElementById('view-service');
+            var t = document.createElement('div');
+            t.className = 'svc-toast-temp';
+            t.textContent = msg;
+            t.style.cssText = 'position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);background:rgba(0,0,0,0.7);color:#fff;padding:10px 20px;border-radius:6px;font-size:14px;z-index:9999;pointer-events:none;animation:toastIn 0.3s ease;';
+            serviceView.appendChild(t);
+            setTimeout(function() { t.remove(); }, 1500);
+        }
+
+        console.log('%c🎨 安责险小程序原型（单文件多视图）', 'font-size:15px; font-weight:bold; color:#1890FF;');
+        console.log('✅ 视图：首页 | 快速申报 | 申报记录 | 账号登录 | 服务申报');
+    </script>
+</body>
+</html>
