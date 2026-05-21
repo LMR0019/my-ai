@@ -1,0 +1,1502 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>安责险政府监管 - 理赔与预防服务全过程实时监控</title>
+<!-- ECharts CDN -->
+<script src="https://cdn.jsdelivr.net/npm/echarts@5.5.0/dist/echarts.min.js"></script>
+<style>
+/* ========== 全局重置与基础 ========== */
+* { margin: 0; padding: 0; box-sizing: border-box; }
+:root {
+  --bg-primary: #0a0e1a;
+  --bg-secondary: #111827;
+  --bg-card: rgba(17, 24, 39, 0.88);
+  --border-color: rgba(56, 189, 248, 0.2);
+  --border-glow: rgba(56, 189, 248, 0.5);
+  --text-primary: #e2e8f0;
+  --text-secondary: #94a3b8;
+  --text-muted: #64748b;
+  --accent-blue: #38bdf8;
+  --accent-cyan: #22d3ee;
+  --risk-red: #ef4444;
+  --risk-red-light: rgba(239, 68, 68, 0.15);
+  --risk-yellow: #f59e0b;
+  --risk-yellow-light: rgba(245, 158, 11, 0.15);
+  --risk-blue: #3b82f6;
+  --risk-blue-light: rgba(59, 130, 246, 0.15);
+  --success: #10b981;
+  --warning: #f59e0b;
+  --danger: #ef4444;
+}
+html, body {
+  width: 100%; height: 100%;
+  overflow: hidden;
+  font-family: 'Microsoft YaHei', 'PingFang SC', -apple-system, sans-serif;
+  background: var(--bg-primary); color: var(--text-primary);
+}
+/* ========== 背景 ========== */
+.bg-grid {
+  position: fixed; inset: 0; z-index: 0;
+  background-image:
+    linear-gradient(rgba(56, 189, 248, 0.03) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(56, 189, 248, 0.03) 1px, transparent 1px);
+  background-size: 60px 60px;
+  animation: gridMove 20s linear infinite;
+}
+@keyframes gridMove { 0% { transform: translate(0,0); } 100% { transform: translate(60px,60px); } }
+.bg-radial {
+  position: fixed; inset: 0; z-index: 0;
+  background: radial-gradient(ellipse at 50% 0%, rgba(56, 189, 248, 0.08) 0%, transparent 60%),
+              radial-gradient(ellipse at 80% 80%, rgba(59, 130, 246, 0.05) 0%, transparent 50%);
+}
+
+/* ========== 主容器 ========== */
+.dashboard {
+  position: relative; z-index: 1;
+  display: flex; flex-direction: column;
+  height: 100vh; padding: 10px 14px; gap: 8px;
+}
+
+/* ========== 标题栏 ========== */
+.header {
+  display: flex; align-items: center; justify-content: space-between;
+  height: 54px; min-height: 54px; padding: 0 20px;
+  background: linear-gradient(135deg, rgba(56, 189, 248, 0.12), rgba(59, 130, 246, 0.08));
+  border: 1px solid var(--border-color); border-radius: 8px;
+  backdrop-filter: blur(10px);
+}
+.header-left { display: flex; align-items: center; gap: 14px; }
+.header-icon {
+  width: 34px; height: 34px;
+  background: linear-gradient(135deg, var(--accent-blue), var(--accent-cyan));
+  border-radius: 8px; display: flex; align-items: center; justify-content: center;
+  font-size: 16px; font-weight: bold; color: #fff;
+}
+.header-title h1 {
+  font-size: 19px; font-weight: 700;
+  background: linear-gradient(90deg, #e2e8f0, #38bdf8);
+  -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+  letter-spacing: 2px;
+}
+.header-title p { font-size: 10px; color: var(--text-muted); margin-top: 1px; }
+.header-center { display: flex; align-items: center; gap: 14px; }
+.level-switcher {
+  display: flex; align-items: center; gap: 3px;
+  background: rgba(15, 23, 42, 0.8); border: 1px solid var(--border-color);
+  border-radius: 6px; padding: 3px;
+}
+.level-btn {
+  padding: 5px 15px; border: none; border-radius: 4px;
+  background: transparent; color: var(--text-secondary);
+  font-size: 12px; cursor: pointer; transition: all 0.3s; white-space: nowrap;
+}
+.level-btn:hover { color: var(--text-primary); }
+.level-btn.active {
+  background: linear-gradient(135deg, var(--accent-blue), var(--risk-blue));
+  color: #fff; box-shadow: 0 2px 8px rgba(56, 189, 248, 0.3);
+}
+.region-select {
+  padding: 6px 12px; background: rgba(15, 23, 42, 0.8);
+  border: 1px solid var(--border-color); border-radius: 6px;
+  color: var(--text-primary); font-size: 12px; cursor: pointer; outline: none; min-width: 110px;
+}
+.region-select option { background: var(--bg-secondary); }
+.header-right .time { font-size: 18px; font-weight: 700; color: var(--accent-cyan); font-variant-numeric: tabular-nums; }
+.header-right .date { font-size: 10px; color: var(--text-muted); }
+
+/* ========== 主内容区 ========== */
+.main-content { flex: 1; display: flex; gap: 10px; min-height: 0; }
+
+/* ========== 面板通用 ========== */
+.panel {
+  background: var(--bg-card); border: 1px solid var(--border-color);
+  border-radius: 8px; backdrop-filter: blur(10px);
+  display: flex; flex-direction: column; overflow: hidden;
+  transition: border-color 0.3s;
+}
+.panel:hover { border-color: var(--border-glow); }
+.panel-header {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 8px 12px 6px; border-bottom: 1px solid rgba(56, 189, 248, 0.1); flex-shrink: 0;
+}
+.panel-title {
+  display: flex; align-items: center; gap: 7px;
+  font-size: 13px; font-weight: 600; color: var(--text-primary);
+}
+.panel-title .icon { width: 5px; height: 13px; background: linear-gradient(180deg, var(--accent-blue), var(--accent-cyan)); border-radius: 2px; }
+.panel-title .badge { font-size: 10px; padding: 1px 7px; border-radius: 9px; font-weight: 400; }
+.badge-red { background: var(--risk-red-light); color: var(--risk-red); }
+.badge-yellow { background: var(--risk-yellow-light); color: var(--risk-yellow); }
+.badge-blue { background: var(--risk-blue-light); color: var(--risk-blue); }
+.badge-green { background: rgba(16,185,129,0.15); color: var(--success); }
+.panel-body { flex: 1; padding: 8px 12px; overflow-y: auto; min-height: 0; }
+.panel-body::-webkit-scrollbar { width: 3px; }
+.panel-body::-webkit-scrollbar-thumb { background: rgba(56,189,248,0.2); border-radius: 2px; }
+
+/* ========== 左侧面板 ========== */
+.left-panels { width: 300px; display: flex; flex-direction: column; gap: 8px; flex-shrink: 0; }
+
+/* 统计卡片 */
+.stat-row { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; margin-bottom: 6px; }
+.stat-card {
+  background: rgba(15, 23, 42, 0.6); border: 1px solid rgba(56, 189, 248, 0.08);
+  border-radius: 5px; padding: 8px; text-align: center; transition: all 0.3s;
+}
+.stat-card:hover { border-color: var(--border-glow); transform: translateY(-1px); }
+.stat-card .value { font-size: 22px; font-weight: 700; font-variant-numeric: tabular-nums; line-height: 1.2; }
+.stat-card .label { font-size: 10px; color: var(--text-muted); margin-top: 3px; }
+.stat-card.total .value { color: var(--accent-cyan); }
+.stat-card.processing .value { color: var(--warning); }
+.stat-card.done .value { color: var(--success); }
+.stat-card.timeout .value { color: var(--danger); animation: pulseRed 2s infinite; }
+@keyframes pulseRed { 0%,100%{opacity:1} 50%{opacity:.6} }
+
+/* 预防服务小统计 */
+.prev-stats { display: grid; grid-template-columns: repeat(4,1fr); gap: 4px; }
+.prev-stat-item { text-align: center; padding: 5px 2px; background: rgba(15,23,42,0.5); border-radius: 4px; }
+.prev-stat-item .v { font-size: 16px; font-weight: 700; color: var(--accent-cyan); font-variant-numeric: tabular-nums; }
+.prev-stat-item .l { font-size: 9px; color: var(--text-muted); margin-top: 2px; }
+
+/* ECharts 容器 */
+.chart-wrap { position: relative; }
+.chart-wrap > div { width: 100% !important; }
+
+/* 规则列表 */
+.rule-list { display: flex; flex-direction: column; gap: 5px; }
+.rule-item {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 6px 8px; background: rgba(15, 23, 42, 0.5); border-radius: 4px;
+  border-left: 3px solid var(--accent-blue); font-size: 11px; transition: all 0.3s;
+}
+.rule-item:hover { background: rgba(30,41,59,0.6); }
+.rule-item .r-name { color: var(--text-primary); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; max-width: 160px; }
+.rule-item .r-count { font-size: 12px; font-weight: 700; color: var(--accent-cyan); font-variant-numeric: tabular-nums; flex-shrink: 0; }
+.rule-item.triggered { border-left-color: var(--risk-red); animation: ruleFlash 1.5s infinite; }
+@keyframes ruleFlash { 0%,100%{background:rgba(239,68,68,0.05)} 50%{background:rgba(239,68,68,0.15)} }
+
+/* ========== 中间主区域 ========== */
+.center-area { flex: 1; display: flex; flex-direction: column; gap: 8px; min-width: 0; }
+
+/* 流程管道 + 地图行 */
+.top-row { display: flex; gap: 8px; flex-shrink: 0; }
+.pipeline-section { flex: 0 0 480px; }
+.map-section { flex: 1; min-width: 0; }
+
+.pipeline {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 10px 8px; gap: 3px;
+}
+.pipe-node { display: flex; flex-direction: column; align-items: center; flex: 1; cursor: pointer; transition: transform 0.3s; position: relative; }
+.pipe-node:hover { transform: scale(1.05); }
+.node-circle {
+  width: 42px; height: 42px; border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 15px; font-weight: 700; color: #fff;
+  transition: all 0.5s; border: 2px solid transparent;
+}
+.node-circle.idle { background: rgba(100,116,139,0.3); color: var(--text-muted); border-color: rgba(100,116,139,0.3); }
+.node-circle.active {
+  background: linear-gradient(135deg, var(--accent-blue), var(--accent-cyan));
+  box-shadow: 0 0 18px rgba(56,189,248,0.5), inset 0 0 8px rgba(255,255,255,0.1);
+  animation: nodePulse 2s infinite; border-color: var(--accent-cyan);
+}
+.node-circle.danger { background: linear-gradient(135deg,var(--risk-red),#f87171); box-shadow: 0 0 18px rgba(239,68,68,0.5); animation: nodePulse 1s infinite; border-color: var(--risk-red); }
+.node-circle.warning { background: linear-gradient(135deg,var(--risk-yellow),#fbbf24); box-shadow: 0 0 12px rgba(245,158,11,0.4); border-color: var(--risk-yellow); }
+.node-circle.done { background: linear-gradient(135deg,var(--success),#34d399); border-color: var(--success); }
+@keyframes nodePulse { 0%,100%{box-shadow:0 0 20px currentColor} 50%{box-shadow:0 0 35px currentColor} }
+.node-label { font-size: 10px; color: var(--text-secondary); margin-top: 4px; text-align: center; white-space: nowrap; }
+.node-count {
+  position: absolute; top: -3px; right: -3px; min-width: 16px; height: 16px;
+  border-radius: 8px; background: var(--risk-red); color: #fff;
+  font-size: 9px; font-weight: 700; display: flex; align-items: center; justify-content: center; padding: 0 3px;
+}
+.node-count.hidden { display: none; }
+.pipe-line {
+  flex: 0 0 26px; height: 3px; background: rgba(100,116,139,0.3); border-radius: 2px;
+  position: relative; margin-top: -21px; overflow: hidden;
+}
+.pipe-line.active { background: linear-gradient(90deg,var(--accent-blue),var(--accent-cyan)); box-shadow: 0 0 8px rgba(56,189,248,0.5); }
+.pipe-line::after {
+  content: ''; position: absolute; top: 0; left: -100%; width: 40%; height: 100%;
+  background: linear-gradient(90deg,transparent,rgba(255,255,255,0.6),transparent);
+  animation: lineFlow 2s linear infinite;
+}
+.pipe-line.active::after { animation: lineFlow 1.5s linear infinite; }
+@keyframes lineFlow { to { left: 200%; } }
+
+/* 趋势图 + 雷达图 行 */
+.charts-row { display: flex; gap: 8px; flex-shrink: 0; }
+.trend-section { flex: 1; }
+.radar-section { width: 260px; flex-shrink: 0; }
+
+/* 案件表格 */
+.case-list-section { flex: 1; min-height: 0; display: flex; flex-direction: column; }
+.case-table-wrap { flex: 1; overflow: auto; min-height: 0; }
+.case-table { width: 100%; border-collapse: collapse; font-size: 11px; }
+.case-table th {
+  position: sticky; top: 0; z-index: 2; background: rgba(15,23,42,0.95);
+  padding: 7px 8px; text-align: left; font-size: 11px; font-weight: 600;
+  color: var(--text-secondary); border-bottom: 1px solid rgba(56,189,248,0.15); white-space: nowrap;
+}
+.case-table td { padding: 6px 8px; border-bottom: 1px solid rgba(56,189,248,0.06); vertical-align: middle; white-space: nowrap; }
+.case-table tr { transition: background 0.2s; }
+.case-table tbody tr:hover { background: rgba(56,189,248,0.06); }
+.tag-level { display: inline-flex; align-items: center; gap: 3px; padding: 1px 8px; border-radius: 9px; font-size: 10px; font-weight: 600; }
+.tag-level::before { content: ''; width: 5px; height: 5px; border-radius: 50%; }
+.tag-level.red { background: var(--risk-red-light); color: var(--risk-red); } .tag-level.red::before{background:var(--risk-red)}
+.tag-level.yellow { background: var(--risk-yellow-light); color: var(--risk-yellow); } .tag-level.yellow::before{background:var(--risk-yellow)}
+.tag-level.blue { background: var(--risk-blue-light); color: var(--risk-blue); } .tag-level.blue::before{background:var(--risk-blue)}
+.tag-status { display: inline-block; padding: 1px 7px; border-radius: 3px; font-size: 10px; font-weight: 500; }
+.status-processing { background: rgba(245,158,11,0.12); color: var(--warning); }
+.status-done { background: rgba(16,185,129,0.12); color: var(--success); }
+.status-timeout { background: rgba(239,68,68,0.12); color: var(--danger); animation: pulseRed 2s infinite; }
+.status-abnormal { background: rgba(168,85,247,0.12); color: #a855f7; }
+.mini-progress { width: 70px; height: 4px; background: rgba(100,116,139,0.2); border-radius: 2px; overflow: hidden; }
+.mini-progress .fill { height: 100%; border-radius: 2px; transition: width 0.5s; }
+.fill-red{background:var(--risk-red)} .fill-yellow{background:var(--risk-yellow)} .fill-blue{background:var(--risk-blue)} .fill-green{background:var(--success)}
+
+/* ========== 右侧面板 ========== */
+.right-panels { width: 320px; display: flex; flex-direction: column; gap: 8px; flex-shrink: 0; }
+
+/* 预警列表 */
+.alert-list { display: flex; flex-direction: column; gap: 5px; max-height: 180px; overflow-y: auto; }
+.alert-list::-webkit-scrollbar { width: 2px; }
+.alert-list::-webkit-scrollbar-thumb { background: rgba(239,68,68,0.3); border-radius: 2px; }
+.alert-item {
+  display: flex; align-items: flex-start; gap: 6px; padding: 6px 8px;
+  background: rgba(15, 23, 42, 0.5); border-radius: 5px;
+  border-left: 3px solid; font-size: 11px; transition: all 0.3s; cursor: pointer;
+}
+.alert-item:hover { background: rgba(30,41,59,0.6); }
+.alert-item.timeout { border-left-color: var(--risk-red); }
+.alert-item.abnormal { border-left-color: #a855f7; }
+.alert-item.critical { border-left-color: var(--risk-red); animation: alertPulse 1.5s infinite; background: rgba(239,68,68,0.05); }
+@keyframes alertPulse { 0%,100%{border-left-width:3px} 50%{border-left-width:5px} }
+.alert-icon { width: 18px; height: 18px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 10px; color: #fff; flex-shrink: 0; }
+.alert-icon.t-bg { background: var(--risk-red); }
+.alert-icon.a-bg { background: #a855f7; }
+.alert-info { flex: 1; min-width: 0; }
+.alert-title { color: var(--text-primary); font-weight: 500; font-size: 11px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.alert-desc { color: var(--text-muted); font-size: 10px; }
+.alert-time { color: var(--text-muted); font-size: 9px; flex-shrink: 0; }
+
+/* 处理进度 */
+.progress-list { display: flex; flex-direction: column; gap: 6px; }
+.progress-item { display: flex; flex-direction: column; gap: 4px; padding: 7px 9px; background: rgba(15,23,42,0.5); border-radius: 5px; cursor: pointer; transition: background 0.2s; }
+.progress-item:hover { background: rgba(30,41,59,0.6); }
+.progress-header { display: flex; align-items: center; justify-content: space-between; }
+.progress-case-id { font-size: 11px; font-weight: 600; color: var(--accent-cyan); }
+.progress-stage { font-size: 10px; color: var(--text-secondary); }
+.progress-bar-wrap { display: flex; align-items: center; gap: 6px; }
+.progress-bar { flex: 1; height: 5px; background: rgba(100,116,139,0.2); border-radius: 3px; overflow: hidden; }
+.progress-bar .p-fill { height: 100%; border-radius: 3px; transition: width 0.8s; background: linear-gradient(90deg,var(--accent-blue),var(--accent-cyan)); }
+.progress-pct { font-size: 10px; font-weight: 600; color: var(--accent-cyan); font-variant-numeric: tabular-nums; min-width: 28px; text-align: right; }
+
+/* 规则联动链路 */
+.rule-chain { display: flex; flex-direction: column; gap: 6px; }
+.chain-row { display: flex; align-items: center; gap: 5px; font-size: 10px; }
+.chain-node {
+  padding: 3px 8px; border-radius: 3px; font-weight: 600; white-space: nowrap;
+  background: rgba(15,23,42,0.6); border: 1px solid rgba(56,189,248,0.15); color: var(--text-secondary); transition: all 0.3s;
+}
+.chain-node.active { border-color: var(--accent-blue); color: var(--accent-cyan); background: rgba(56,189,248,0.1); box-shadow: 0 0 6px rgba(56,189,248,0.2); }
+.chain-node.fired { border-color: var(--risk-red); color: var(--risk-red); background: rgba(239,68,68,0.1); animation: chainFire 1s infinite; }
+@keyframes chainFire { 0%,100%{opacity:1} 50%{opacity:.6} }
+.chain-arrow { color: var(--text-muted); font-size: 11px; }
+
+/* ========== 底部状态栏 ========== */
+.footer-bar {
+  height: 26px; min-height: 26px;
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 0 14px; font-size: 10px; color: var(--text-muted);
+  border-top: 1px solid rgba(56, 189, 248, 0.06);
+}
+.footer-left { display: flex; align-items: center; gap: 14px; }
+.status-dot { width: 5px; height: 5px; border-radius: 50%; background: var(--success); display: inline-block; margin-right: 3px; animation: dotBlink 2s infinite; }
+@keyframes dotBlink { 0%,100%{opacity:1} 50%{opacity:.4} }
+
+/* ========== 详情弹窗 ========== */
+.modal-overlay {
+  display: none; position: fixed; inset: 0; z-index: 999;
+  background: rgba(0,0,0,0.65); backdrop-filter: blur(4px);
+  align-items: center; justify-content: center;
+}
+.modal-overlay.show { display: flex; }
+.modal-box {
+  width: 620px; max-height: 82vh;
+  background: var(--bg-secondary); border: 1px solid var(--border-color);
+  border-radius: 10px; overflow: hidden; animation: modalIn 0.25s ease;
+}
+@keyframes modalIn { from { transform: scale(0.95); opacity: 0; } to { transform: scale(1); opacity: 1; } }
+.modal-header { display: flex; align-items: center; justify-content: space-between; padding: 12px 16px; border-bottom: 1px solid rgba(56,189,248,0.12); }
+.modal-header h3 { font-size: 15px; color: var(--text-primary); }
+.modal-close {
+  width: 26px; height: 26px; border: none; border-radius: 5px;
+  background: rgba(239,68,68,0.1); color: var(--risk-red);
+  font-size: 14px; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: all 0.2s;
+}
+.modal-close:hover { background: rgba(239,68,68,0.2); }
+.modal-body { padding: 14px 16px; overflow-y: auto; max-height: calc(82vh - 52px); }
+.detail-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 14px; }
+.detail-item {
+  padding: 8px 10px; background: rgba(15,23,42,0.6); border-radius: 5px; border-left: 3px solid var(--accent-blue);
+}
+.detail-item .d-label { font-size: 10px; color: var(--text-muted); margin-bottom: 3px; }
+.detail-item .d-value { font-size: 13px; font-weight: 600; color: var(--text-primary); }
+.timeline { margin-top: 10px; }
+.timeline-title { font-size: 13px; font-weight: 600; margin-bottom: 10px; color: var(--text-primary); }
+.timeline-list { display: flex; flex-direction: column; gap: 0; position: relative; padding-left: 18px; }
+.timeline-list::before { content:''; position:absolute; left:6px; top:5px; bottom:5px; width:2px; background: rgba(56,189,248,0.2); }
+.tl-item { position:relative; padding:6px 10px; padding-left:14px; background:rgba(15,23,42,0.4); border-radius:4px; margin-bottom:5px; font-size:11px; }
+.tl-item::before { content:''; position:absolute; left:-15px; top:12px; width:9px; height:9px; border-radius:50%; border:2px solid var(--accent-blue); background:var(--bg-secondary); }
+.tl-item.done::before{background:var(--success);border-color:var(--success)}
+.tl-item.current::before{background:var(--accent-cyan);border-color:var(--accent-cyan);box-shadow:0 0 8px var(--accent-cyan);animation:tlPulse 1.5s infinite}
+@keyframes tlPulse { 0%,100%{box-shadow:0 0 8px var(--accent-cyan)} 50%{box-shadow:0 0 14px var(--accent-cyan)} }
+.tl-item .tl-stage { color:var(--text-primary);font-weight:500; }
+.tl-item .tl-time { color:var(--text-muted);font-size:10px;margin-left:6px; }
+.tl-item .tl-note { color:var(--text-muted);font-size:10px;margin-top:2px; }
+
+/* 响应式 */
+@media (max-width: 1400px) {
+  .left-panels { width: 260px; } .right-panels { width: 280px; }
+  .header-title h1 { font-size: 16px; letter-spacing: 1px; }
+  .pipeline-section { flex: 0 0 400px; }
+}
+@media (max-width: 1100px) {
+  .left-panels { width: 230px; } .right-panels { width: 240px; }
+  .stat-card .value { font-size: 18px; } .pipeline-section { flex: 0 0 350px; }
+}
+
+.num-roll { transition: all 0.5s ease; }
+.new-flash { animation: newFlash 0.8s ease; }
+@keyframes newFlash { 0%{background:rgba(56,189,248,0.2)} 100%{background:transparent} }
+</style>
+</head>
+<body>
+
+<div class="bg-grid"></div><div class="bg-radial"></div>
+
+<div class="dashboard">
+
+  <!-- ====== 标题栏 ====== -->
+  <header class="header">
+    <div class="header-left">
+      <div class="header-icon">安</div>
+      <div class="header-title">
+        <h1>安责险政府监管 · 理赔与预防服务全过程实时监控平台</h1>
+        <p>Safety Production Liability Insurance Government Supervision Real-time Monitoring System</p>
+      </div>
+    </div>
+    <div class="header-center">
+      <div class="level-switcher" id="levelSwitcher">
+        <button class="level-btn active" data-level="province">省级总览</button>
+        <button class="level-btn" data-level="city">市级监控</button>
+        <button class="level-btn" data-level="district">区县明细</button>
+      </div>
+      <select class="region-select" id="regionSelect">
+        <option value="all">全省汇总</option>
+        <option value="gz">广州市</option><option value="sz">深圳市</option><option value="zh">珠海市</option>
+        <option value="st">汕头市</option><option value="fs">佛山市</option><option value="sg">韶关市</option>
+        <option value="hy">河源市</option><option value="mz">梅州市</option><option value="hz">惠州市</option>
+        <option value="sw">汕尾市</option><option value="dg">东莞市</option><option value="zs_">中山市</option>
+        <option value="jm">江门市</option><option value="yj">阳江市</option><option value="zj_">湛江市</option>
+        <option value="mm">茂名市</option><option value="zq">肇庆市</option><option value="qy">清远市</option>
+        <option value="cz">潮州市</option><option value="jy">揭阳市</option><option value="yf">云浮市</option>
+      </select>
+    </div>
+    <div class="header-right header-time">
+      <div class="time" id="clockTime">--:--:--</div>
+      <div class="date" id="clockDate">----年--月--日 星期-</div>
+    </div>
+  </header>
+
+  <!-- ====== 主内容 ====== -->
+  <div class="main-content">
+
+    <!-- === 左侧面板 === -->
+    <aside class="left-panels">
+
+      <!-- 概览统计 -->
+      <section class="panel" style="flex-shrink:0;">
+        <div class="panel-header"><div class="panel-title"><span class="icon"></span>理赔与预防服务总览</div><span class="badge badge-blue" id="updateBadge">LIVE</span></div>
+        <div class="panel-body">
+          <div class="stat-row">
+            <div class="stat-card total"><div class="value num-roll" id="statTotal">--</div><div class="label">在办总量</div></div>
+            <div class="stat-card processing"><div class="value num-roll" id="statProcessing">--</div><div class="label">处理中</div></div>
+            <div class="stat-card done"><div class="value num-roll" id="statDone">--</div><div class="label">今日完成</div></div>
+            <div class="stat-card timeout"><div class="value num-roll" id="statTimeout">--</div><div class="label">超时预警</div></div>
+          </div>
+          <div style="margin-top:6px;font-size:10px;color:var(--text-muted);margin-bottom:4px;">预防服务执行情况</div>
+          <div class="prev-stats">
+            <div class="prev-stat-item"><div class="v num-roll" id="prevInspect">--</div><div class="l">安全巡检</div></div>
+            <div class="prev-stat-item"><div class="v num-roll" id="prevTrain">--</div><div class="l">培训服务</div></div>
+            <div class="prev-stat-item"><div class="v num-roll" id="prevConsult">--</div><div class="l">风险咨询</div></div>
+            <div class="prev-stat-item"><div class="v num-roll" id="prevEmergency">--</div><div class="l">应急演练</div></div>
+          </div>
+        </div>
+      </section>
+
+      <!-- 等级分布饼图 -->
+      <section class="panel" style="height:200px;flex-shrink:0;">
+        <div class="panel-header"><div class="panel-title"><span class="icon"></span>红黄蓝等级分布</div></div>
+        <div class="panel-body chart-wrap"><div id="chartPie" style="width:100%;height:150px;"></div></div>
+      </section>
+
+      <!-- 案件类型柱状图 -->
+      <section class="panel" style="height:190px;flex-shrink:0;">
+        <div class="panel-header"><div class="panel-title"><span class="icon"></span>各阶段案件分布</div></div>
+        <div class="panel-body chart-wrap"><div id="chartBar" style="width:100%;height:140px;"></div></div>
+      </section>
+
+      <!-- 触发规则 -->
+      <section class="panel" style="flex:1;min-height:0;">
+        <div class="panel-header"><div class="panel-title"><span class="icon"></span>触发规则联动</div><span class="badge badge-green" id="ruleActiveBadge">0 活跃</span></div>
+        <div class="panel-body"><div class="rule-list" id="ruleList"></div></div>
+      </section>
+
+    </aside>
+
+    <!-- === 中间区域 === -->
+    <main class="center-area">
+
+      <!-- 上排：流程管道 + 地图 -->
+      <div class="top-row">
+
+        <!-- 流程管道 -->
+        <section class="panel pipeline-section">
+          <div class="panel-header">
+            <div class="panel-title"><span class="icon"></span>全过程流程节点状态</div>
+            <div style="display:flex;gap:6px;">
+              <span class="badge badge-red">超时升级</span><span class="badge badge-yellow">异常复核</span>
+            </div>
+          </div>
+          <div class="panel-body" style="padding:8px;"><div class="pipeline" id="pipeline"></div></div>
+        </section>
+
+        <!-- 广东省地图 -->
+        <section class="panel map-section">
+          <div class="panel-header">
+            <div class="panel-title"><span class="icon"></span>广东省区域风险热力地图</div>
+            <span class="badge badge-blue" id="mapRegionLabel">省级视图</span>
+          </div>
+          <div class="panel-body chart-wrap" style="padding:4px;"><div id="chartMap" style="width:100%;height:170px;"></div></div>
+        </section>
+
+      </div>
+
+      <!-- 中排：趋势折线图 + 雷达图 -->
+      <div class="charts-row">
+
+        <!-- 24h趋势 -->
+        <section class="panel trend-section">
+          <div class="panel-header">
+            <div class="panel-title"><span class="icon"></span>近24小时案件趋势 &amp; 处理效率</div>
+            <div style="display:flex;gap:6px;">
+              <span class="badge badge-green" id="trendRateBadge">处理率 --%</span>
+            </div>
+          </div>
+          <div class="panel-body chart-wrap"><div id="chartTrend" style="width:100%;height:155px;"></div></div>
+        </section>
+
+        <!-- 雷达评估 -->
+        <section class="panel radar-section">
+          <div class="panel-header"><div class="panel-title"><span class="icon"></span>综合风险评估雷达</div></div>
+          <div class="panel-body chart-wrap"><div id="chartRadar" style="width:100%;height:155px;"></div></div>
+        </section>
+
+      </div>
+
+      <!-- 下排：案件列表 -->
+      <section class="panel case-list-section">
+        <div class="panel-header">
+          <div class="panel-title"><span class="icon"></span>理赔与预防服务实时监控列表</div>
+          <div style="display:flex;align-items:center;gap:8px;">
+            <select id="caseFilterLevel" style="padding:2px 6px;background:rgba(15,23,42,0.8);border:1px solid var(--border-color);border-radius:3px;color:var(--text-primary);font-size:10px;outline:none;">
+              <option value="all">全部等级</option><option value="red">🔴红色</option><option value="yellow">🟡黄色</option><option value="blue">🔵蓝色</option>
+            </select>
+            <select id="caseFilterType" style="padding:2px 6px;background:rgba(15,23,42,0.8);border:1px solid var(--border-color);border-radius:3px;color:var(--text-primary);font-size:10px;outline:none;">
+              <option value="all">全部类型</option><option value="claim">理赔案件</option><option value="prevention">预防服务</option>
+            </select>
+            <select id="caseFilterStatus" style="padding:2px 6px;background:rgba(15,23,42,0.8);border:1px solid var(--border-color);border-radius:3px;color:var(--text-primary);font-size:10px;outline:none;">
+              <option value="all">全部状态</option><option value="processing">处理中</option><option value="done">已完成</option><option value="timeout">超时</option><option value="abnormal">异常</option>
+            </select>
+          </div>
+        </div>
+        <div class="case-table-wrap">
+          <table class="case-table" id="caseTable">
+            <thead><tr>
+              <th>案件编号</th><th>类型</th><th>等级</th><th>企业名称</th><th>当前阶段</th><th>处理人</th><th>耗时</th><th>进度</th><th>状态</th>
+            </tr></thead>
+            <tbody id="caseTbody"></tbody>
+          </table>
+        </div>
+      </section>
+
+    </main>
+
+    <!-- === 右侧面板 === -->
+    <aside class="right-panels">
+
+      <!-- 预警中心 + 仪表盘 -->
+      <section class="panel" style="flex-shrink:0;height:230px;display:flex;flex-direction:column;">
+        <div class="panel-header">
+          <div class="panel-title"><span class="icon"></span>实时预警中心</div>
+          <div style="display:flex;gap:5px;">
+            <span class="badge badge-red" id="timeoutCount">0 超时</span>
+            <span class="badge badge-yellow" style="background:rgba(168,85,247,0.15);color:#a855f7;" id="abnormalCount">0 异常</span>
+          </div>
+        </div>
+        <div class="panel-body" style="padding:6px 12px;display:flex;flex-direction:column;gap:4px;">
+          <div style="display:flex;gap:8px;height:85px;"><div style="flex:1;" class="chart-wrap"><div id="chartGaugeTimeout" style="width:100%;height:85px;"></div></div><div style="flex:1;" class="chart-wrap"><div id="chartGaugeAbnormal" style="width:100%;height:85px;"></div></div></div>
+          <div class="alert-list" id="alertList" style="flex:1;"></div>
+        </div>
+      </section>
+
+      <!-- 重点案件进度 -->
+      <section class="panel" style="flex:1;min-height:0;">
+        <div class="panel-header"><div class="panel-title"><span class="icon"></span>重点案件处理进度</div></div>
+        <div class="panel-body"><div class="progress-list" id="progressList"></div></div>
+      </section>
+
+      <!-- 规则联动链路 -->
+      <section class="panel" style="flex-shrink:0;">
+        <div class="panel-header"><div class="panel-title"><span class="icon"></span>触发→报送→处理 规则链路</div></div>
+        <div class="panel-body"><div class="rule-chain" id="ruleChain"></div></div>
+      </section>
+
+    </aside>
+
+  </div>
+
+  <!-- 底部状态栏 -->
+  <footer class="footer-bar">
+    <div class="footer-left">
+      <span><span class="status-dot"></span>系统运行正常 · 数据 <strong>5秒</strong> 自动刷新 · ECharts v5.5</span>
+      <span>|</span><span id="lastUpdate">最后更新：--:--:--</span>
+    </div>
+    <div class="footer-right">
+      <span>⚡ 数据同步中...</span><span>|</span><span>安责险监管 v2.3</span>
+    </div>
+  </footer>
+
+</div>
+
+<!-- 详情弹窗 -->
+<div class="modal-overlay" id="modalOverlay">
+  <div class="modal-box">
+    <div class="modal-header">
+      <h3 id="modalTitle">案件详情</h3>
+      <button class="modal-close" onclick="closeModal()">✕</button>
+    </div>
+    <div class="modal-body" id="modalBody"></div>
+  </div>
+</div>
+
+<script>
+// ================================================================
+//  数据模型（广东省）
+// ================================================================
+
+const STAGES = [
+  { key:'trigger', label:'事故触发', icon:'①' },
+  { key:'report',   label:'信息报送', icon:'②' },
+  { key:'accept',   label:'受理立案', icon:'③' },
+  { key:'survey',   label:'现场勘查', icon:'④' },
+  { key:'assess',   label:'损失评估', icon:'⑤' },
+  { key:'settle',   label:'理赔/处置', icon:'⑥' },
+  { key:'close',    label:'结案归档', icon:'⑦' },
+];
+
+const RULES = [
+  { id:'R01', name:'死亡/重伤即时触发', type:'auto', category:'red', desc:'发生死亡或3人以上重伤，立即启动红色响应' },
+  { id:'R02', name:'超24h未报送预警', type:'timeout', category:'red', desc:'事故发生后超过24小时未完成信息报送' },
+  { id:'R03', name:'超72h未勘查预警', type:'timeout', category:'yellow', desc:'受理后超过72小时未完成现场勘查' },
+  { id:'R04', name:'定损金额异常波动', type:'abnormal', category:'yellow', desc:'定损金额较预估偏差超过50%' },
+  { id:'R05', name:'同一企业月度≥3次报案', type:'auto', category:'yellow', desc:'同一投保企业单月报案次数≥3次' },
+  { id:'R06', name:'预防服务逾期未执行', type:'timeout', category:'blue', desc:'计划内预防服务未在规定时间内完成' },
+  { id:'R07', name:'隐患整改复查不合格', type:'abnormal', category:'red', desc:'安全检查发现隐患经复查仍不合格' },
+  { id:'R08', name:'理赔资料缺失超期', type:'timeout', category:'yellow', desc:'理赔所需材料提交不完整且超期' },
+];
+
+// 广东本土企业
+const ENTERPRISES = [
+  '广州广汽集团股份有限公司','深圳华为技术有限公司','深圳腾讯科技有限公司',
+  '深圳比亚迪汽车工业公司','佛山美的集团电器制造','珠海格力电器股份',
+  '东莞步步高电子科技园','惠州TCL集团总部','广州宝洁有限公司',
+  '湛江中石化湛江东兴炼油厂','中山明阳风电智能装备','江门大长江摩托制造',
+  '汕头超声电子股份公司','茂名石化炼油厂','肇庆小鹏新能源汽车',
+  '清远加多宝饮料生产基地','潮州三环集团陶瓷电子','揭阳中德金属生态城',
+  '云浮新兴不锈钢制品厂','汕尾信利半导体公司','阳江十八子刀具制造',
+  '河源景旺电子科技公司','梅州塔牌水泥集团','韶关钢铁集团',
+];
+
+// 广东省21个地级市
+const REGIONS_FULL = [
+  { code:'gz', name:'广州市' }, { code:'sz', name:'深圳市' }, { code:'zh', name:'珠海市' },
+  { code:'st', name:'汕头市' }, { code:'fs', name:'佛山市' }, { code:'sg', name:'韶关市' },
+  { code:'hy', name:'河源市' }, { code:'mz', name:'梅州市' }, { code:'hz', name:'惠州市' },
+  { code:'sw', name:'汕尾市' }, { code:'dg', name:'东莞市' }, { code:'zs_', name:'中山市' },
+  { code:'jm', name:'江门市' }, { code:'yj', name:'阳江市' }, { code:'zj_', name:'湛江市' },
+  { code:'mm', name:'茂名市' }, { code:'zq', name:'肇庆市' }, { code:'qy', name:'清远市' },
+  { code:'cz', name:'潮州市' }, { code:'jy', name:'揭阳市' }, { code:'yf', name:'云浮市' },
+];
+
+const HANDLERS = ['张伟','李娜','王磊','刘芳','陈明','杨静','赵强','周婷','吴刚','郑敏'];
+
+// 全局状态
+let state = {
+  level:'province', region:'all',
+  cases:[], alerts:[], rules:[...RULES],
+  stats:{ total:0,processing:0,done:0,timeout:0, red:0,yellow:0,blue:0,
+         inspect:0,train:0,consult:0,emergency:0 },
+  charts:{},
+};
+
+// ================================================================
+//  工具函数
+// ================================================================
+function randInt(min,max){ return Math.floor(Math.random()*(max-min+1))+min; }
+function pick(arr){ return arr[randInt(0,arr.length-1)]; }
+function pad(n){ return String(n).padStart(2,'0'); }
+function fmtTime(d){ return pad(d.getHours())+':'+pad(d.getMinutes())+':'+pad(d.getSeconds()); }
+function fmtDate(d){
+  var days=['日','一','二','三','四','五','六'];
+  return d.getFullYear()+'年'+pad(d.getMonth()+1)+'月'+pad(d.getDate())+' 星期'+days[d.getDay()];
+}
+function timeAgo(m){
+  if(m<60) return m+'分钟前';
+  var h=Math.floor(m/60), rm=m%60;
+  if(h<24) return h+'小时'+(rm?rm+'分':'')+'前';
+  var d=Math.floor(h/24);
+  return d+'天'+(h%24?(h%24)+'小时':'')+'前';
+}
+function genId(){
+  var p=randInt(0,1)?'AZ':'YL';
+  return p+(new Date().getFullYear())+String(randInt(10000,99999));
+}
+
+// 阶段权重分布（让各阶段都有合理数据）
+function randStage(){
+  var w=[18,22,20,16,11,8,5], t=0;
+  for(var i=0;i<w.length;i++) t+=w[i];
+  var r=Math.random()*t;
+  for(var i=0;i<w.length;i++){ r-=w[i]; if(r<=0) return i; }
+  return 0;
+}
+function stageProgress(i){ return Math.round(i/(STAGES.length-1)*100); }
+
+// 各阶段超时限值（分钟）
+function isTimeout(si,m){
+  var limits=[30,1440,2880,4320,5760,7200,0];
+  return m>(limits[si]||7200);
+}
+function hasAbnormal(){ return Math.random()<0.08; }
+
+// ================================================================
+//  数据生成（确保各模块有充足数据）
+// ================================================================
+function generateCases(count){
+  var list=[];
+  // 等级预设池：红12% 黄30% 蓝58%
+  var levelPool=['red','red','red','yellow','yellow','yellow','yellow','yellow','yellow',
+                 'blue','blue','blue','blue','blue','blue','blue','blue','blue'];
+
+  for(var i=0;i<count;i++){
+    var si=i<Math.floor(count*0.35)?randStage():randStage();
+    // 前40%用预设池保证等级分布，后60%随机
+    var level;
+    if(i<count*0.4) level=levelPool[i%levelPool.length];
+    else level=Math.random()<0.12?'red':Math.random()<0.32?'yellow':'blue';
+
+    var m=randInt(5,8000);
+    var to=isTimeout(si,m);
+    var ab=!to&&hasAbnormal();
+    if(to||ab){
+      level=Math.random()<0.4?'red':Math.random()<0.75?'yellow':'blue';
+    }
+
+    var tp=Math.random()<0.62?'claim':'prevention';
+    // 循环分配地区，确保各地市都有数据
+    var regionCode=REGIONS_FULL[i%REGIONS_FULL.length].code;
+
+    list.push({
+      id:genId(),
+      type:tp,
+      typeLabel:tp==='claim'?'理赔':'预防',
+      level:level,
+      enterprise:ENTERPRISES[i%ENTERPRISES.length],
+      region:regionCode,
+      stageIndex:si,
+      stageLabel:STAGES[si].label,
+      handler:pick(HANDLERS),
+      elapsedMin:m,
+      elapsedStr:timeAgo(m),
+      progress:stageProgress(si),
+      status:to?'timeout':ab?'abnormal':si>=STAGES.length-1?'done':'processing',
+      amount:tp==='claim'?(randInt(1,500)/10).toFixed(1)+'万':'-',
+      triggeredRule:(to||ab)?pick(RULES).id:null,
+      timeline:buildTL(si,m,tp),
+    });
+  }
+
+  // 排序：超时→异常→处理中→已完成
+  var order={timeout:0,abnormal:1,processing:2,done:3};
+  return list.sort(function(a,b){ return (order[a.status]||3)-(order[b.status]||3); });
+}
+
+function buildTL(si,total,type){
+  var tl=[];
+  var base=new Date(Date.now()-total*60000);
+  var acc=0;
+  for(var i=0;i<=si&&i<STAGES.length;i++){
+    acc+=i===0?randInt(5,120):randInt(30,1800);
+    var t=new Date(base.getTime()+acc*60000);
+    var note='';
+    switch(i){
+      case 0: note='系统自动识别并触发'; break;
+      case 1: note='通过监管平台自动报送'; break;
+      case 2: note='审核材料完整性后立案'; break;
+      case 3: note='联合专家组现场勘查'; break;
+      case 4: note='第三方评估机构核定'; break;
+      case 5: note=type==='claim'?'赔款已支付至企业账户':'预防措施已落实'; break;
+      case 6: note='结案归档，进入回访周期'; break;
+    }
+    tl.push({
+      stage:STAGES[i].label,
+      time:fmtTime(t)+' '+pad(t.getMonth()+1)+'/'+pad(t.getDate()),
+      status:i<si?'done':i===si?'current':'',
+      note:note
+    });
+  }
+  return tl;
+}
+
+function generateAlerts(cases){
+  var alerts=[];
+  var abnormalDescs=['定损金额超出预估范围50%+','投保企业历史报案频率偏高','事故描述与勘查记录矛盾',
+                     '预防服务执行率低于60%','隐患整改报告疑似造假','理赔申请材料逻辑不一致'];
+
+  for(var ci=0;ci<cases.length;ci++){
+    var c=cases[ci];
+    if(c.status==='timeout'){
+      alerts.push({
+        id:'T-'+c.id,type:'timeout',
+        title:'【'+c.typeLabel+'】'+c.enterprise,
+        desc:c.stageLabel+'环节已超时，累计'+c.elapsedStr,
+        time:randInt(1,120)+'分钟前',caseId:c.id,critical:c.level==='red'
+      });
+    }
+    if(c.status==='abnormal'){
+      alerts.push({
+        id:'A-'+c.id,type:'abnormal',
+        title:'【'+c.typeLabel+'】'+c.enterprise,
+        desc:pick(abnormalDescs),
+        time:randInt(1,180)+'分钟前',caseId:c.id,critical:false
+      });
+    }
+  }
+  return alerts.sort(function(){return Math.random()-0.5}).slice(0,15);
+}
+
+function updateRegionData(cases){
+  for(var ri=0;ri<REGIONS_FULL.length;ri++){
+    var r=REGIONS_FULL[ri];
+    r.count=0;
+    r.redCount=0;
+    r.yellowCount=0;
+    for(var ci=0;ci<cases.length;ci++){
+      if(cases[ci].region===r.code){
+        r.count++;
+        if(cases[ci].level==='red') r.redCount++;
+        else if(cases[ci].level==='yellow') r.yellowCount++;
+      }
+    }
+  }
+}
+
+// ================================================================
+//  ECharts 初始化与渲染（安全模式）
+// ================================================================
+var CHART_THEME = {
+  textColor:'#94a3b8',
+  axisLine:'#1e293b',
+  splitLine:'rgba(56,189,248,0.06)',
+};
+
+function safeRender(fn, name){
+  try { fn(); } catch(e) { console.error(name+' 渲染失败:', e.message); }
+}
+
+/** 初始化所有ECharts实例 */
+function initCharts(){
+  try {
+    state.charts.pie = echarts.init(document.getElementById('chartPie'));
+    state.charts.bar = echarts.init(document.getElementById('chartBar'));
+    state.charts.trend = echarts.init(document.getElementById('chartTrend'));
+    state.charts.radar = echarts.init(document.getElementById('chartRadar'));
+    state.charts.gaugeT = echarts.init(document.getElementById('chartGaugeTimeout'));
+    state.charts.gaugeA = echarts.init(document.getElementById('chartGaugeAbnormal'));
+
+    console.log('[大屏] ECharts基础图表初始化成功');
+
+    // 先渲染一次已有数据和DOM
+    refreshData(true);
+
+    // 异步加载广东省GeoJSON地图
+    loadMapData();
+
+    window.addEventListener('resize', function(){
+      Object.values(state.charts).forEach(function(c){ if(c&&typeof c.resize==='function') c.resize(); });
+    });
+
+  } catch(e) {
+    console.error('[大屏] 初始化失败:', e);
+  }
+}
+
+function loadMapData(){
+  fetch('https://geo.datav.aliyun.com/areas_v3/bound/440000_full.json')
+    .then(function(r){
+      if(!r.ok) throw new Error('HTTP '+r.status);
+      return r.json();
+    })
+    .then(function(data){
+      echarts.registerMap('guangdong', data);
+      state.charts.map = echarts.init(document.getElementById('chartMap'));
+      safeRender(renderMap, '地图');
+      console.log('[大屏] 广东省地图加载成功');
+    })
+    .catch(function(err){
+      document.getElementById('chartMap').innerHTML=
+        '<div style="display:flex;align-items:center;justify-content:center;height:100%;color:#64748b;font-size:12px;">地图加载失败<br/>请检查网络连接</div>';
+      console.warn('[大屏] 地图加载失败:', err);
+    });
+}
+
+/** 统一渲染所有图表 */
+function renderAllCharts(){
+  safeRender(renderPieChart, '饼图');
+  safeRender(renderBarChart, '柱状图');
+  safeRender(renderTrendChart, '趋势图');
+  safeRender(renderRadarChart, '雷达图');
+  safeRender(renderGaugeCharts, '仪表盘');
+  if(state.charts.map && typeof renderMap==='function'){
+    safeRender(renderMap, '地图');
+  }
+}
+
+/** 等级分布饼图 */
+function renderPieChart(){
+  var s=state.stats;
+  var total=Math.max(s.red+s.yellow+s.blue,1);
+  state.charts.pie.setOption({
+    backgroundColor:'transparent',
+    tooltip:{trigger:'item',formatter:'{b}: {c} ({d}%)',confine:true,textStyle:{fontSize:12}},
+    legend:{bottom:0,itemWidth:10,itemHeight:10,textStyle:{fontSize:10,color:CHART_THEME.textColor},itemGap:8},
+    series:[{
+      type:'pie',radius:['40%','65%'],center:['50%','45%'],
+      avoidLabelOverlap:true,padAngle:2,itemStyle:{borderRadius:4,borderColor:'rgba(0,0,0,0.3)',borderWidth:1},
+      label:{show:false},emphasis:{label:{show:true,fontSize:13,fontWeight:'bold'}},
+      data:[
+        {value:s.red,name:'🔴 红色（重大）',itemStyle:{color:new echarts.graphic.LinearGradient(0,0,1,1,[{offset:0,color:'#dc2626'},{offset:1,color:'#ef4444'}])}},
+        {value:s.yellow,name:'🟡 黄色（较大）',itemStyle:{color:new echarts.graphic.LinearGradient(0,0,1,1,[{offset:0,color:'#ca8a04'},{offset:1,color:'#f59e0b'}])}},
+        {value:s.blue,name:'🔵 蓝色（一般）',itemStyle:{color:new echarts.graphic.LinearGradient(0,0,1,1,[{offset:0,color:'#2563eb'},{offset:1,color:'#3b82f6'}])}}
+      ]
+    }]
+  },true);
+}
+
+/** 各阶段柱状图 */
+function renderBarChart(){
+  var counts=new Array(STAGES.length).fill(0);
+  for(var i=0;i<state.cases.length;i++) counts[state.cases[i].stageIndex]++;
+  var barColors=[];
+  for(var j=0;j<STAGES.length;j++){
+    var hasTimeout=false,hasAbnormal=false;
+    for(var k=0;k<state.cases.length;k++){
+      if(state.cases[k].stageIndex===j){
+        if(state.cases[k].status==='timeout') hasTimeout=true;
+        else if(state.cases[k].status==='abnormal') hasAbnormal=true;
+      }
+    }
+    if(hasTimeout) barColors[j]='#ef4444';
+    else if(hasAbnormal) barColors[j]='#f59e0b';
+    else barColors[j]='rgba(56,189,248,0.7)';
+  }
+
+  state.charts.bar.setOption({
+    backgroundColor:'transparent',
+    tooltip:{trigger:'axis',axisPointer:{type:'shadow'},confine:true},
+    grid:{left:10,right:10,top:10,bottom:26,containLabel:true},
+    xAxis:{type:'category',data:STAGES.map(function(s){return s.label;}),axisTick:{show:false},axisLine:{lineStyle:{color:CHART_THEME.axisLine}},axisLabel:{fontSize:9,color:CHART_THEME.textColor,rotate:15}},
+    yAxis:{type:'value',splitLine:{lineStyle:{color:CHART_THEME.splitLine}},axisLine:{show:false},axisLabel:{fontSize:9,color:CHART_THEME.textColor}},
+    series:[{
+      type:'bar',barWidth:'50%',barMaxWidth:22,
+      itemStyle:{
+        borderRadius:[3,3,0,0],
+        color:function(params){ return barColors[params.dataIndex]; }
+      },
+      data:counts.map(function(v,idx){
+        return {value:v, itemStyle:{color:barColors[idx]}};
+      }),
+      label:{show:true,position:'top',fontSize:10,color:CHART_THEME.textColor,formatter:function(p){return p.value>0?p.value:'';}}
+    }]
+  },true);
+}
+
+/** 24h趋势图 */
+function renderTrendChart(){
+  var hours=[];
+  for(var i=23;i>=0;i--){
+    var d=new Date(); d.setHours(d.getHours()-i);
+    hours.push(pad(d.getHours())+':00');
+  }
+  var claimData=[], prevData=[], doneData=[];
+  for(var j=0;j<hours.length;j++){
+    claimData.push(randInt(2,18));
+    prevData.push(randInt(1,10));
+    doneData.push(Math.max(0,randInt(1,15)-3));
+  }
+
+  var claimTotal=0, prevTotal=0, doneTotal=0;
+  for(var k=0;k<claimData.length;k++){ claimTotal+=claimData[k]; prevTotal+=prevData[k]; doneTotal+=doneData[k]; }
+  var totalToday=claimTotal+prevTotal;
+  var doneToday=doneTotal+randInt(10,35);
+  var rate=totalToday>0?Math.round(doneToday/totalToday*100):0;
+  document.getElementById('trendRateBadge').textContent='处理率 '+rate+'%';
+
+  state.charts.trend.setOption({
+    backgroundColor:'transparent',
+    tooltip:{trigger:'axis',confine:true,axisPointer:{cross:{label:{backgroundColor:'#333'}}}},
+    legend:{top:0,right:0,itemWidth:12,itemHeight:3,textStyle:{fontSize:9,color:CHART_THEME.textColor},data:['新增理赔','新增预防','已完成']},
+    grid:{left:8,right:8,top:24,bottom:22,containLabel:true},
+    xAxis:{type:'category',boundaryGap:false,data:hours.slice(-12),axisTick:{show:false},axisLine:{lineStyle:{color:CHART_THEME.axisLine}},axisLabel:{fontSize:9,color:CHART_THEME.textColor,interval:2}},
+    yAxis:{type:'value',splitLine:{lineStyle:{color:CHART_THEME.splitLine}},axisLine:{show:false},axisLabel:{fontSize:9,color:CHART_THEME.textColor}},
+    series:[
+      {name:'新增理赔',type:'line',smooth:true,symbol:'none',lineStyle:{width:2},areaStyle:{color:new echarts.graphic.LinearGradient(0,0,0,1,[{offset:0,color:'rgba(239,68,68,0.25)'},{offset:1,color:'rgba(239,68,68,0)'}])},data:claimData.slice(-12),itemStyle:{color:'#ef4444'}},
+      {name:'新增预防',type:'line',smooth:true,symbol:'none',lineStyle:{width:2,type:'dashed'},areaStyle:{color:new echarts.graphic.LinearGradient(0,0,0,1,[{offset:0,color:'rgba(245,158,11,0.2)'},{offset:1,color:'rgba(245,158,11,0)'}])},data:prevData.slice(-12),itemStyle:{color:'#f59e0b'}},
+      {name:'已完成',type:'line',smooth:true,symbol:'none',lineStyle:{width:2},areaStyle:{color:new echarts.graphic.LinearGradient(0,0,0,1,[{offset:0,color:'rgba(16,185,129,0.25)'},{offset:1,color:'rgba(16,185,129,0)'}])},data:doneData.slice(-12),itemStyle:{color:'#10b981'}}
+    ]
+  },true);
+}
+
+/** 风险雷达图 */
+function renderRadarChart(){
+  var s=state.stats;
+  var totalCases=Math.max(s.total,1);
+  var riskScore=s.red/totalCases*100;
+  var timeoutScore=s.timeout/totalCases*100;
+  var processScore=s.processing/s.total*100||0;
+  var abnCount=0;
+  for(var ai=0;ai<state.alerts.length;ai++){ if(state.alerts[ai].type==='abnormal') abnCount++; }
+  var abnormalScore=(state.alerts.length>0?abnCount/state.alerts.length*100:0)||0;
+
+  state.charts.radar.setOption({
+    backgroundColor:'transparent',
+    tooltip:{confine:true},
+    radar:{indicator:[
+      {name:'重大风险',max:100},{name:'超时风险',max:100},{name:'处理压力',max:100},
+      {name:'异常频率',max:100},{name:'预防覆盖',max:100},{name:'合规率',max:100}
+    ],shape:'polygon',splitNumber:4,axisName:{color:CHART_THEME.textColor,fontSize:9},splitLine:{lineStyle:{color:CHART_THEME.splitLine}},splitArea:{areaStyle:['rgba(56,189,248,0.02)','rgba(56,189,248,0.04)']},axisLine:{lineStyle:{color:CHART_THEME.axisLine}}},
+    series:[{
+      type:'radar',data:[{
+        value:[Math.min(riskScore*3+randInt(5,25),95),Math.min(timeoutScore*4+randInt(3,20),90),processScore,Math.min(abnormalScore*3+randInt(5,30),80),randInt(55,92),randInt(70,96)],
+        areaColor:'rgba(56,189,248,0.2)',lineStyle:{color:'#38bdf8',width:1.5},
+        itemStyle:{color:'#22d3ee'}
+      },{
+        value:[20,15,40,25,60,75],
+        areaColor:'rgba(245,158,11,0.08)',lineStyle:{color:'#f59e0b',width:1,dash:[4,3]},itemStyle:{color:'#fbbf24'}
+      }],
+      symbol:'circle',symbolSize:4
+    }]
+  },true);
+}
+
+/** 双仪表盘 */
+function renderGaugeCharts(){
+  var s=state.stats;
+  var totalCases=Math.max(s.total,1);
+  var timeoutPct=Math.round(s.timeout/totalCases*100);
+
+  var abnCount=0;
+  for(var gi=0;gi<state.alerts.length;gi++){
+    if(state.alerts[gi].type==='abnormal') abnCount++;
+  }
+
+  function makeGauge(val,maxVal,color,title){
+    return {
+      backgroundColor:'transparent',
+      series:[{
+        type:'gauge',startAngle:210,endAngle:-30,min:0,max:maxVal,
+        radius:'90%',center:['50%','55%'],
+        splitNumber:4,axisLine:{lineStyle:{width:10,color:[[1,'#1e293b']]}},
+        pointer:{length:'55%',width:3,itemStyle:{color:'#fff'}},
+        axisTick:{distance:-14,length:4,lineStyle:{color:'#64748b',width:1}},
+        splitLine:{distance:-18,length:8,lineStyle:{color:'#475569',width:1}},
+        axisLabel:{distance:-22,fontSize:9,color:CHART_THEME.textColor,formatter:function(v){return v+'%';}},
+        title:{offsetCenter:[0,'78%'],fontSize:10,color:CHART_THEME.textColor},
+        detail:{valueAnimation:true,width:'50%',fontSize:14,fontWeight:'bold',offsetCenter:[0,'45%'],color:color,formatter:'{value}%'},
+        data:[{value:val,name:title}],
+        progress:{show:true,width:10,roundCap:true,itemStyle:{color:color}}
+      }]
+    };
+  }
+
+  state.charts.gaugeT.setOption(makeGauge(Math.min(timeoutPct,99),100,'#ef4444','超时占比'),true);
+  state.charts.gaugeA.setOption(makeGauge(Math.min(abnCount*10,99),100,'#a855f7','异常指数'),true);
+}
+
+/** 广东省地图 */
+function renderMap(){
+  if(!state.charts.map) return;
+  var mapData=[];
+  for(var mi=0;mi<REGIONS_FULL.length;mi++){
+    var r=REGIONS_FULL[mi];
+    mapData.push({name:r.name,value:(r.count||0)+(r.redCount||0)*5});
+  }
+  state.charts.map.setOption({
+    backgroundColor:'transparent',
+    tooltip:{trigger:'item',formatter:function(p){
+      return p.name+'<br/>案件数：'+(p.seriesData&&p.seriesData[0]?p.seriesData[0].value:0)+'<br/>点击查看详情';
+    }},
+    visualMap:{min:0,max:40,left:10,bottom:0,text:['高','低'],textStyle:{fontSize:9,color:CHART_THEME.textColor},
+      inRange:{color:['#047857','#0369a1','#a16207','#dc2626']},calculable:true,itemWidth:8,itemHeight:60},
+    geo:{map:'guangdong',roam:true,zoom:1.05,label:{show:true,fontSize:8,color:'#fff'},emphasis:{label:{color:'#fff',fontSize:10},itemStyle:{areaColor:'#0ea5e9'}},
+      itemStyle:{areaColor:'rgba(30,58,95,0.7)',borderColor:'rgba(56,189,248,0.4)',borderWidth:1}},
+    series:[{
+      type:'map',map:'guangdong',geoIndex:0,
+      data:mapData,
+      emphasis:{label:{show:true,color:'#fff'},itemStyle:{areaColor:'#0ea5e9'}}
+    }]
+  },true);
+
+  // 点击事件
+  if(state.charts.map._$handlers && state.charts.map._$handlers.click){
+    state.charts.map.off('click');
+  }
+  state.charts.map.on('click', function(params){
+    for(var ri=0;ri<REGIONS_FULL.length;ri++){
+      if(REGIONS_FULL[ri].name===params.name){
+        document.getElementById('regionSelect').value=REGIONS_FULL[ri].code;
+        state.region=REGIONS_FULL[ri].code;
+        refreshData(true);
+        break;
+      }
+    }
+  });
+}
+
+// ================================================================
+//  DOM渲染
+// ================================================================
+function updateClock(){
+  var now=new Date();
+  document.getElementById('clockTime').textContent=fmtTime(now);
+  document.getElementById('clockDate').textContent=fmtDate(now);
+  document.getElementById('lastUpdate').textContent='最后更新：'+fmtTime(now);
+}
+
+function animateNum(el,target){
+  var cur=parseInt(el.textContent)||0;
+  if(isNaN(cur)) cur=0;
+  var diff=target-cur;
+  if(diff===0) return;
+  var steps=15, inc=diff/steps, st=0;
+  var timer=setInterval(function(){
+    st++;
+    el.textContent=Math.round(cur+inc*st);
+    if(st>=15){el.textContent=target;clearInterval(timer);}
+  },30);
+}
+
+function renderStats(){
+  var s=state.stats;
+  animateNum(document.getElementById('statTotal'),s.total);
+  animateNum(document.getElementById('statProcessing'),s.processing);
+  animateNum(document.getElementById('statDone'),s.done);
+  animateNum(document.getElementById('statTimeout'),s.timeout);
+  animateNum(document.getElementById('prevInspect'),s.inspect);
+  animateNum(document.getElementById('prevTrain'),s.train);
+  animateNum(document.getElementById('prevConsult'),s.consult);
+  animateNum(document.getElementById('prevEmergency'),s.emergency);
+}
+
+function renderRules(){
+  var ac=0;
+  for(var ri=0;ri<state.rules.length;ri++){ if(state.rules[ri].fired) ac++; }
+  document.getElementById('ruleActiveBadge').textContent=ac+' 活跃';
+
+  var html='';
+  for(var ri=0;ri<state.rules.length;ri++){
+    var r=state.rules[ri];
+    html+='<div class="rule-item'+(r.fired?' triggered':'')+'" onclick="showRuleDetail(\''+r.id+'\')">'+
+      '<span class="r-name">'+r.name+'</span>'+
+      '<span class="r-count">'+(r.fireCount||0)+'</span></div>';
+  }
+  document.getElementById('ruleList').innerHTML=html;
+}
+
+function renderPipeline(){
+  var counts=new Array(STAGES.length).fill(0);
+  var dangerStages={}, warnStages={};
+  for(var ci=0;ci<state.cases.length;ci++){
+    var c=state.cases[ci];
+    counts[c.stageIndex]++;
+    if(c.status==='timeout') dangerStages[c.stageIndex]=true;
+    else if(c.status==='abnormal') warnStages[c.stageIndex]=true;
+  }
+
+  var firstActive=-1;
+  for(var si=0;si<STAGES.length;si++){
+    for(var ci2=0;ci2<state.cases.length;ci2++){
+      if(state.cases[ci2].stageIndex===si&&state.cases[ci2].status==='processing'){ firstActive=si; break; }
+    }
+    if(firstActive>=0) break;
+  }
+
+  var html='', stage, cnt, cls;
+  for(var i=0;i<STAGES.length;i++){
+    stage=STAGES[i];
+    cnt=counts[i];
+    cls='idle';
+    if(dangerStages[i]) cls='danger';
+    else if(warnStages[i]) cls='warning';
+    else if(firstActive>=0&&i<=firstActive&&cnt>0) cls=(i===firstActive?'active':'done');
+    else if(cnt>0&&i===STAGES.length-1) cls='done';
+
+    html+='<div class="pipe-node" onclick="filterByStage('+i+')" title="'+stage.label+':'+cnt+'件">'+
+      '<div class="node-circle '+cls+'">'+stage.icon+'</div>'+
+      '<span class="node-count'+(cnt>0?'':' hidden')+'">'+cnt+'</span>'+
+      '<div class="node-label">'+stage.label+'</div></div>';
+
+    if(i<STAGES.length-1){
+      html+='<div class="pipe-line'+((firstActive>=0&&i<firstActive)?' active':'')+'"></div>';
+    }
+  }
+  document.getElementById('pipeline').innerHTML=html;
+}
+
+function renderCaseTable(){
+  var fL=document.getElementById('caseFilterLevel').value;
+  var fT=document.getElementById('caseFilterType').value;
+  var fS=document.getElementById('caseFilterStatus').value;
+  var list=state.cases.slice();
+
+  if(fL!=='all'){
+    var tmp=[]; for(var li=0;li<list.length;li++){ if(list[li].level===fL) tmp.push(list[li]); } list=tmp;
+  }
+  if(fT!=='all'){
+    var tmp2=[]; for(var ti=0;ti<list.length;ti++){ if(list[ti].type===fT) tmp2.push(list[ti]); } list=tmp2;
+  }
+  if(fS!=='all'){
+    var tmp3=[]; for(var si2=0;si2<list.length;si2++){ if(list[si2].status===fS) tmp3.push(list[si2]); } list=tmp3;
+  }
+
+  var tb=document.getElementById('caseTbody');
+  var html='', c;
+  var maxShow=list.length>30?30:list.length;
+  for(var i=0;i<maxShow;i++){
+    c=list[i];
+    html+='<tr class="new-flash" onclick="showCaseDetail(\''+c.id+'\')" style="cursor:pointer;">'+
+      '<td style="font-family:monospace;font-weight:600;color:var(--accent-cyan);font-size:10px;">'+c.id+'</td>'+
+      '<td>'+c.typeLabel+'</td>'+
+      '<td><span class="tag-level '+c.level+'">'+(c.level==='red'?'红':c.level==='yellow'?'黄':'蓝')+'</span></td>'+
+      '<td style="max-width:130px;overflow:hidden;text-overflow:ellipsis;">'+c.enterprise+'</td>'+
+      '<td>'+c.stageLabel+'</td>'+
+      '<td>'+c.handler+'</td>'+
+      '<td>'+c.elapsedStr+'</td>'+
+      '<td><div class="mini-progress"><div class="fill fill-'+(c.level==='red'?'red':c.level==='yellow'?'blue':'green')+'" style="width:'+c.progress+'%;"></div></div></td>'+
+      '<td><span class="tag-status status-'+c.status+'">'+
+        (c.level==='processing'?'处理中':c.status==='done'?'已完成':c.status==='timeout'?'超时':'异常')+
+        '</span></td></tr>';
+  }
+  tb.innerHTML=html||(html='<tr><td colspan="9" style="text-align:center;padding:25px;color:var(--text-muted);font-size:11px;">暂无匹配数据</td></tr>');
+}
+
+function renderAlerts(){
+  var ts=0, abs=0;
+  for(var ai=0;ai<state.alerts.length;ai++){
+    if(state.alerts[ai].type==='timeout') ts++;
+    else if(state.alerts[ai].type==='abnormal') abs++;
+  }
+  document.getElementById('timeoutCount').textContent=ts+' 超时';
+  document.getElementById('abnormalCount').textContent=abs+' 异常';
+
+  var html='', a, maxAlerts=state.alerts.length>8?8:state.alerts.length;
+  for(var i=0;i<maxAlerts;i++){
+    a=state.alerts[i];
+    html+='<div class="alert-item '+a.type+(a.critical?' critical':'')+'" onclick="showCaseDetail(\''+a.caseId+'\')">'+
+      '<div class="alert-icon '+(a.type==='timeout'?'t-bg':'a-bg')+'">'+(a.type==='timeout'?'⏰':'⚠️')+'</div>'+
+      '<div class="alert-info"><div class="alert-title">'+a.title+'</div><div class="alert-desc">'+a.desc+'</div></div>'+
+      '<div class="alert-time">'+a.time+'</div></div>';
+  }
+  document.getElementById('alertList').innerHTML=html;
+}
+
+function renderProgress(){
+  var focus=[];
+  for(var ci=0;ci<state.cases.length;ci++){
+    if(state.cases[ci].status==='processing') focus.push(state.cases[ci]);
+  }
+  focus.sort(function(a,b){
+    if(a.level==='red'&&b.level!=='red') return -1;
+    if(b.level==='red'&&a.level!=='red') return 1;
+    if(a.level==='yellow'&&b.level!=='yellow') return -1;
+    if(b.level==='yellow'&&a.level!=='yellow') return 1;
+    return 0;
+  });
+  focus=focus.slice(0,5);
+
+  if(!focus.length){
+    document.getElementById('progressList').innerHTML=
+      '<div style="text-align:center;padding:18px;color:var(--text-muted);font-size:11px;">当前无处理中案件</div>';
+    return;
+  }
+
+  var html='', c;
+  for(var i=0;i<focus.length;i++){
+    c=focus[i];
+    html+='<div class="progress-item" onclick="showCaseDetail(\''+c.id+'\')">'+
+      '<div class="progress-header"><span class="progress-case-id">'+c.id+'</span><span class="progress-stage">'+c.stageLabel+' · '+c.handler+'</span></div>'+
+      '<div class="progress-bar-wrap"><div class="progress-bar"><div class="p-fill" style="width:'+c.progress+'%;"></div></div>'+
+      '<span class="progress-pct">'+c.progress+'%</span></div></div>';
+  }
+  document.getElementById('progressList').innerHTML=html;
+}
+
+function renderRuleChain(){
+  var fired=[];
+  for(var ri=0;ri<state.rules.length;ri++){
+    if(state.rules[ri].fired) fired.push(state.rules[ri]);
+  }
+  fired=fired.slice(0,3);
+
+  if(!fired.length){
+    document.getElementById('ruleChain').innerHTML=
+      '<div style="text-align:center;padding:14px;color:var(--text-muted);font-size:11px;">暂无触发的规则联动</div>';
+    return;
+  }
+
+  var html='', rule;
+  for(var i=0;i<fired.length;i++){
+    rule=fired[i];
+    html+='<div class="chain-row">'+
+      '<span class="chain-node'+(Math.random()>0.5?' active':'')+'">事件触发</span><span class="chain-arrow">→</span>'+
+      '<span class="chain-node active">'+(rule.category==='red'?'紧急':'常规')+'报送</span><span class="chain-arrow">→</span>'+
+      '<span class="chain-node'+(rule.fired?' fired':'')+'">'+(rule.name.length>8?rule.name.substring(0,8)+'...':rule.name)+'</span><span class="chain-arrow">→</span>'+
+      '<span class="chain-node'+(Math.random()>0.6?' active':'')+'">自动分派</span></div>';
+  }
+  document.getElementById('ruleChain').innerHTML=html;
+}
+
+// ================================================================
+//  交互
+// ================================================================
+document.getElementById('levelSwitcher').addEventListener('click', function(e){
+  var btn=e.target.closest('.level-btn');if(!btn)return;
+  var btns=document.querySelectorAll('.level-btn');
+  for(var bi=0;bi<btns.length;bi++) btns[bi].classList.remove('active');
+  btn.classList.add('active');
+  state.level=btn.dataset.level;refreshData(true);
+});
+
+document.getElementById('regionSelect').addEventListener('change', function(e){
+  state.region=e.target.value;refreshData(true);
+});
+document.getElementById('caseFilterLevel').addEventListener('change',renderCaseTable);
+document.getElementById('caseFilterType').addEventListener('change',renderCaseTable);
+document.getElementById('caseFilterStatus').addEventListener('change',renderCaseTable);
+
+function filterByStage(si){
+  document.getElementById('caseFilterStatus').value='all';
+  document.getElementById('caseFilterLevel').value='all';
+  document.getElementById('caseFilterType').value='all';
+  renderCaseTable();
+}
+
+function showCaseDetail(cid){
+  var c=null;
+  for(var di=0;di<state.cases.length;di++){
+    if(state.cases[di].id===cid){c=state.cases[di];break;}
+  }
+  if(!c)return;
+
+  var levelText=c.level==='red'?'红色（重大）':c.level==='yellow'?'黄色（较大）':'蓝色（一般）';
+  var statusText=c.status==='processing'?'处理中':c.status==='done'?'已完成':c.status==='timeout'?'超时预警':'异常';
+
+  document.getElementById('modalTitle').textContent='【'+c.typeLabel+'】'+c.id+' · '+c.enterprise;
+  document.getElementById('modalBody').innerHTML=
+    '<div class="detail-grid">'+
+      '<div class="detail-item"><div class="d-label">案件编号</div><div class="d-value" style="color:var(--accent-cyan);font-family:monospace;font-size:12px;">'+c.id+'</div></div>'+
+      '<div class="detail-item"><div class="d-label">案件类型</div><div class="d-value">'+c.typeLabel+'</div></div>'+
+      '<div class="detail-item"><div class="d-label">风险等级</div><div class="d-value"><span class="tag-level '+c.level+'">'+levelText+'</span></div></div>'+
+      '<div class="detail-item"><div class="d-label">处理状态</div><div class="d-value"><span class="tag-status status-'+c.status+'">'+statusText+'</span></div></div>'+
+      '<div class="detail-item"><div class="d-label">所属企业</div><div class="d-value">'+c.enterprise+'</div></div>'+
+      '<div class="detail-item"><div class="d-label">当前阶段</div><div class="d-value">'+c.stageLabel+'</div></div>'+
+      '<div class="detail-item"><div class="d-label">负责人</div><div class="d-value">'+c.handler+'</div></div>'+
+      '<div class="detail-item"><div class="d-label">累计耗时</div><div class="d-value">'+c.elapsedStr+'</div></div>'+
+      '<div class="detail-item"><div class="d-label">涉及金额</div><div class="d-value">'+c.amount+'</div></div>'+
+      '<div class="detail-item"><div class="d-label">整体进度</div><div class="d-value">'+c.progress+'%</div></div>'+
+    '</div>'+
+    '<div class="timeline"><div class="timeline-title">📋 处理时间线</div><div class="timeline-list">';
+  for(var ti=0;ti<(c.timeline||[]).length;ti++){
+    var t=c.timeline[ti];
+    document.getElementById('modalBody').innerHTML+=
+      '<div class="tl-item '+t.status+'"><span class="tl-stage">'+t.stage+'</span><span class="tl-time">'+t.time+'</span><div class="tl-note">'+t.note+'</div></div>';
+  }
+  document.getElementById('modalBody').innerHTML+='</div></div>';
+  document.getElementById('modalOverlay').classList.add('show');
+}
+function closeModal(){ document.getElementById('modalOverlay').classList.remove('show'); }
+document.getElementById('modalOverlay').addEventListener('click', function(e){if(e.target===this)closeModal();});
+function showRuleDetail(rid){
+  var rule=null;
+  for(var ri=0;ri<RULES.length;ri++){ if(RULES[ri].id===rid){rule=RULES[ri];break;} }
+  if(!rule)return;
+  var typeName=rule.type==='auto'?'自动触发':rule.type==='timeout'?'超时检测':'异常检测';
+  alert('【规则详情】\n\n编号：'+rule.id+'\n名称：'+rule.name+'\n类型：'+typeName+'\n级别：'+rule.category.toUpperCase()+'\n\n说明：'+rule.desc);
+}
+
+// ================================================================
+//  数据刷新引擎
+// ================================================================
+function refreshData(fullRefresh){
+  if(fullRefresh){
+    var bc=state.level==='province'?200:state.level==='city'?120:60;
+    var count=state.region!=='all'?Math.floor(bc*0.5):bc;
+
+    state.cases=generateCases(count);
+
+    // 确保各地市至少有2条数据
+    for(var fi=0;fi<REGIONS_FULL.length;fi++){
+      var rc=REGIONS_FULL[fi].code;
+      var localCnt=0;
+      for(var ci=0;ci<state.cases.length;ci++){
+        if(state.cases[ci].region===rc) localCnt++;
+      }
+      while(localCnt<2){
+        var extra=generateCases(1)[0];
+        extra.region=rc;
+        state.cases.push(extra);
+        localCnt++;
+      }
+    }
+
+    state.alerts=generateAlerts(state.cases);
+    updateRegionData(state.cases);
+
+    // 更新规则触发状态
+    state.rules=[];
+    for(var ri=0;ri<RULES.length;ri++){
+      var r=RULES[ri];
+      state.rules.push({
+        ...r,
+        fired:Math.random()<((r.category==='red')?0.6:(r.category==='yellow')?0.4:0.2),
+        fireCount:r.category==='red'?randInt(2,8):(r.category==='yellow'?randInt(3,10):randInt(5,15))
+      });
+    }
+
+    // 计算统计数据
+    var stotal=state.cases.length;
+    var sproc=0, sdone=0, stimeout=0, sred=0, syellow=0, sblue=0;
+    for(var si=0;si<state.cases.length;si++){
+      var cs=state.cases[si];
+      if(cs.status==='processing') sproc++;
+      else if(cs.status==='done') sdone++;
+      else if(cs.status==='timeout') stimeout++;
+      if(cs.level==='red') sred++;
+      else if(cs.level==='yellow') syellow++;
+      else if(cs.level==='blue') sblue++;
+    }
+    state.stats={
+      total:stotal, processing:sproc, done:sdone, timeout:stimeout,
+      red:sred, yellow:syellow, blue:sblue,
+      inspect:randInt(180,350), train:randInt(80,160), consult:randInt(50,120), emergency:randInt(25,60)
+    };
+
+  }else {
+    // 增量更新
+    for(var ui=0;ui<state.cases.length;ui++){
+      var uc=state.cases[ui];
+      if(Math.random()<0.1&&uc.status==='processing'){
+        uc.elapsedMin+=randInt(1,10);
+        uc.elapsedStr=timeAgo(uc.elapsedMin);
+        if(isTimeout(uc.stageIndex,uc.elapsedMin)){
+          uc.status='timeout';
+        } else if(Math.random()<0.05){
+          uc.stageIndex=Math.min(uc.stageIndex+1, STAGES.length-1);
+          uc.stageLabel=STAGES[uc.stageIndex].label;
+          uc.progress=stageProgress(uc.stageIndex);
+          if(uc.stageIndex>=STAGES.length-1) uc.status='done';
+        }
+      }
+    }
+    if(Math.random()<0.15&&state.cases.length<250){
+      var nc=generateCases(1)[0];
+      state.cases.unshift(nc);
+      state.stats.total++;
+      state.stats.processing++;
+      if(nc.level==='red') state.stats.red++;
+      else if(nc.level==='yellow') state.stats.yellow++;
+      else state.stats.blue++;
+    }
+    // 重算状态计数
+    var rp=0, rd=0, rt=0;
+    for(var ri2=0;ri2<state.cases.length;ri2++){
+      var rs=state.cases[ri2];
+      if(rs.status==='processing') rp++;
+      else if(rs.status==='done') rd++;
+      else if(rs.status==='timeout') rt++;
+    }
+    state.stats.processing=rp;
+    state.stats.done=rd;
+    state.stats.timeout=rt;
+    state.alerts=generateAlerts(state.cases);
+    updateRegionData(state.cases);
+  }
+
+  // 更新地区标签
+  if(state.region!=='all'){
+    var rn=null;
+    for(var rni=0;rni<REGIONS_FULL.length;rni++){
+      if(REGIONS_FULL[rni].code===state.region){rn=REGIONS_FULL[rni];break;}
+    }
+    document.getElementById('mapRegionLabel').textContent=rn?rn.name+'视图':'市级视图';
+  } else {
+    document.getElementById('mapRegionLabel').textContent=
+      state.level==='province'?'省级视图':state.level==='city'?'市级汇总':'区县明细';
+  }
+
+  // DOM渲染（核心）
+  renderStats();
+  renderRules();
+  renderPipeline();
+  renderCaseTable();
+  renderAlerts();
+  renderProgress();
+  renderRuleChain();
+  updateClock();
+
+  // ECharts渲染
+  renderAllCharts();
+
+  console.log('[大屏] 数据刷新完成 | 总数:'+state.stats.total+' 处理中:'+state.stats.processing+' 完成:'+state.stats.done);
+}
+
+// ================================================================
+//  启动入口
+// ================================================================
+console.log('[大屏] 开始初始化...');
+initCharts();           // 初始化ECharts并首次渲染数据
+setInterval(updateClock,1000);     // 时钟每秒更新
+setInterval(function(){refreshData(true);},30000);  // 全量刷新30秒
+setInterval(function(){refreshData(false);},5000);   // 增量刷新5秒
+document.addEventListener('keydown', function(e){if(e.key==='Escape')closeModal();});
+console.log('[大屏] 吝始化完毕');
+
+</script>
+
+</body>
+</html>
