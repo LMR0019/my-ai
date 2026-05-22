@@ -15062,6 +15062,7 @@
                                         <th style="width:130px;">提交时间</th>
                                         <th style="width:130px;">审核时间</th>
                                         <th style="width:80px;">下达模式</th>
+                                        <th style="width:100px;">下达来源</th>
                                         <th style="width:100px;">执行完成率</th>
                                         <th style="width:90px;">方案状态</th>
                                         <th style="width:140px;" class="col-action">操作</th>
@@ -15434,6 +15435,10 @@
                                 <div style="min-width:130px;">
                                     <div style="color:#999;font-size:12px;margin-bottom:4px;">下达模式</div>
                                     <div style="color:#333;font-size:14px;" id="servicePlanDetailMode">-</div>
+                                </div>
+                                <div style="min-width:130px;">
+                                    <div style="color:#999;font-size:12px;margin-bottom:4px;">下达来源</div>
+                                    <span id="servicePlanDetailSource" style="display:inline-block;padding:2px 8px;border-radius:4px;font-size:12px;"></span>
                                 </div>
                                 <div style="min-width:100px;">
                                     <div style="color:#999;font-size:12px;margin-bottom:4px;">执行完成率</div>
@@ -16131,7 +16136,7 @@
                         <div style="overflow-x:auto;">
                             <table class="fin-table"><thead><tr>
                                 <th style="width:40px;"><input type="checkbox" id="feeCheckAll" checked onchange="feeToggleAll(this)"></th>
-                                <th>保单号</th><th>投保企业</th><th>保费金额</th><th>抽成比例</th><th style="text-align:right;">抽成金额</th><th>状态</th><th>操作</th>
+                                <th>保单号</th><th>投保企业</th><th>原保费金额</th><th>批单金额</th><th>保费金额</th><th>抽成比例</th><th style="text-align:right;">抽成金额</th><th>状态</th><th>操作</th>
                             </tr></thead><tbody id="feeDetailBody"></tbody></table>
                         </div>
                     </div>
@@ -16200,7 +16205,7 @@
                         </div>
                         <div style="overflow-x:auto;"><table class="fin-table"><thead><tr>
                             <th style="width:40px;"><input type="checkbox" id="coordCheckAll" checked onchange="coordToggleAll(this)"></th>
-                            <th>服务单号</th><th>服务企业</th><th>服务类型</th><th style="text-align:right;">服务费</th><th style="text-align:right;">抽成金额</th><th style="text-align:right;">应付</th>
+                            <th>服务单号</th><th>服务企业</th><th>服务类型</th><th style="text-align:right;">服务费</th><th style="text-align:right;">批单增费</th><th style="text-align:right;">抽成金额</th><th style="text-align:right;">应付</th>
                         </tr></thead><tbody id="coordDetailBody"></tbody></table></div>
                     </div>
                     <div class="fin-drawer-footer">
@@ -26738,6 +26743,7 @@ function showPcPortalSelector() {
                 submitTime: '2024-03-15 10:00',
                 auditTime: '2024-03-18 14:30',
                 deliveryMode: '集中',
+                source: 'ai',
                 completionRate: 75,
                 status: '执行中',
                 createTime: '2024-03-10 09:00',
@@ -26759,6 +26765,7 @@ function showPcPortalSelector() {
                 submitTime: '2024-04-10 09:30',
                 auditTime: '2024-04-12 11:00',
                 deliveryMode: '单独',
+                source: 'manual',
                 completionRate: 100,
                 status: '已完成',
                 createTime: '2024-04-05 08:00',
@@ -26779,6 +26786,7 @@ function showPcPortalSelector() {
                 submitTime: '2024-05-20 14:00',
                 auditTime: '',
                 deliveryMode: '集中',
+                source: 'manual',
                 completionRate: 0,
                 status: '待审核',
                 createTime: '2024-05-15 10:00',
@@ -26798,6 +26806,7 @@ function showPcPortalSelector() {
                 submitTime: '2024-06-01 08:30',
                 auditTime: '2024-06-05 16:00',
                 deliveryMode: '集中',
+                source: 'ai',
                 completionRate: 50,
                 status: '审核通过',
                 createTime: '2024-05-25 09:00',
@@ -27162,6 +27171,10 @@ function showPcPortalSelector() {
                 html += '<td>' + (item.submitTime || '-') + '</td>';
                 html += '<td>' + (item.auditTime || '-') + '</td>';
                 html += '<td>' + item.deliveryMode + '</td>';
+                // 下达来源标识
+                var sourceText = item.source === 'ai' ? 'AI触发' : (item.source === 'manual' ? '人工手动' : '-');
+                var sourceStyle = item.source === 'ai' ? 'background:#f6ffed;color:#52c41a;border:1px solid #b7eb8f;' : (item.source === 'manual' ? 'background:#fffbe6;color:#faad14;border:1px solid #ffe58f;' : 'background:#f5f5f5;color:#999;border:1px solid #d9d9d9;');
+                html += '<td><span style="display:inline-block;padding:2px 8px;border-radius:4px;font-size:12px;' + sourceStyle + '">' + sourceText + '</span></td>';
                 // 执行完成率 - 进度条样式
                 var rateColor = item.completionRate >= 100 ? '#52c41a' : (item.completionRate >= 50 ? '#1890ff' : '#faad14');
                 html += '<td><div style="display:flex;align-items:center;gap:6px;"><div style="flex:1;height:6px;background:#f0f0f0;border-radius:3px;overflow:hidden;"><div style="width:' + item.completionRate + '%;height:100%;background:' + rateColor + ';border-radius:3px;"></div></div><span style="font-size:12px;color:#666;min-width:32px;">' + item.completionRate + '%</span></div></td>';
@@ -27243,6 +27256,14 @@ function showPcPortalSelector() {
             document.getElementById('servicePlanDetailEnterpriseCount').textContent = item.enterpriseCount + ' 家';
             document.getElementById('servicePlanDetailServiceCount').textContent = item.serviceCount + ' 次';
             document.getElementById('servicePlanDetailMode').textContent = item.deliveryMode;
+            // 下达来源
+            var sourceEl = document.getElementById('servicePlanDetailSource');
+            var sourceText = item.source === 'ai' ? 'AI触发' : (item.source === 'manual' ? '人工手动' : '-');
+            var sourceStyle = item.source === 'ai' ? 'background:#f6ffed;color:#52c41a;border:1px solid #b7eb8f;' : (item.source === 'manual' ? 'background:#fffbe6;color:#faad14;border:1px solid #ffe58f;' : 'background:#f5f5f5;color:#999;border:1px solid #d9d9d9;');
+            if (sourceEl) {
+                sourceEl.textContent = sourceText;
+                sourceEl.setAttribute('style', 'display:inline-block;padding:2px 8px;border-radius:4px;font-size:12px;' + sourceStyle);
+            }
             document.getElementById('servicePlanDetailRate').textContent = item.completionRate + '%';
             document.getElementById('servicePlanDetailSubmitTime').textContent = item.submitTime || '-';
             document.getElementById('servicePlanDetailAuditTime').textContent = item.auditTime || '-';
@@ -28982,37 +29003,37 @@ function showPcPortalSelector() {
         var feeBillData = [
             {id:'FS202605001',company:'人保财险',period:'2026年5月',policyCount:42,amount:35600,status:'pending',createTime:'2026-06-01 08:00',
              details:[
-                {policyNo:'P20260501001',ent:'四会市化工有限公司',premium:12000,rate:'15%',commision:1800,excluded:false},
-                {policyNo:'P20260501002',ent:'广东某某金属制造有限公司',premium:8500,rate:'15%',commision:1275,excluded:false},
-                {policyNo:'P20260501003',ent:'德庆县矿业有限公司',premium:6200,rate:'12%',commision:744,excluded:false},
-                {policyNo:'P20260501004',ent:'端州区建设工程有限公司',premium:9100,rate:'15%',commision:1365,excluded:false},
-                {policyNo:'P20260501005',ent:'鼎湖区金属加工厂',premium:4800,rate:'15%',commision:720,excluded:false}
+                {policyNo:'P20260501001',ent:'四会市化工有限公司',originalPremium:10000,endorsementAmount:2000,premium:12000,rate:'15%',commision:1800,excluded:false},
+                {policyNo:'P20260501002',ent:'广东某某金属制造有限公司',originalPremium:8500,endorsementAmount:0,premium:8500,rate:'15%',commision:1275,excluded:false},
+                {policyNo:'P20260501003',ent:'德庆县矿业有限公司',originalPremium:7000,endorsementAmount:-800,premium:6200,rate:'12%',commision:744,excluded:false},
+                {policyNo:'P20260501004',ent:'端州区建设工程有限公司',originalPremium:8000,endorsementAmount:1100,premium:9100,rate:'15%',commision:1365,excluded:false},
+                {policyNo:'P20260501005',ent:'鼎湖区金属加工厂',originalPremium:4800,endorsementAmount:0,premium:4800,rate:'15%',commision:720,excluded:false}
             ]},
             {id:'FS202605002',company:'平安财险',period:'2026年5月',policyCount:28,amount:24800,status:'confirming',createTime:'2026-06-01 08:00',
              details:[
-                {policyNo:'P20260502001',ent:'高要区烟花爆竹经营部',premium:9500,rate:'15%',commision:1425,excluded:false},
-                {policyNo:'P20260502002',ent:'封开县建筑安装公司',premium:7200,rate:'15%',commision:1080,excluded:false},
-                {policyNo:'P20260502003',ent:'广宁县木材加工厂',premium:8100,rate:'15%',commision:1215,excluded:false}
+                {policyNo:'P20260502001',ent:'高要区烟花爆竹经营部',originalPremium:9000,endorsementAmount:500,premium:9500,rate:'15%',commision:1425,excluded:false},
+                {policyNo:'P20260502002',ent:'封开县建筑安装公司',originalPremium:7200,endorsementAmount:0,premium:7200,rate:'15%',commision:1080,excluded:false},
+                {policyNo:'P20260502003',ent:'广宁县木材加工厂',originalPremium:7500,endorsementAmount:600,premium:8100,rate:'15%',commision:1215,excluded:false}
             ]},
             {id:'FS202605003',company:'太平洋财险',period:'2026年5月',policyCount:35,amount:32600,status:'settled',createTime:'2026-05-30 08:00',
              details:[
-                {policyNo:'P20260503001',ent:'怀集县石灰岩矿场',premium:11000,rate:'15%',commision:1650,excluded:false},
-                {policyNo:'P20260503002',ent:'四会市某化工贸易公司',premium:8600,rate:'15%',commision:1290,excluded:false}
+                {policyNo:'P20260503001',ent:'怀集县石灰岩矿场',originalPremium:10000,endorsementAmount:1000,premium:11000,rate:'15%',commision:1650,excluded:false},
+                {policyNo:'P20260503002',ent:'四会市某化工贸易公司',originalPremium:8600,endorsementAmount:0,premium:8600,rate:'15%',commision:1290,excluded:false}
             ]},
             {id:'FS202605004',company:'中华联合',period:'2026年5月',policyCount:18,amount:15400,status:'disputed',createTime:'2026-05-28 08:00',
              details:[
-                {policyNo:'P20260504001',ent:'某建筑工程集团',premium:7200,rate:'15%',commision:1080,excluded:false},
-                {policyNo:'P20260504002',ent:'某化工贸易公司',premium:8200,rate:'15%',commision:1230,excluded:false}
+                {policyNo:'P20260504001',ent:'某建筑工程集团',originalPremium:7200,endorsementAmount:0,premium:7200,rate:'15%',commision:1080,excluded:false},
+                {policyNo:'P20260504002',ent:'某化工贸易公司',originalPremium:8500,endorsementAmount:-300,premium:8200,rate:'15%',commision:1230,excluded:false}
             ]},
             {id:'FS202604001',company:'人保财险',period:'2026年4月',policyCount:38,amount:31200,status:'settled',createTime:'2026-05-01 08:00',
              details:[
-                {policyNo:'P20260401001',ent:'四会市化工有限公司',premium:11500,rate:'15%',commision:1725,excluded:false},
-                {policyNo:'P20260401002',ent:'广东某某金属制造有限公司',premium:8800,rate:'15%',commision:1320,excluded:false}
+                {policyNo:'P20260401001',ent:'四会市化工有限公司',originalPremium:11000,endorsementAmount:500,premium:11500,rate:'15%',commision:1725,excluded:false},
+                {policyNo:'P20260401002',ent:'广东某某金属制造有限公司',originalPremium:8800,endorsementAmount:0,premium:8800,rate:'15%',commision:1320,excluded:false}
             ]},
             {id:'FS202604002',company:'平安财险',period:'2026年4月',policyCount:22,amount:18500,status:'settled',createTime:'2026-05-01 08:00',
              details:[
-                {policyNo:'P20260402001',ent:'德庆县矿业有限公司',premium:9000,rate:'15%',commision:1350,excluded:false},
-                {policyNo:'P20260402002',ent:'端州区建设工程有限公司',premium:7500,rate:'15%',commision:1125,excluded:false}
+                {policyNo:'P20260402001',ent:'德庆县矿业有限公司',originalPremium:9000,endorsementAmount:0,premium:9000,rate:'15%',commision:1350,excluded:false},
+                {policyNo:'P20260402002',ent:'端州区建设工程有限公司',originalPremium:7500,endorsementAmount:0,premium:7500,rate:'15%',commision:1125,excluded:false}
             ]}
         ];
         var feeFiltered = feeBillData.slice();
@@ -29093,7 +29114,11 @@ function showPcPortalSelector() {
                 var cls=d.excluded?'row-excluded':'';
                 var chk=d.excluded?'':'checked';
                 html+='<tr class="'+cls+'"><td><input type="checkbox" '+chk+' onchange="feeToggleItem('+i+',this)"></td>';
-                html+='<td>'+d.policyNo+'</td><td>'+d.ent+'</td><td class="text-right">&#165;'+d.premium.toLocaleString()+'</td><td>'+d.rate+'</td><td class="text-right amount">'+(d.excluded?'<del>&#165;'+d.commision.toLocaleString()+'</del>':'&#165;'+d.commision.toLocaleString())+'</td>';
+                html+='<td>'+d.policyNo+'</td><td>'+d.ent+'</td>';
+                html+='<td class="text-right">&#165;'+(d.originalPremium||d.premium).toLocaleString()+'</td>';
+                html+='<td class="text-right">'+(d.endorsementAmount > 0 ? '+' : '')+'&#165;'+(d.endorsementAmount||0).toLocaleString()+'</td>';
+                html+='<td class="text-right">&#165;'+d.premium.toLocaleString()+'</td>';
+                html+='<td>'+d.rate+'</td><td class="text-right amount">'+(d.excluded?'<del>&#165;'+d.commision.toLocaleString()+'</del>':'&#165;'+d.commision.toLocaleString())+'</td>';
                 html+='<td>'+(d.excluded?'<span class="fin-tag fin-tag-disputed">已剔除</span>':'<span class="fin-tag fin-tag-settled">正常</span>')+'</td>';
                 html+='<td>'+(d.excluded?'<span style="font-size:12px;color:#999;">'+(d.excludeReason||'')+'</span>':'<button class="fin-btn fin-btn-outline fin-btn-sm" onclick="feeExcludeItem('+i+',event)">剔除</button>')+'</td></tr>';
             });
@@ -29146,22 +29171,22 @@ function showPcPortalSelector() {
         var coordTasks = [
             {id:'CT202605001',org:'肇庆市安协服务公司',period:'2026年5月',serviceCount:25,serviceTotal:45000,commission:6750,netAmount:38250,status:'pending',
              details:[
-                {svcNo:'S202605001',ent:'四会市化工有限公司',type:'安全检查',fee:2200,rate:'15%',commision:330},
-                {svcNo:'S202605002',ent:'广东某某金属制造有限公司',type:'隐患排查',fee:1800,rate:'15%',commision:270},
-                {svcNo:'S202605003',ent:'德庆县矿业有限公司',type:'安全培训',fee:2500,rate:'15%',commision:375},
-                {svcNo:'S202605004',ent:'端州区建设工程有限公司',type:'应急演练',fee:2000,rate:'15%',commision:300},
-                {svcNo:'S202605005',ent:'鼎湖区金属加工厂',type:'安全检查',fee:1900,rate:'15%',commision:285}
+                {svcNo:'S202605001',ent:'四会市化工有限公司',type:'安全检查',fee:2200,endorsementFeeIncrease:200,rate:'15%',commision:330},
+                {svcNo:'S202605002',ent:'广东某某金属制造有限公司',type:'隐患排查',fee:1800,endorsementFeeIncrease:0,rate:'15%',commision:270},
+                {svcNo:'S202605003',ent:'德庆县矿业有限公司',type:'安全培训',fee:2500,endorsementFeeIncrease:500,rate:'15%',commision:375},
+                {svcNo:'S202605004',ent:'端州区建设工程有限公司',type:'应急演练',fee:2000,endorsementFeeIncrease:-100,rate:'15%',commision:300},
+                {svcNo:'S202605005',ent:'鼎湖区金属加工厂',type:'安全检查',fee:1900,endorsementFeeIncrease:0,rate:'15%',commision:285}
             ]},
             {id:'CT202605002',org:'广东粤安风控',period:'2026年5月',serviceCount:18,serviceTotal:32000,commission:4800,netAmount:27200,status:'pending',
              details:[
-                {svcNo:'S202605010',ent:'高要区烟花爆竹经营部',type:'安全评估',fee:2800,rate:'15%',commision:420},
-                {svcNo:'S202605011',ent:'封开县建筑安装公司',type:'安全检查',fee:2200,rate:'15%',commision:330},
-                {svcNo:'S202605012',ent:'广宁县木材加工厂',type:'隐患排查',fee:2400,rate:'15%',commision:360}
+                {svcNo:'S202605010',ent:'高要区烟花爆竹经营部',type:'安全评估',fee:2800,endorsementFeeIncrease:300,rate:'15%',commision:420},
+                {svcNo:'S202605011',ent:'封开县建筑安装公司',type:'安全检查',fee:2200,endorsementFeeIncrease:0,rate:'15%',commision:330},
+                {svcNo:'S202605012',ent:'广宁县木材加工厂',type:'隐患排查',fee:2400,endorsementFeeIncrease:200,rate:'15%',commision:360}
             ]},
             {id:'CT202605003',org:'深圳中安检测',period:'2026年5月',serviceCount:12,serviceTotal:21000,commission:3150,netAmount:17850,status:'pending',
              details:[
-                {svcNo:'S202605020',ent:'怀集县石灰岩矿场',type:'检测服务',fee:3500,rate:'15%',commision:525},
-                {svcNo:'S202605021',ent:'四会市某化工贸易公司',type:'检测服务',fee:3200,rate:'15%',commision:480}
+                {svcNo:'S202605020',ent:'怀集县石灰岩矿场',type:'检测服务',fee:3500,endorsementFeeIncrease:500,rate:'15%',commision:525},
+                {svcNo:'S202605021',ent:'四会市某化工贸易公司',type:'检测服务',fee:3200,endorsementFeeIncrease:0,rate:'15%',commision:480}
             ]}
         ];
         var coordHistory = [
@@ -29242,7 +29267,11 @@ function showPcPortalSelector() {
             var html='';
             coordCurrentTask.details.forEach(function(d,i){
                 html+='<tr><td><input type="checkbox" checked onchange="coordToggleItem('+i+',this)"></td>';
-                html+='<td>'+d.svcNo+'</td><td>'+d.ent+'</td><td>'+d.type+'</td><td class="text-right">&#165;'+d.fee.toLocaleString()+'</td><td class="text-right amount-danger">&#165;'+d.commision.toLocaleString()+'</td><td class="text-right amount-success">&#165;'+(d.fee-d.commision).toLocaleString()+'</td></tr>';
+                html+='<td>'+d.svcNo+'</td><td>'+d.ent+'</td><td>'+d.type+'</td>';
+                html+='<td class="text-right">&#165;'+d.fee.toLocaleString()+'</td>';
+                html+='<td class="text-right">'+(d.endorsementFeeIncrease > 0 ? '+' : '')+'&#165;'+(d.endorsementFeeIncrease||0).toLocaleString()+'</td>';
+                html+='<td class="text-right amount-danger">&#165;'+d.commision.toLocaleString()+'</td>';
+                html+='<td class="text-right amount-success">&#165;'+(d.fee-d.commision).toLocaleString()+'</td></tr>';
             });
             document.getElementById('coordDetailBody').innerHTML=html;
             updateCoordSummary();
