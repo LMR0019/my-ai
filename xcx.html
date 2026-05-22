@@ -1938,6 +1938,531 @@
             transform: scale(0.98);
             box-shadow: 0 2px 8px rgba(0,82,217,0.35);
         }
+
+        /* ========== 端口选择弹窗 ========== */
+        .portal-modal-overlay {
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: rgba(0,0,0,0.55);
+            z-index: 99999;
+            display: none;
+            justify-content: center;
+            align-items: center;
+            animation: portalFadeIn 0.25s ease;
+        }
+        .portal-modal-overlay.show {
+            display: flex;
+        }
+        @keyframes portalFadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        .portal-modal {
+            background: #FFFFFF;
+            border-radius: 16px;
+            width: 320px;
+            padding: 24px 20px 20px;
+            box-shadow: 0 12px 40px rgba(0,0,0,0.18);
+            animation: portalSlideUp 0.3s ease;
+            max-height: 520px;
+            overflow-y: auto;
+        }
+        @keyframes portalSlideUp {
+            from { opacity: 0; transform: translateY(30px) scale(0.96); }
+            to { opacity: 1; transform: translateY(0) scale(1); }
+        }
+        .portal-modal-title {
+            text-align: center;
+            font-size: 18px;
+            font-weight: 700;
+            color: #333333;
+            margin-bottom: 6px;
+        }
+        .portal-modal-subtitle {
+            text-align: center;
+            font-size: 13px;
+            color: #999999;
+            margin-bottom: 20px;
+        }
+        .portal-list {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+        .portal-item {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            padding: 14px 16px;
+            background: #F8FAFC;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.2s;
+            border: 1.5px solid transparent;
+        }
+        .portal-item:active {
+            background: #EBF2FF;
+            border-color: #0052D9;
+            transform: scale(0.98);
+        }
+        .portal-item-icon {
+            width: 44px; height: 44px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+        .portal-item-info {
+            flex: 1;
+            min-width: 0;
+        }
+        .portal-item-name {
+            font-size: 15px;
+            font-weight: 600;
+            color: #333333;
+            margin-bottom: 2px;
+        }
+        .portal-item-desc {
+            font-size: 12px;
+            color: #999999;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+        .portal-item-arrow {
+            color: #CCCCCC;
+            flex-shrink: 0;
+        }
+
+        /* ========== 工作台视图 ========== */
+        .workbench-view {
+            background: #F5F7FA;
+        }
+        .wb-scroll {
+            flex: 1;
+            overflow-y: auto;
+            -webkit-overflow-scrolling: touch;
+            padding-bottom: 70px;
+        }
+        .wb-scroll::-webkit-scrollbar { display: none; }
+        /* 顶部导航 */
+        .wb-nav {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 12px 16px;
+            background: #FFFFFF;
+            position: relative;
+            flex-shrink: 0;
+            border-bottom: 1px solid #F0F0F0;
+        }
+        .wb-nav-title {
+            font-size: 18px;
+            font-weight: 700;
+            color: #333333;
+        }
+        .wb-nav-back {
+            position: absolute;
+            left: 16px;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 32px; height: 32px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            border-radius: 8px;
+        }
+        .wb-nav-back:active { background: #F5F5F5; }
+        .wb-nav-capsule {
+            position: absolute;
+            right: 16px;
+            top: 50%;
+            transform: translateY(-50%);
+            display: flex;
+            gap: 8px;
+        }
+        .wb-nav-dot {
+            width: 6px; height: 6px;
+            border-radius: 50%;
+            background: #CCCCCC;
+        }
+        /* 欢迎卡片 */
+        .wb-welcome-card {
+            margin: 16px;
+            padding: 20px;
+            background: linear-gradient(135deg, #E8F4FD 0%, #D6EAFF 100%);
+            border-radius: 16px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 2px 8px rgba(0,82,217,0.06);
+        }
+        .wb-welcome-card::after {
+            content: '';
+            position: absolute;
+            right: -10px;
+            top: -10px;
+            width: 90px; height: 90px;
+            background: rgba(0,82,217,0.06);
+            border-radius: 50%;
+        }
+        .wb-welcome-left {
+            position: relative;
+            z-index: 1;
+        }
+        .wb-welcome-greeting {
+            font-size: 16px;
+            font-weight: 600;
+            color: #333333;
+            margin-bottom: 4px;
+        }
+        .wb-welcome-name {
+            font-size: 13px;
+            color: #666666;
+            margin-bottom: 8px;
+        }
+        .wb-welcome-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            background: rgba(0,182,122,0.12);
+            color: #00B578;
+            font-size: 12px;
+            font-weight: 500;
+            padding: 3px 10px;
+            border-radius: 20px;
+        }
+        .wb-welcome-right {
+            position: relative;
+            z-index: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: flex-end;
+            gap: 8px;
+        }
+        .wb-notify-btn {
+            width: 36px; height: 36px;
+            background: rgba(255,255,255,0.8);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            position: relative;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+        }
+        .wb-notify-btn:active { transform: scale(0.92); }
+        .wb-notify-dot {
+            position: absolute;
+            top: 6px; right: 6px;
+            width: 8px; height: 8px;
+            background: #FF3B30;
+            border-radius: 50%;
+            border: 1.5px solid #FFFFFF;
+        }
+        .wb-shield-icon {
+            width: 48px; height: 48px;
+            opacity: 0.25;
+        }
+        /* 数据看板 */
+        .wb-data-card {
+            margin: 0 16px 16px;
+            background: #FFFFFF;
+            border-radius: 16px;
+            padding: 16px;
+            display: flex;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+        }
+        .wb-data-item {
+            flex: 1;
+            text-align: center;
+            position: relative;
+        }
+        .wb-data-item + .wb-data-item::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 20%;
+            height: 60%;
+            width: 1px;
+            background: #F0F0F0;
+        }
+        .wb-data-num {
+            font-size: 24px;
+            font-weight: 700;
+            margin-bottom: 4px;
+            font-variant-numeric: tabular-nums;
+        }
+        .wb-data-num.red { color: #FF3B30; }
+        .wb-data-num.blue { color: #0052D9; }
+        .wb-data-num.green { color: #00B578; }
+        .wb-data-label {
+            font-size: 12px;
+            color: #999999;
+        }
+        /* 功能导航区 */
+        .wb-func-section {
+            margin: 0 16px 16px;
+            background: #FFFFFF;
+            border-radius: 16px;
+            padding: 16px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+        }
+        .wb-func-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 16px;
+        }
+        .wb-func-title {
+            font-size: 15px;
+            font-weight: 600;
+            color: #333333;
+        }
+        .wb-func-more {
+            font-size: 12px;
+            color: #999999;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 2px;
+        }
+        .wb-func-more:active { color: #0052D9; }
+        .wb-func-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 16px 8px;
+        }
+        .wb-func-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 8px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .wb-func-item:active {
+            transform: scale(0.92);
+        }
+        .wb-func-icon {
+            width: 48px; height: 48px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .wb-func-name {
+            font-size: 12px;
+            color: #666666;
+            text-align: center;
+            line-height: 1.3;
+            max-width: 64px;
+        }
+        /* 底部悬浮客服按钮 */
+        .wb-float-btn {
+            position: absolute;
+            bottom: 90px;
+            right: 16px;
+            width: 48px; height: 48px;
+            background: #0052D9;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            box-shadow: 0 4px 16px rgba(0,82,217,0.35);
+            z-index: 100;
+            transition: all 0.2s;
+        }
+        .wb-float-btn:active {
+            transform: scale(0.9);
+            box-shadow: 0 2px 8px rgba(0,82,217,0.5);
+        }
+        /* 底部导航栏 */
+        .bottom-nav {
+            display: flex;
+            background: #FFFFFF;
+            border-top: 1px solid #F0F0F0;
+            flex-shrink: 0;
+            padding-bottom: env(safe-area-inset-bottom);
+            position: relative;
+            z-index: 50;
+        }
+        .bottom-nav-item {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 8px 0 6px;
+            cursor: pointer;
+            transition: all 0.2s;
+            position: relative;
+        }
+        .bottom-nav-item:active { opacity: 0.7; }
+        .bottom-nav-item.active .bottom-nav-label {
+            color: #0052D9;
+            font-weight: 600;
+        }
+        .bottom-nav-label {
+            font-size: 11px;
+            color: #999999;
+            margin-top: 2px;
+        }
+        .bottom-nav-item.active::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 20px;
+            height: 2.5px;
+            background: #0052D9;
+            border-radius: 0 0 2px 2px;
+        }
+        /* 我的页面 */
+        .profile-view {
+            background: #F5F7FA;
+        }
+        .profile-scroll {
+            flex: 1;
+            overflow-y: auto;
+            padding-bottom: 20px;
+        }
+        .profile-header {
+            background: linear-gradient(135deg, #0052D9 0%, #1890FF 100%);
+            padding: 30px 20px 24px;
+            text-align: center;
+            color: #FFFFFF;
+        }
+        .profile-avatar {
+            width: 64px; height: 64px;
+            background: rgba(255,255,255,0.25);
+            border-radius: 50%;
+            margin: 0 auto 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 28px;
+        }
+        .profile-name {
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: 4px;
+        }
+        .profile-role {
+            font-size: 13px;
+            opacity: 0.8;
+        }
+        .profile-menu-card {
+            margin: 16px;
+            background: #FFFFFF;
+            border-radius: 16px;
+            overflow: hidden;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+        }
+        .profile-menu-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 16px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .profile-menu-item:active { background: #F8FAFC; }
+        .profile-menu-item + .profile-menu-item {
+            border-top: 1px solid #F5F5F5;
+        }
+        .profile-menu-left {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        .profile-menu-icon {
+            width: 28px; height: 28px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .profile-menu-text {
+            font-size: 14px;
+            color: #333333;
+        }
+        .profile-menu-arrow {
+            color: #CCCCCC;
+        }
+        .profile-logout-btn {
+            margin: 16px;
+            padding: 14px;
+            text-align: center;
+            background: #FFFFFF;
+            border-radius: 12px;
+            color: #FF3B30;
+            font-size: 15px;
+            font-weight: 500;
+            cursor: pointer;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+        }
+        .profile-logout-btn:active { background: #FFF5F5; }
+        /* 数据统计页面 */
+        .stats-view {
+            background: #F5F7FA;
+        }
+        .stats-scroll {
+            flex: 1;
+            overflow-y: auto;
+            padding: 16px;
+            padding-bottom: 20px;
+        }
+        .stats-card {
+            background: #FFFFFF;
+            border-radius: 16px;
+            padding: 16px;
+            margin-bottom: 16px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+        }
+        .stats-card-title {
+            font-size: 15px;
+            font-weight: 600;
+            color: #333333;
+            margin-bottom: 12px;
+        }
+        .stats-row {
+            display: flex;
+            gap: 12px;
+            margin-bottom: 12px;
+        }
+        .stats-item {
+            flex: 1;
+            background: #F8FAFC;
+            border-radius: 12px;
+            padding: 14px;
+            text-align: center;
+        }
+        .stats-item-num {
+            font-size: 22px;
+            font-weight: 700;
+            color: #0052D9;
+            margin-bottom: 4px;
+        }
+        .stats-item-label {
+            font-size: 12px;
+            color: #999999;
+        }
+        .stats-chart-placeholder {
+            height: 160px;
+            background: linear-gradient(180deg, #F0F5FF 0%, #F8FAFC 100%);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #BBBBBB;
+            font-size: 14px;
+        }
     </style>
 </head>
 <body>
@@ -2442,6 +2967,90 @@
             </div>
         </div>
 
+        <!-- ========== 视图 N：工作台通用模板 ========== -->
+        <div id="view-workbench" class="view workbench-view">
+            <!-- 顶部导航 -->
+            <div class="wb-nav">
+                <div class="wb-nav-back" onclick="goBackFromWorkbench()">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#333333" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
+                </div>
+                <div class="wb-nav-title" id="wbTitle">工作台</div>
+                <div class="wb-nav-capsule">
+                    <div class="wb-nav-dot"></div>
+                    <div class="wb-nav-dot" style="width:16px;border-radius:8px;"></div>
+                </div>
+            </div>
+            <!-- 滚动区域 -->
+            <div class="wb-scroll" id="wbScroll">
+                <!-- 欢迎卡片 -->
+                <div class="wb-welcome-card">
+                    <div class="wb-welcome-left">
+                        <div class="wb-welcome-greeting" id="wbGreeting">早上好</div>
+                        <div class="wb-welcome-name" id="wbUserName">张三</div>
+                        <div class="wb-welcome-badge">
+                            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg>
+                            当前安全信用：优秀
+                        </div>
+                    </div>
+                    <div class="wb-welcome-right">
+                        <div class="wb-notify-btn" onclick="showWorkbenchToast('暂无新消息')">
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#666666" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
+                            <div class="wb-notify-dot"></div>
+                        </div>
+                        <svg class="wb-shield-icon" viewBox="0 0 24 24" fill="none" stroke="#0052D9" stroke-width="1"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+                    </div>
+                </div>
+
+                <!-- 数据看板 -->
+                <div class="wb-data-card">
+                    <div class="wb-data-item">
+                        <div class="wb-data-num red" id="wbPendingCount">8</div>
+                        <div class="wb-data-label">待办任务</div>
+                    </div>
+                    <div class="wb-data-item">
+                        <div class="wb-data-num blue" id="wbPolicyCount">126</div>
+                        <div class="wb-data-label">服务中保单</div>
+                    </div>
+                    <div class="wb-data-item">
+                        <div class="wb-data-num green" id="wbRectifyRate">96.8%</div>
+                        <div class="wb-data-label">隐患整改率</div>
+                    </div>
+                </div>
+
+                <!-- 功能导航区 -->
+                <div class="wb-func-section">
+                    <div class="wb-func-header">
+                        <span class="wb-func-title">常用功能</span>
+                        <span class="wb-func-more" onclick="showWorkbenchToast('全部功能开发中')">全部 <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"/></svg></span>
+                    </div>
+                    <div class="wb-func-grid" id="wbFuncGrid">
+                        <!-- JS动态渲染 -->
+                    </div>
+                </div>
+            </div>
+
+            <!-- 底部悬浮客服按钮 -->
+            <div class="wb-float-btn" onclick="showWorkbenchToast('智能客服开发中...')">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#FFFFFF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+            </div>
+
+            <!-- 底部导航栏 -->
+            <div class="bottom-nav" id="wbBottomNav">
+                <!-- JS动态渲染 -->
+            </div>
+        </div>
+
+    </div>
+
+    <!-- ========== 端口选择弹窗（phone-container外部，position:fixed覆盖全屏） ========== -->
+    <div class="portal-modal-overlay" id="portalModal">
+        <div class="portal-modal">
+            <div class="portal-modal-title">选择登录端口</div>
+            <div class="portal-modal-subtitle">请选择您要进入的工作台</div>
+            <div class="portal-list" id="portalList">
+                <!-- JS动态渲染 -->
+            </div>
+        </div>
     </div>
 
     <script>
@@ -2856,10 +3465,9 @@
         function handleLogin() {
             var username = document.getElementById('loginUsername').value.trim();
             var password = document.getElementById('loginPassword').value.trim();
-            if (!username) { showLoginToast('请输入手机号/用户名'); return; }
-            if (!password) { showLoginToast('请输入密码'); return; }
-            if (password.length < 6) { showLoginToast('密码长度不能少于6位'); return; }
-            showLoginToast('登录功能对接中...');
+            // 原型阶段：输入任意内容即可登录，弹出端口选择
+            currentLoginUser = (username || '演示用户');
+            showPortalModal();
         }
 
         // ========== 登录页 - 微信登录 ==========
@@ -3018,7 +3626,480 @@
         }
 
         console.log('%c🎨 安责险小程序原型（单文件多视图）', 'font-size:15px; font-weight:bold; color:#1890FF;');
-        console.log('✅ 视图：首页 | 快速申报 | 申报记录 | 账号登录 | 服务申报');
+        console.log('✅ 视图：首页 | 快速申报 | 申报记录 | 账号登录 | 服务申报 | 工作台 | 我的 | 数据统计');
+
+        // ========== 登录用户 ==========
+        var currentLoginUser = '';
+
+        // ========== 端口配置 ==========
+        var portalConfigs = {
+            enterprise: {
+                name: '企业端',
+                desc: '企业用户工作台',
+                title: '企业工作台',
+                functions: [
+                    { name: '申报入口', bg: '#0052D9', icon: 'declare' },
+                    { name: '理赔查询', bg: '#00B578', icon: 'claim' },
+                    { name: '批单申请', bg: '#FF8800', icon: 'endorse' },
+                    { name: '服务管理', bg: '#0052D9', icon: 'service' },
+                    { name: '整改单', bg: '#FF8800', icon: 'rectify' },
+                    { name: '管控单', bg: '#0052D9', icon: 'control' },
+                    { name: '服务预约', bg: '#00A8C0', icon: 'book' },
+                    { name: '投诉建议', bg: '#999999', icon: 'feedback' },
+                    { name: '隐患识别', bg: '#722ED1', icon: 'ai' },
+                    { name: '客服', bg: '#0052D9', icon: 'cs' }
+                ],
+                bottomNav: ['workbench', 'profile'],
+                stats: { pending: 8, policies: 126, rectify: '96.8%' }
+            },
+            insurance: {
+                name: '保险端',
+                desc: '保险公司工作台',
+                title: '保险工作台',
+                functions: [
+                    { name: '安责险保单', bg: '#0052D9', icon: 'policy' },
+                    { name: '其他保单', bg: '#00B578', icon: 'otherPolicy' },
+                    { name: '理赔查询', bg: '#FF8800', icon: 'claim' },
+                    { name: '服务查询', bg: '#00A8C0', icon: 'serviceQuery' },
+                    { name: '服务预约', bg: '#00B578', icon: 'book' },
+                    { name: '投保确认书', bg: '#722ED1', icon: 'confirm' }
+                ],
+                bottomNav: ['stats', 'workbench', 'profile'],
+                stats: { pending: 5, policies: 312, rectify: '94.2%' }
+            },
+            operation: {
+                name: '运营端',
+                desc: '运营管理工作台',
+                title: '运营工作台',
+                functions: [
+                    { name: '安责险保单', bg: '#0052D9', icon: 'policy' },
+                    { name: '理赔查询', bg: '#00B578', icon: 'claim' },
+                    { name: '服务查询', bg: '#FF8800', icon: 'serviceQuery' },
+                    { name: '投诉建议', bg: '#999999', icon: 'feedback' }
+                ],
+                bottomNav: ['stats', 'workbench', 'profile'],
+                stats: { pending: 12, policies: 456, rectify: '91.5%' }
+            },
+            serviceExpert: {
+                name: '服务端(专家)',
+                desc: '专家权限工作台',
+                title: '服务专家工作台',
+                functions: [
+                    { name: '服务管理', bg: '#0052D9', icon: 'service' },
+                    { name: '集中服务', bg: '#00B578', icon: 'batchService' },
+                    { name: '亮码查询', bg: '#FF8800', icon: 'qrcode' },
+                    { name: '整改单', bg: '#FF8800', icon: 'rectify' },
+                    { name: '管控单', bg: '#0052D9', icon: 'control' }
+                ],
+                bottomNav: ['workbench', 'profile'],
+                stats: { pending: 3, policies: 89, rectify: '98.2%' }
+            },
+            serviceAdmin: {
+                name: '服务端(机构管理员)',
+                desc: '机构管理员工作台',
+                title: '机构管理工作台',
+                functions: [
+                    { name: '指派专家', bg: '#0052D9', icon: 'assign' },
+                    { name: '审核报告', bg: '#00B578', icon: 'review' },
+                    { name: '服务管理', bg: '#FF8800', icon: 'service' },
+                    { name: '整改单', bg: '#FF8800', icon: 'rectify' },
+                    { name: '服务单', bg: '#0052D9', icon: 'serviceOrder' }
+                ],
+                bottomNav: ['workbench', 'profile'],
+                stats: { pending: 15, policies: 245, rectify: '93.7%' }
+            },
+            government: {
+                name: '政府端',
+                desc: '政府监管工作台',
+                title: '政府监管工作台',
+                functions: [
+                    { name: '安责险保单', bg: '#0052D9', icon: 'policy' },
+                    { name: '理赔查询', bg: '#00B578', icon: 'claim' },
+                    { name: '服务查询', bg: '#FF8800', icon: 'serviceQuery' },
+                    { name: '企业匹配', bg: '#00A8C0', icon: 'match' },
+                    { name: '亮码查询', bg: '#722ED1', icon: 'qrcode' },
+                    { name: '投诉建议', bg: '#999999', icon: 'feedback' }
+                ],
+                bottomNav: ['stats', 'workbench', 'profile'],
+                stats: { pending: 22, policies: 567, rectify: '89.3%' }
+            }
+        };
+
+        var currentPortal = null;
+
+        // ========== SVG 图标映射 ==========
+        function getFuncIconSVG(iconName) {
+            var icons = {
+                declare: '<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#FFFFFF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="12" y1="18" x2="12" y2="12"/><line x1="9" y1="15" x2="15" y2="15"/></svg>',
+                claim: '<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#FFFFFF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>',
+                endorse: '<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#FFFFFF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>',
+                service: '<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#FFFFFF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>',
+                rectify: '<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#FFFFFF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/></svg>',
+                control: '<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#FFFFFF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>',
+                book: '<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#FFFFFF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>',
+                feedback: '<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#FFFFFF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/><line x1="9" y1="10" x2="15" y2="10"/><line x1="12" y1="7" x2="12" y2="13"/></svg>',
+                ai: '<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#FFFFFF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg>',
+                cs: '<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#FFFFFF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg>',
+                policy: '<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#FFFFFF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>',
+                otherPolicy: '<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#FFFFFF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/></svg>',
+                serviceQuery: '<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#FFFFFF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/><line x1="8" y1="11" x2="14" y2="11"/></svg>',
+                confirm: '<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#FFFFFF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>',
+                qrcode: '<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#FFFFFF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>',
+                batchService: '<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#FFFFFF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>',
+                assign: '<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#FFFFFF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="8.5" cy="7" r="4"/><line x1="20" y1="8" x2="20" y2="14"/><line x1="23" y1="11" x2="17" y2="11"/></svg>',
+                review: '<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#FFFFFF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/><rect x="8" y="2" width="8" height="4" rx="1" ry="1"/><polyline points="9 14 11 16 15 12"/></svg>',
+                serviceOrder: '<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#FFFFFF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/></svg>',
+                match: '<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#FFFFFF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg>'
+            };
+            return icons[iconName] || '';
+        }
+
+        // ========== 端口选择弹窗 ==========
+        function showPortalModal() {
+            var overlay = document.getElementById('portalModal');
+            var list = document.getElementById('portalList');
+            if (!overlay || !list) return;
+            var keys = Object.keys(portalConfigs);
+            var html = '';
+            for (var i = 0; i < keys.length; i++) {
+                var k = keys[i];
+                var cfg = portalConfigs[k];
+                var colors = [
+                    'linear-gradient(135deg, #0052D9, #1890FF)',
+                    'linear-gradient(135deg, #00B578, #00C48C)',
+                    'linear-gradient(135deg, #FF8800, #FFA940)',
+                    'linear-gradient(135deg, #722ED1, #9254DE)',
+                    'linear-gradient(135deg, #13C2C2, #36CFC9)',
+                    'linear-gradient(135deg, #FA8C16, #FFA940)'
+                ];
+                html += '<div class="portal-item" onclick="enterPortal(\'' + k + '\')">';
+                html += '<div class="portal-item-icon" style="background:' + colors[i] + ';">';
+                html += '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#FFFFFF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">';
+                // Different icon per portal
+                if (i === 0) html += '<path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/>';
+                else if (i === 1) html += '<rect x="2" y="3" width="20" height="14" rx="2" ry="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/>';
+                else if (i === 2) html += '<polyline points="16 3 21 3 21 8"/><line x1="4" y1="20" x2="21" y2="3"/><polyline points="21 16 21 21 16 21"/><line x1="15" y1="15" x2="21" y2="21"/><line x1="4" y1="4" x2="9" y2="9"/>';
+                else if (i === 3) html += '<path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/>';
+                else if (i === 4) html += '<path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/>';
+                else html += '<path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/>';
+                html += '</svg></div>';
+                html += '<div class="portal-item-info"><div class="portal-item-name">' + cfg.name + '</div><div class="portal-item-desc">' + cfg.desc + '</div></div>';
+                html += '<div class="portal-item-arrow"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#CCCCCC" stroke-width="2.5"><polyline points="9 18 15 12 9 6"/></svg></div>';
+                html += '</div>';
+            }
+            list.innerHTML = html;
+            overlay.classList.add('show');
+            // 点击遮罩关闭
+            overlay.onclick = function(e) {
+                if (e.target === overlay) closePortalModal();
+            };
+        }
+
+        function closePortalModal() {
+            document.getElementById('portalModal').classList.remove('show');
+        }
+
+        // ========== 进入工作台 ==========
+        function enterPortal(portalKey) {
+            closePortalModal();
+            currentPortal = portalKey;
+            var cfg = portalConfigs[portalKey];
+            var wbView = document.getElementById('view-workbench');
+            // 如果工作台 DOM 被子页面（统计/我的）覆盖过，先恢复
+            if (wbView._workbenchScrollHTML) {
+                wbView.querySelector('.wb-scroll').innerHTML = wbView._workbenchScrollHTML;
+                delete wbView._workbenchScrollHTML;
+            }
+            // 安全检查：如果核心元素仍不存在，放弃操作
+            var greetEl = document.getElementById('wbGreeting');
+            if (!greetEl) {
+                console.error('[enterPortal] 工作台DOM异常，无法进入端口:', portalKey);
+                return;
+            }
+            // 设置标题
+            document.getElementById('wbTitle').textContent = cfg.title;
+            // 设置欢迎语
+            var hour = new Date().getHours();
+            var greeting = hour < 12 ? '早上好' : hour < 18 ? '下午好' : '晚上好';
+            document.getElementById('wbGreeting').textContent = greeting + '，';
+            document.getElementById('wbUserName').textContent = currentLoginUser || '用户';
+            // 设置数据看板
+            document.getElementById('wbPendingCount').textContent = cfg.stats.pending;
+            document.getElementById('wbPolicyCount').textContent = cfg.stats.policies;
+            document.getElementById('wbRectifyRate').textContent = cfg.stats.rectify;
+            // 渲染功能网格
+            renderFuncGrid(cfg.functions);
+            // 渲染底部导航
+            renderBottomNav(cfg.bottomNav, portalKey);
+            // 切换到工作台视图
+            showView('workbench');
+        }
+
+        function renderFuncGrid(functions) {
+            var grid = document.getElementById('wbFuncGrid');
+            var html = '';
+            for (var i = 0; i < functions.length; i++) {
+                var f = functions[i];
+                html += '<div class="wb-func-item" onclick="showWorkbenchToast(\'' + f.name + '功能开发中\')">';
+                html += '<div class="wb-func-icon" style="background:' + f.bg + ';">';
+                html += getFuncIconSVG(f.icon);
+                html += '</div>';
+                html += '<div class="wb-func-name">' + f.name + '</div>';
+                html += '</div>';
+            }
+            grid.innerHTML = html;
+        }
+
+        function renderBottomNav(bottomNav, portalKey) {
+            var navContainer = document.getElementById('wbBottomNav');
+            var html = '';
+            var activeTab = 'workbench';
+            for (var i = 0; i < bottomNav.length; i++) {
+                var tab = bottomNav[i];
+                var label = '';
+                var iconSVG = '';
+                if (tab === 'workbench') {
+                    label = '工作台';
+                    iconSVG = '<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="' + (activeTab === tab ? '#0052D9' : '#999999') + '" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>';
+                } else if (tab === 'profile') {
+                    label = '我的';
+                    iconSVG = '<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="' + (activeTab === tab ? '#0052D9' : '#999999') + '" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>';
+                } else if (tab === 'stats') {
+                    label = '数据统计';
+                    iconSVG = '<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="' + (activeTab === tab ? '#0052D9' : '#999999') + '" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>';
+                }
+                html += '<div class="bottom-nav-item' + (activeTab === tab ? ' active' : '') + '" onclick="switchBottomTab(\'' + tab + '\', \'' + portalKey + '\')">';
+                html += iconSVG;
+                html += '<span class="bottom-nav-label">' + label + '</span>';
+                html += '</div>';
+            }
+            navContainer.innerHTML = html;
+        }
+
+        // ========== 底部导航切换 ==========
+        function switchBottomTab(tab, portalKey) {
+            if (tab === 'workbench') {
+                // 若当前在子页面（统计/我的），走 goBackFromWorkbench 恢复 DOM
+                var navTitle = document.getElementById('wbTitle');
+                if (navTitle && (navTitle.textContent === '数据统计' || navTitle.textContent === '我的')) {
+                    goBackFromWorkbench();
+                } else {
+                    enterPortal(portalKey);
+                }
+            } else if (tab === 'profile') {
+                showProfileView(portalKey);
+            } else if (tab === 'stats') {
+                showStatsView(portalKey);
+            }
+        }
+
+        // ========== 我的页面 ==========
+        function showProfileView(portalKey) {
+            var cfg = portalConfigs[portalKey];
+            var wbView = document.getElementById('view-workbench');
+            // 构建我的页面内容
+            var scroll = wbView.querySelector('.wb-scroll');
+            var bottomNav = document.getElementById('wbBottomNav');
+            var floatBtn = wbView.querySelector('.wb-float-btn');
+            var nav = wbView.querySelector('.wb-nav');
+            var navTitle = document.getElementById('wbTitle');
+
+            // 保存当前工作台内容以便返回
+            if (!wbView._workbenchScrollHTML) {
+                wbView._workbenchScrollHTML = scroll.innerHTML;
+            }
+
+            navTitle.textContent = '我的';
+            floatBtn.style.display = 'none';
+            bottomNav.querySelectorAll('.bottom-nav-item').forEach(function(item) {
+                item.classList.remove('active');
+                if (item.querySelector('.bottom-nav-label').textContent === '我的') {
+                    item.classList.add('active');
+                    // 更新图标颜色
+                    var svg = item.querySelector('svg');
+                    if (svg) svg.setAttribute('stroke', '#0052D9');
+                } else {
+                    var svg2 = item.querySelector('svg');
+                    if (svg2) svg2.setAttribute('stroke', '#999999');
+                }
+            });
+
+            var html = '<div class="profile-header">';
+            html += '<div class="profile-avatar">👤</div>';
+            html += '<div class="profile-name">' + (currentLoginUser || '用户') + '</div>';
+            html += '<div class="profile-role">' + cfg.name + '</div>';
+            html += '</div>';
+
+            var menuItems = [
+                { icon: '👤', text: '个人信息' },
+                { icon: '🔐', text: '账号安全' },
+                { icon: '📋', text: '操作记录' },
+                { icon: '🔔', text: '消息通知' },
+                { icon: '⚙️', text: '系统设置' },
+                { icon: '❓', text: '帮助中心' },
+                { icon: '📞', text: '联系我们' }
+            ];
+            html += '<div class="profile-menu-card">';
+            for (var i = 0; i < menuItems.length; i++) {
+                var m = menuItems[i];
+                html += '<div class="profile-menu-item" onclick="showWorkbenchToast(\'' + m.text + '页面开发中\')">';
+                html += '<div class="profile-menu-left">';
+                html += '<span style="font-size:20px;">' + m.icon + '</span>';
+                html += '<span class="profile-menu-text">' + m.text + '</span>';
+                html += '</div>';
+                html += '<svg class="profile-menu-arrow" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg>';
+                html += '</div>';
+            }
+            html += '</div>';
+            html += '<div class="profile-logout-btn" onclick="handleLogout()">退出登录</div>';
+
+            scroll.innerHTML = html;
+            // 重置底部导航
+            var navKeys = cfg.bottomNav;
+            var navHTML = '';
+            var activeTab = 'profile';
+            for (var j = 0; j < navKeys.length; j++) {
+                var t = navKeys[j];
+                var lbl = '', ico = '';
+                if (t === 'workbench') { lbl = '工作台'; ico = '<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#999999" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>'; }
+                else if (t === 'profile') { lbl = '我的'; ico = '<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#0052D9" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>'; }
+                else if (t === 'stats') { lbl = '数据统计'; ico = '<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#999999" stroke-width="2"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>'; }
+                navHTML += '<div class="bottom-nav-item' + (activeTab === t ? ' active' : '') + '" onclick="switchBottomTab(\'' + t + '\', \'' + portalKey + '\')">';
+                navHTML += ico;
+                navHTML += '<span class="bottom-nav-label">' + lbl + '</span>';
+                navHTML += '</div>';
+            }
+            bottomNav.innerHTML = navHTML;
+        }
+
+        function handleLogout() {
+            currentPortal = null;
+            currentLoginUser = '';
+            var wbView = document.getElementById('view-workbench');
+            // 如果工作台 DOM 被子页面覆盖过，恢复原始 HTML
+            if (wbView._workbenchScrollHTML) {
+                wbView.querySelector('.wb-scroll').innerHTML = wbView._workbenchScrollHTML;
+                delete wbView._workbenchScrollHTML;
+            }
+            document.querySelectorAll('.view').forEach(function(v) { v.classList.remove('active'); });
+            document.getElementById('view-home').classList.add('active');
+        }
+
+        // ========== 数据统计页面 ==========
+        function showStatsView(portalKey) {
+            var cfg = portalConfigs[portalKey];
+            var wbView = document.getElementById('view-workbench');
+            var scroll = wbView.querySelector('.wb-scroll');
+            var floatBtn = wbView.querySelector('.wb-float-btn');
+            var navTitle = document.getElementById('wbTitle');
+            var bottomNav = document.getElementById('wbBottomNav');
+
+            if (!wbView._workbenchScrollHTML) {
+                wbView._workbenchScrollHTML = scroll.innerHTML;
+            }
+
+            navTitle.textContent = '数据统计';
+            floatBtn.style.display = 'none';
+
+            bottomNav.querySelectorAll('.bottom-nav-item').forEach(function(item) {
+                item.classList.remove('active');
+                if (item.querySelector('.bottom-nav-label').textContent === '数据统计') {
+                    item.classList.add('active');
+                    var svg = item.querySelector('svg');
+                    if (svg) svg.setAttribute('stroke', '#0052D9');
+                } else {
+                    var svg2 = item.querySelector('svg');
+                    if (svg2) svg2.setAttribute('stroke', '#999999');
+                }
+            });
+
+            var html = '<div class="stats-scroll">';
+            html += '<div class="stats-card"><div class="stats-card-title">📊 核心指标概览</div>';
+            html += '<div class="stats-row">';
+            html += '<div class="stats-item"><div class="stats-item-num">' + cfg.stats.policies + '</div><div class="stats-item-label">总保单数</div></div>';
+            html += '<div class="stats-item"><div class="stats-item-num">' + cfg.stats.pending + '</div><div class="stats-item-label">待办任务</div></div>';
+            html += '</div>';
+            html += '<div class="stats-row">';
+            html += '<div class="stats-item"><div class="stats-item-num">' + cfg.stats.rectify + '</div><div class="stats-item-label">整改率</div></div>';
+            html += '<div class="stats-item"><div class="stats-item-num">¥12.6万</div><div class="stats-item-label">保费总额</div></div>';
+            html += '</div></div>';
+
+            html += '<div class="stats-card"><div class="stats-card-title">📈 月度趋势</div>';
+            html += '<div class="stats-chart-placeholder">图表区域（开发中）</div></div>';
+
+            html += '<div class="stats-card"><div class="stats-card-title">🏷️ 分类统计</div>';
+            html += '<div class="stats-row">';
+            html += '<div class="stats-item"><div class="stats-item-num" style="color:#00B578;">42</div><div class="stats-item-label">已服务</div></div>';
+            html += '<div class="stats-item"><div class="stats-item-num" style="color:#FF8800;">15</div><div class="stats-item-label">进行中</div></div>';
+            html += '</div></div>';
+            html += '</div>';
+
+            scroll.innerHTML = html;
+
+            var navKeys = cfg.bottomNav;
+            var navHTML = '';
+            for (var k = 0; k < navKeys.length; k++) {
+                var t = navKeys[k];
+                var lbl = '', ico = '';
+                if (t === 'workbench') { lbl = '工作台'; ico = '<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#999999" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>'; }
+                else if (t === 'profile') { lbl = '我的'; ico = '<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#999999" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>'; }
+                else if (t === 'stats') { lbl = '数据统计'; ico = '<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#0052D9" stroke-width="2"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>'; }
+                navHTML += '<div class="bottom-nav-item' + (t === 'stats' ? ' active' : '') + '" onclick="switchBottomTab(\'' + t + '\', \'' + portalKey + '\')">';
+                navHTML += ico;
+                navHTML += '<span class="bottom-nav-label">' + lbl + '</span>';
+                navHTML += '</div>';
+            }
+            bottomNav.innerHTML = navHTML;
+        }
+
+        // ========== 工作台返回 ==========
+        function goBackFromWorkbench() {
+            var wbView = document.getElementById('view-workbench');
+            var navTitle = document.getElementById('wbTitle');
+            var floatBtn = wbView.querySelector('.wb-float-btn');
+
+            // 如果当前在"我的"或"数据统计"页，返回工作台
+            if (navTitle.textContent === '我的' || navTitle.textContent === '数据统计') {
+                if (wbView._workbenchScrollHTML) {
+                    wbView.querySelector('.wb-scroll').innerHTML = wbView._workbenchScrollHTML;
+                    delete wbView._workbenchScrollHTML;
+                }
+                navTitle.textContent = portalConfigs[currentPortal].title;
+                floatBtn.style.display = 'flex';
+                // 恢复底部导航
+                var cfg = portalConfigs[currentPortal];
+                var navHTML = '';
+                var navKeys = cfg.bottomNav;
+                for (var i = 0; i < navKeys.length; i++) {
+                    var t = navKeys[i];
+                    var lbl = '', ico = '';
+                    if (t === 'workbench') { lbl = '工作台'; ico = '<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#0052D9" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>'; }
+                    else if (t === 'profile') { lbl = '我的'; ico = '<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#999999" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>'; }
+                    else if (t === 'stats') { lbl = '数据统计'; ico = '<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#999999" stroke-width="2"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>'; }
+                    navHTML += '<div class="bottom-nav-item' + (t === 'workbench' ? ' active' : '') + '" onclick="switchBottomTab(\'' + t + '\', \'' + currentPortal + '\')">';
+                    navHTML += ico;
+                    navHTML += '<span class="bottom-nav-label">' + lbl + '</span>';
+                    navHTML += '</div>';
+                }
+                document.getElementById('wbBottomNav').innerHTML = navHTML;
+                return;
+            }
+            // 否则返回首页
+            handleLogout();
+        }
+
+        // ========== 工作台 Toast ==========
+        function showWorkbenchToast(msg) {
+            var existing = document.querySelector('.wb-toast-temp');
+            if (existing) existing.remove();
+            var wbView = document.getElementById('view-workbench');
+            var t = document.createElement('div');
+            t.className = 'wb-toast-temp';
+            t.textContent = msg;
+            t.style.cssText = 'position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);background:rgba(0,0,0,0.72);color:#fff;padding:12px 24px;border-radius:8px;font-size:14px;z-index:9999;pointer-events:none;animation:toastIn 0.3s ease;white-space:nowrap;';
+            wbView.appendChild(t);
+            setTimeout(function() { t.remove(); }, 1500);
+        }
     </script>
 </body>
 </html>
