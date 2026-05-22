@@ -22893,6 +22893,26 @@ function showPcPortalSelector() {
                 restoreViewDrawerStructure();
             }
             
+            // 恢复Tab结构（从理赔详情模式恢复）
+            var tabsEl = document.getElementById('viewDrawerTabs');
+            if (tabsEl) {
+                tabsEl.innerHTML = '<div class="insurance-list-tab active" data-tab="basic">基本信息</div><div class="insurance-list-tab" data-tab="endorsement">批改记录</div><div class="insurance-list-tab" data-tab="coverage">保障信息</div><div class="insurance-list-tab" data-tab="aimonitor">AI监测报告</div><div class="insurance-list-tab" data-tab="service">服务记录</div><div class="insurance-list-tab" data-tab="claim">理赔记录</div><div class="insurance-list-tab" data-tab="push">推送记录</div><div class="insurance-list-tab" data-tab="log">操作日志</div>';
+                tabsEl.style.display = 'flex';
+            }
+            
+            // 恢复Tab内容区域ID
+            var contentTab = document.getElementById('tab-claim-content');
+            if (contentTab) contentTab.id = 'tab-basic';
+            var analysisTab = document.getElementById('tab-claim-analysis');
+            if (analysisTab) analysisTab.id = 'tab-coverage';
+            
+            // 显示所有保单详情的Tab内容区域（恢复被理赔详情隐藏的区域）
+            var hiddenTabs = ['tab-coverage', 'tab-service', 'tab-claim', 'tab-push', 'tab-log', 'tab-aimonitor', 'tab-endorsement'];
+            hiddenTabs.forEach(function(tabId) {
+                var tab = document.getElementById(tabId);
+                if (tab) tab.style.display = '';
+            });
+            
             // 更新标题栏
             var titleEl = document.getElementById('viewDrawerTitle');
             if (titleEl) titleEl.textContent = '保单详情 - ' + item.companyName;
@@ -22925,9 +22945,12 @@ function showPcPortalSelector() {
                 }
             }
             
-            // 确保Tab区域可见
-            var tabsEl = document.getElementById('viewDrawerTabs');
-            if (tabsEl) tabsEl.style.display = '';
+            // 重置viewBasicInfo容器样式
+            var basicInfoContainer = document.getElementById('viewBasicInfo');
+            if (basicInfoContainer) {
+                basicInfoContainer.style.display = '';
+                basicInfoContainer.style.gridTemplateColumns = '';
+            }
             
             // 重置到第一个tab
             switchDetailTab('basic');
@@ -23411,9 +23434,13 @@ function showPcPortalSelector() {
          */
         function fillEndorsementTab(item) {
             var el = document.getElementById('viewEndorsementRecords');
-            if (!el) return;
+            if (!el) {
+                console.warn('fillEndorsementTab: viewEndorsementRecords element not found');
+                return;
+            }
 
             var records = getEndorsementData(item.id);
+            console.log('fillEndorsementTab called for policy', item.id, 'records:', records);
 
             // 同步更新 item 的批改差额字段（供基本信息 Tab 使用）
             var diff = calcEndorsementDiff(item.id);
@@ -25534,14 +25561,14 @@ function showPcPortalSelector() {
 
         // 理赔模拟数据
         var claimData = [
-            { id: 1, insuredName: '肇庆市鑫达化工有限公司', policyNo: 'PXAZ20240100001', startDate: '2024-01-01', endDate: '2024-12-31', insuranceCompany: '中国人民财产保险股份有限公司肇庆分公司', accidentLocation: '肇庆市端州区工业大道18号', reportTime: '2024-06-15 09:30', estimatedLoss: 85000, closingTime: '2024-08-20', claimAmount: 72000, status: '已结案', createTime: '2024-06-15 10:00' },
-            { id: 2, insuredName: '四会市宏盛冶炼厂', policyNo: 'PXAZ20240200002', startDate: '2024-02-01', endDate: '2025-01-31', insuranceCompany: '中国太平洋财产保险股份有限公司', accidentLocation: '四会市大沙镇工业园区', reportTime: '2024-07-22 14:15', estimatedLoss: 120000, closingTime: '', claimAmount: 0, status: '处理中', createTime: '2024-07-22 15:00' },
-            { id: 3, insuredName: '高要区金鼎矿业公司', policyNo: 'PXAZ20240300003', startDate: '2024-03-01', endDate: '2025-02-28', insuranceCompany: '中国平安财产保险股份有限公司肇庆中心支公司', accidentLocation: '高要区白土镇矿区', reportTime: '2024-09-10 11:00', estimatedLoss: 200000, closingTime: '2024-11-15', claimAmount: 180000, status: '已结案', createTime: '2024-09-10 11:30' },
-            { id: 4, insuredName: '广宁县永安烟花爆竹经营部', policyNo: 'PXAZ20240400004', startDate: '2023-07-01', endDate: '2024-06-30', insuranceCompany: '中华联合财产保险股份有限公司肇庆中心支公司', accidentLocation: '广宁县南街镇仓库', reportTime: '2024-04-05 16:45', estimatedLoss: 45000, closingTime: '', claimAmount: 0, status: '已拒赔', createTime: '2024-04-05 17:00' },
-            { id: 5, insuredName: '鼎湖区建安建筑工程有限公司', policyNo: 'PXAZ20240500005', startDate: '2023-06-01', endDate: '2024-05-31', insuranceCompany: '中国人民财产保险股份有限公司肇庆分公司', accidentLocation: '鼎湖区坑口街道工地', reportTime: '2024-10-12 08:20', estimatedLoss: 150000, closingTime: '', claimAmount: 0, status: '已报案', createTime: '2024-10-12 09:00' },
-            { id: 6, insuredName: '怀集县顺达运输有限公司', policyNo: 'PAIC20240600011', startDate: '2024-05-01', endDate: '2025-04-30', insuranceCompany: '中国平安财产保险股份有限公司肇庆中心支公司', accidentLocation: '怀集县冷坑镇国道旁', reportTime: '2024-11-18 13:50', estimatedLoss: 68000, closingTime: '', claimAmount: 0, status: '处理中', createTime: '2024-11-18 14:30' },
-            { id: 7, insuredName: '德庆县信达建材有限公司', policyNo: 'CIC20240600012', startDate: '2024-02-15', endDate: '2025-02-14', insuranceCompany: '中华联合财产保险股份有限公司肇庆中心支公司', accidentLocation: '德庆县新圩镇工厂', reportTime: '2024-12-03 10:30', estimatedLoss: 92000, closingTime: '2024-12-28', claimAmount: 85000, status: '已结案', createTime: '2024-12-03 11:00' },
-            { id: 8, insuredName: '高新区创新科技化工公司', policyNo: 'PXAZ20240800008', startDate: '2024-08-01', endDate: '2025-07-31', insuranceCompany: '中国人民财产保险股份有限公司肇庆分公司', accidentLocation: '高新区科技路22号', reportTime: '2025-01-08 15:10', estimatedLoss: 300000, closingTime: '', claimAmount: 0, status: '已报案', createTime: '2025-01-08 16:00' }
+            { id: 1, insuredName: '肇庆市鑫达化工有限公司', policyNo: 'PXAZ20240100001', startDate: '2024-01-01', endDate: '2024-12-31', insuranceCompany: '中国人民财产保险股份有限公司肇庆分公司', accidentLocation: '肇庆市端州区工业大道18号', reportTime: '2024-06-15 09:30', estimatedLoss: 85000, closingTime: '2024-08-20', claimAmount: 72000, status: '已结案', createTime: '2024-06-15 10:00', accidentType: '化学品灼伤', accidentCause: '技术和设计有缺陷', deathCount: 0, injuryCount: 3, yearTotalClaim: 1240000, yearGrowth: 12, avgEnterpriseClaim: 60000 },
+            { id: 2, insuredName: '四会市宏盛冶炼厂', policyNo: 'PXAZ20240200002', startDate: '2024-02-01', endDate: '2025-01-31', insuranceCompany: '中国太平洋财产保险股份有限公司', accidentLocation: '四会市大沙镇工业园区', reportTime: '2024-07-22 14:15', estimatedLoss: 120000, closingTime: '', claimAmount: 0, status: '处理中', createTime: '2024-07-22 15:00', accidentType: '高处坠落', accidentCause: '安全防护措施缺失', deathCount: 1, injuryCount: 2, yearTotalClaim: 890000, yearGrowth: 8, avgEnterpriseClaim: 95000 },
+            { id: 3, insuredName: '高要区金鼎矿业公司', policyNo: 'PXAZ20240300003', startDate: '2024-03-01', endDate: '2025-02-28', insuranceCompany: '中国平安财产保险股份有限公司肇庆中心支公司', accidentLocation: '高要区白土镇矿区', reportTime: '2024-09-10 11:00', estimatedLoss: 200000, closingTime: '2024-11-15', claimAmount: 180000, status: '已结案', createTime: '2024-09-10 11:30', accidentType: '物体打击', accidentCause: '技术和设计有缺陷', deathCount: 5, injuryCount: 5, yearTotalClaim: 450000, yearGrowth: -5, avgEnterpriseClaim: 60000 },
+            { id: 4, insuredName: '广宁县永安烟花爆竹经营部', policyNo: 'PXAZ20240400004', startDate: '2023-07-01', endDate: '2024-06-30', insuranceCompany: '中华联合财产保险股份有限公司肇庆中心支公司', accidentLocation: '广宁县南街镇仓库', reportTime: '2024-04-05 16:45', estimatedLoss: 45000, closingTime: '', claimAmount: 0, status: '已拒赔', createTime: '2024-04-05 17:00', accidentType: '爆炸事故', accidentCause: '违规操作', deathCount: 0, injuryCount: 1, yearTotalClaim: 45000, yearGrowth: 150, avgEnterpriseClaim: 50000 },
+            { id: 5, insuredName: '鼎湖区建安建筑工程有限公司', policyNo: 'PXAZ20240500005', startDate: '2023-06-01', endDate: '2024-05-31', insuranceCompany: '中国人民财产保险股份有限公司肇庆分公司', accidentLocation: '鼎湖区坑口街道工地', reportTime: '2024-10-12 08:20', estimatedLoss: 150000, closingTime: '', claimAmount: 0, status: '已报案', createTime: '2024-10-12 09:00', accidentType: '坍塌事故', accidentCause: '施工方案不当', deathCount: 2, injuryCount: 4, yearTotalClaim: 320000, yearGrowth: 25, avgEnterpriseClaim: 80000 },
+            { id: 6, insuredName: '怀集县顺达运输有限公司', policyNo: 'PAIC20240600011', startDate: '2024-05-01', endDate: '2025-04-30', insuranceCompany: '中国平安财产保险股份有限公司肇庆中心支公司', accidentLocation: '怀集县冷坑镇国道旁', reportTime: '2024-11-18 13:50', estimatedLoss: 68000, closingTime: '', claimAmount: 0, status: '处理中', createTime: '2024-11-18 14:30', accidentType: '交通事故', accidentCause: '驾驶员疲劳驾驶', deathCount: 1, injuryCount: 3, yearTotalClaim: 68000, yearGrowth: 0, avgEnterpriseClaim: 75000 },
+            { id: 7, insuredName: '德庆县信达建材有限公司', policyNo: 'CIC20240600012', startDate: '2024-02-15', endDate: '2025-02-14', insuranceCompany: '中华联合财产保险股份有限公司肇庆中心支公司', accidentLocation: '德庆县新圩镇工厂', reportTime: '2024-12-03 10:30', estimatedLoss: 92000, closingTime: '2024-12-28', claimAmount: 85000, status: '已结案', createTime: '2024-12-03 11:00', accidentType: '机械伤害', accidentCause: '设备维护不当', deathCount: 0, injuryCount: 2, yearTotalClaim: 170000, yearGrowth: 30, avgEnterpriseClaim: 90000 },
+            { id: 8, insuredName: '高新区创新科技化工公司', policyNo: 'PXAZ20240800008', startDate: '2024-08-01', endDate: '2025-07-31', insuranceCompany: '中国人民财产保险股份有限公司肇庆分公司', accidentLocation: '高新区科技路22号', reportTime: '2025-01-08 15:10', estimatedLoss: 300000, closingTime: '', claimAmount: 0, status: '已报案', createTime: '2025-01-08 16:00', accidentType: '火灾事故', accidentCause: '电气故障', deathCount: 3, injuryCount: 6, yearTotalClaim: 300000, yearGrowth: 0, avgEnterpriseClaim: 150000 }
         ];
         var claimCurrentPage = 1;
         var claimPageSize = 10;
@@ -25717,7 +25744,6 @@ function showPcPortalSelector() {
             if (!claim) return;
             var drawer = document.getElementById('viewPolicyDrawer');
             if (!drawer) return;
-            // 确保抽屉结构已恢复（可能被OCR/预防服务等模式覆盖）
             drawer.removeAttribute('data-ocr-mode');
             drawer.removeAttribute('data-service-mode');
             drawer.removeAttribute('data-skip-restore');
@@ -25732,46 +25758,303 @@ function showPcPortalSelector() {
             document.getElementById('viewDrawerStatus').style.background = sc.bg;
             document.getElementById('viewDrawerStatus').style.color = sc.color;
             document.getElementById('viewDrawerActions').style.display = 'none';
+            
             var tabsBar = document.getElementById('viewDrawerTabs');
-            if (tabsBar) tabsBar.style.display = 'none';
-            var basicInfo = '<div style="font-size:14px;font-weight:600;color:#333;margin-bottom:16px;padding-bottom:8px;border-bottom:1px solid #f0f0f0;">理赔详情</div>';
-            basicInfo += '<div class="insurance-list-desc" style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">';
-            basicInfo += '<div class="insurance-list-desc-item"><span class="label">被保险人名称</span><span class="value">' + claim.insuredName + '</span></div>';
-            basicInfo += '<div class="insurance-list-desc-item"><span class="label">保单编号</span><span class="value">' + claim.policyNo + '</span></div>';
-            basicInfo += '<div class="insurance-list-desc-item"><span class="label">保单起始时间</span><span class="value">' + claim.startDate + '</span></div>';
-            basicInfo += '<div class="insurance-list-desc-item"><span class="label">保单终止时间</span><span class="value">' + claim.endDate + '</span></div>';
-            basicInfo += '<div class="insurance-list-desc-item"><span class="label">保险机构</span><span class="value">' + claim.insuranceCompany + '</span></div>';
-            basicInfo += '<div class="insurance-list-desc-item"><span class="label">事故发生点</span><span class="value">' + claim.accidentLocation + '</span></div>';
-            basicInfo += '<div class="insurance-list-desc-item"><span class="label">报案时间</span><span class="value">' + claim.reportTime + '</span></div>';
-            basicInfo += '<div class="insurance-list-desc-item"><span class="label">估损金额</span><span class="value">¥' + claim.estimatedLoss.toLocaleString() + '</span></div>';
-            basicInfo += '<div class="insurance-list-desc-item"><span class="label">结案时间</span><span class="value">' + (claim.closingTime || '-') + '</span></div>';
-            basicInfo += '<div class="insurance-list-desc-item"><span class="label">赔付金额</span><span class="value">' + (claim.claimAmount > 0 ? '¥' + claim.claimAmount.toLocaleString() : '-') + '</span></div>';
-            basicInfo += '<div class="insurance-list-desc-item"><span class="label">状态</span><span class="value"><span style="display:inline-block;padding:2px 10px;border-radius:4px;font-size:12px;background:' + sc.bg + ';color:' + sc.color + ';">' + claim.status + '</span></span></div>';
-            basicInfo += '<div class="insurance-list-desc-item"><span class="label">创建时间</span><span class="value">' + claim.createTime + '</span></div>';
-            basicInfo += '</div>';
-            var claimRatio = claim.claimAmount > 0 && claim.estimatedLoss > 0 ? (claim.claimAmount / claim.estimatedLoss * 100).toFixed(1) + '%' : '-';
-            var days = '-';
-            if (claim.closingTime && claim.reportTime) { var s = new Date(claim.reportTime.split(' ')[0]); var e = new Date(claim.closingTime); days = Math.ceil((e - s) / (1000 * 60 * 60 * 24)) + '天'; }
-            var riskLevel = claim.estimatedLoss >= 200000 ? '极高' : claim.estimatedLoss >= 100000 ? '高' : claim.estimatedLoss >= 50000 ? '中' : '低';
-            var riskColors = { '低': { bg: '#f6ffed', color: '#52c41a' }, '中': { bg: '#e6f7ff', color: '#1890ff' }, '高': { bg: '#fff7e6', color: '#fa8c16' }, '极高': { bg: '#fff2f0', color: '#ff4d4f' } };
-            var rc = riskColors[riskLevel] || riskColors['低'];
-            basicInfo += '<div style="margin-top:24px;"><div style="font-size:14px;font-weight:600;color:#333;margin-bottom:12px;padding-bottom:8px;border-bottom:1px solid #f0f0f0;">理赔分析</div>';
-            basicInfo += '<div style="display:grid;grid-template-columns:repeat(3,1fr);gap:12px;">';
-            basicInfo += '<div style="padding:12px;background:#fafafa;border-radius:4px;"><div style="font-size:12px;color:#999;margin-bottom:4px;">案件类型</div><div style="font-size:14px;font-weight:500;">' + (claim.estimatedLoss >= 100000 ? '重大事故' : '一般事故') + '</div></div>';
-            basicInfo += '<div style="padding:12px;background:#fafafa;border-radius:4px;"><div style="font-size:12px;color:#999;margin-bottom:4px;">事故原因分类</div><div style="font-size:14px;font-weight:500;">设备故障</div></div>';
-            basicInfo += '<div style="padding:12px;background:#fafafa;border-radius:4px;"><div style="font-size:12px;color:#999;margin-bottom:4px;">赔付比例</div><div style="font-size:14px;font-weight:500;">' + claimRatio + '</div></div>';
-            basicInfo += '<div style="padding:12px;background:#fafafa;border-radius:4px;"><div style="font-size:12px;color:#999;margin-bottom:4px;">处理时效</div><div style="font-size:14px;font-weight:500;">' + days + '</div></div>';
-            basicInfo += '<div style="padding:12px;background:#fafafa;border-radius:4px;"><div style="font-size:12px;color:#999;margin-bottom:4px;">风险等级</div><div style="font-size:14px;font-weight:500;"><span style="display:inline-block;padding:2px 8px;border-radius:4px;font-size:12px;background:' + rc.bg + ';color:' + rc.color + ';">' + riskLevel + '</span></div></div>';
-            basicInfo += '<div style="padding:12px;background:#fafafa;border-radius:4px;"><div style="font-size:12px;color:#999;margin-bottom:4px;">重复理赔标记</div><div style="font-size:14px;font-weight:500;"><span style="display:inline-block;padding:2px 8px;border-radius:4px;font-size:12px;background:#f6ffed;color:#52c41a;">首次</span></div></div>';
-            basicInfo += '</div></div>';
-            document.getElementById('viewBasicInfo').innerHTML = basicInfo;
-            document.getElementById('tab-coverage').style.display = 'none';
-            document.getElementById('tab-service').style.display = 'none';
-            document.getElementById('tab-claim').style.display = 'none';
-            document.getElementById('tab-push').style.display = 'none';
-            document.getElementById('tab-log').style.display = 'none';
-            document.getElementById('tab-basic').style.display = 'block';
+            tabsBar.innerHTML = '<div class="insurance-list-tab active" data-tab="claim-content" onclick="switchClaimTab(\'claim-content\')">理赔内容</div><div class="insurance-list-tab" data-tab="claim-analysis" onclick="switchClaimTab(\'claim-analysis\')">理赔分析</div>';
+            tabsBar.style.display = 'flex';
+            
+            var contentTab = document.getElementById('tab-basic');
+            contentTab.id = 'tab-claim-content';
+            contentTab.style.display = 'block';
+            
+            var tabIds = ['tab-coverage', 'tab-service', 'tab-claim', 'tab-push', 'tab-log', 'tab-aimonitor', 'tab-endorsement'];
+            tabIds.forEach(function(tabId) {
+                var tab = document.getElementById(tabId);
+                if (tab) tab.style.display = 'none';
+            });
+            
+            var analysisTab = document.getElementById('tab-coverage');
+            if (analysisTab) {
+                analysisTab.id = 'tab-claim-analysis';
+                analysisTab.style.display = 'none';
+            }
+            
+            var claimContentHtml = '<table style="width:100%;border-collapse:collapse;font-size:13px;table-layout:auto;">';
+            claimContentHtml += '<colgroup><col style="width:20%"><col style="width:30%"><col style="width:20%"><col style="width:30%"></colgroup>';
+            claimContentHtml += '<tr><th style="text-align:left;padding:12px 16px;background:#fafafa;border-bottom:1px solid #e8e8e8;font-weight:500;color:#666;white-space:nowrap;">被保险人名称</th><td style="padding:12px 16px;border-bottom:1px solid #f0f0f0;color:#333;word-break:break-all;" colspan="3">' + claim.insuredName + '</td></tr>';
+            claimContentHtml += '<tr><th style="text-align:left;padding:12px 16px;background:#fff;border-bottom:1px solid #f0f0f0;font-weight:500;color:#666;white-space:nowrap;">保单编号</th><td style="padding:12px 16px;border-bottom:1px solid #f0f0f0;color:#333;word-break:break-all;" colspan="3">' + claim.policyNo + '</td></tr>';
+            claimContentHtml += '<tr><th style="text-align:left;padding:12px 16px;background:#fafafa;border-bottom:1px solid #e8e8e8;font-weight:500;color:#666;white-space:nowrap;">保单起始时间</th><td style="padding:12px 16px;border-bottom:1px solid #e8e8e8;color:#333;word-break:break-all;">' + claim.startDate + '</td>';
+            claimContentHtml += '<th style="text-align:left;padding:12px 16px;background:#fafafa;border-bottom:1px solid #e8e8e8;font-weight:500;color:#666;white-space:nowrap;">保单终止时间</th><td style="padding:12px 16px;border-bottom:1px solid #e8e8e8;color:#333;word-break:break-all;">' + claim.endDate + '</td></tr>';
+            claimContentHtml += '<tr><th style="text-align:left;padding:12px 16px;background:#fff;border-bottom:1px solid #f0f0f0;font-weight:500;color:#666;white-space:nowrap;">保险机构</th><td style="padding:12px 16px;border-bottom:1px solid #f0f0f0;color:#333;word-break:break-all;" colspan="3">' + claim.insuranceCompany + '</td></tr>';
+            claimContentHtml += '<tr><th style="text-align:left;padding:12px 16px;background:#fafafa;border-bottom:1px solid #e8e8e8;font-weight:500;color:#666;white-space:nowrap;">事故发生点</th><td style="padding:12px 16px;border-bottom:1px solid #e8e8e8;color:#333;word-break:break-all;" colspan="3">' + claim.accidentLocation + '</td></tr>';
+            claimContentHtml += '<tr><th style="text-align:left;padding:12px 16px;background:#fff;border-bottom:1px solid #f0f0f0;font-weight:500;color:#666;white-space:nowrap;">报案时间</th><td style="padding:12px 16px;border-bottom:1px solid #f0f0f0;color:#333;word-break:break-all;">' + claim.reportTime + '</td>';
+            claimContentHtml += '<th style="text-align:left;padding:12px 16px;background:#fff;border-bottom:1px solid #f0f0f0;font-weight:500;color:#666;white-space:nowrap;">结案时间</th><td style="padding:12px 16px;border-bottom:1px solid #f0f0f0;color:#333;word-break:break-all;">' + (claim.closingTime || '-') + '</td></tr>';
+            claimContentHtml += '<tr><th style="text-align:left;padding:12px 16px;background:#fafafa;border-bottom:1px solid #e8e8e8;font-weight:500;color:#666;white-space:nowrap;">估损金额</th><td style="padding:12px 16px;border-bottom:1px solid #e8e8e8;color:#333;word-break:break-all;">¥' + claim.estimatedLoss.toLocaleString() + '</td>';
+            claimContentHtml += '<th style="text-align:left;padding:12px 16px;background:#fafafa;border-bottom:1px solid #e8e8e8;font-weight:500;color:#666;white-space:nowrap;">赔付金额</th><td style="padding:12px 16px;border-bottom:1px solid #e8e8e8;color:#333;word-break:break-all;">' + (claim.claimAmount > 0 ? '¥' + claim.claimAmount.toLocaleString() : '-') + '</td></tr>';
+            claimContentHtml += '<tr><th style="text-align:left;padding:12px 16px;background:#fff;border-bottom:1px solid #f0f0f0;font-weight:500;color:#666;white-space:nowrap;">事故类型</th><td style="padding:12px 16px;border-bottom:1px solid #f0f0f0;color:#333;word-break:break-all;">' + (claim.accidentType || '-') + '</td>';
+            claimContentHtml += '<th style="text-align:left;padding:12px 16px;background:#fff;border-bottom:1px solid #f0f0f0;font-weight:500;color:#666;white-space:nowrap;">事故原因</th><td style="padding:12px 16px;border-bottom:1px solid #f0f0f0;color:#333;word-break:break-all;">' + (claim.accidentCause || '-') + '</td></tr>';
+            claimContentHtml += '<tr><th style="text-align:left;padding:12px 16px;background:#fafafa;border-bottom:1px solid #e8e8e8;font-weight:500;color:#666;white-space:nowrap;">死亡人数</th><td style="padding:12px 16px;border-bottom:1px solid #e8e8e8;color:#333;">' + (claim.deathCount || 0) + ' 人</td>';
+            claimContentHtml += '<th style="text-align:left;padding:12px 16px;background:#fafafa;border-bottom:1px solid #e8e8e8;font-weight:500;color:#666;white-space:nowrap;">受伤人数</th><td style="padding:12px 16px;border-bottom:1px solid #e8e8e8;color:#333;">' + (claim.injuryCount || 0) + ' 人</td></tr>';
+            claimContentHtml += '<tr><th style="text-align:left;padding:12px 16px;background:#fff;border-bottom:1px solid #f0f0f0;font-weight:500;color:#666;white-space:nowrap;">状态</th><td style="padding:12px 16px;border-bottom:1px solid #f0f0f0;color:#333;"><span style="display:inline-block;padding:2px 10px;border-radius:4px;font-size:12px;background:' + sc.bg + ';color:' + sc.color + ';">' + claim.status + '</span></td>';
+            claimContentHtml += '<th style="text-align:left;padding:12px 16px;background:#fff;border-bottom:1px solid #f0f0f0;font-weight:500;color:#666;white-space:nowrap;">创建时间</th><td style="padding:12px 16px;border-bottom:1px solid #f0f0f0;color:#333;word-break:break-all;">' + claim.createTime + '</td></tr>';
+            claimContentHtml += '</table>';
+            var basicInfoContainer = document.getElementById('viewBasicInfo');
+            basicInfoContainer.innerHTML = claimContentHtml;
+            basicInfoContainer.style.display = 'block';
+            basicInfoContainer.style.gridTemplateColumns = 'none';
+            
+            var viewCoverageInfo = document.getElementById('viewCoverageInfo');
+            if (viewCoverageInfo) {
+                viewCoverageInfo.innerHTML = generateClaimAnalysisHtml(claim);
+            }
             showDrawer('viewPolicyDrawer');
+        }
+        
+        function switchClaimTab(tabName) {
+            document.querySelectorAll('.insurance-list-tab').forEach(function(tab) {
+                tab.classList.remove('active');
+            });
+            var activeTab = document.querySelector('[data-tab="' + tabName + '"]');
+            if (activeTab) activeTab.classList.add('active');
+            
+            var contentTab = document.getElementById('tab-claim-content');
+            if (contentTab) contentTab.style.display = tabName === 'claim-content' ? 'block' : 'none';
+            
+            var analysisTab = document.getElementById('tab-claim-analysis');
+            if (analysisTab) analysisTab.style.display = tabName === 'claim-analysis' ? 'block' : 'none';
+        }
+        
+        function generateClaimAnalysisHtml(claim) {
+            var days = '-';
+            if (claim.closingTime && claim.reportTime) { 
+                var s = new Date(claim.reportTime.split(' ')[0]); 
+                var e = new Date(claim.closingTime); 
+                days = Math.ceil((e - s) / (1000 * 60 * 60 * 24)) + '天'; 
+            }
+            
+            var isAbnormal = claim.claimAmount > 0 && claim.avgEnterpriseClaim > 0 && (claim.claimAmount / claim.avgEnterpriseClaim) < 0.3;
+            var compareRatio = claim.avgEnterpriseClaim > 0 ? ((claim.claimAmount - claim.avgEnterpriseClaim) / claim.avgEnterpriseClaim * 100).toFixed(0) : 0;
+            var isLower = compareRatio < 0;
+            
+            var riskScore = (claim.deathCount * 10 + claim.injuryCount * 5);
+            var riskLevel = riskScore >= 40 ? '高危' : riskScore >= 20 ? '中危' : riskScore >= 10 ? '低危' : '正常';
+            var riskColors = { '正常': { bg: '#f6ffed', color: '#52c41a' }, '低危': { bg: '#e6f7ff', color: '#1890ff' }, '中危': { bg: '#fff7e6', color: '#fa8c16' }, '高危': { bg: '#fff2f0', color: '#ff4d4f' } };
+            var rc = riskColors[riskLevel] || riskColors['正常'];
+            
+            var efficiencyLevel = days === '-' ? '-' : parseInt(days) <= 3 ? '极快' : parseInt(days) <= 7 ? '较快' : parseInt(days) <= 15 ? '正常' : '较慢';
+            
+            var html = '';
+            
+            html += '<div style="display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:20px;">';
+            
+            html += '<div class="claim-kpi-card" style="padding:16px;border-radius:8px;background:#fff;border:1px solid #e8e8e8;">';
+            html += '<div style="font-size:12px;color:#999;margin-bottom:8px;">本单赔付金额</div>';
+            html += '<div style="font-size:20px;font-weight:600;color:#333;margin-bottom:4px;">¥' + (claim.claimAmount > 0 ? claim.claimAmount.toLocaleString() : '-') + '</div>';
+            html += '<div style="display:flex;align-items:center;gap:4px;">';
+            html += '<span style="font-size:12px;color:' + (isLower ? '#52c41a' : '#ff4d4f') + ';">';
+            html += '较该企业同类案件均值 ' + (isLower ? '低' : '高') + ' ' + Math.abs(compareRatio) + '%';
+            html += '</span>';
+            if (isAbnormal) {
+                html += '<span class="claim-kpi-tooltip" title="该企业平均赔付额为 ¥' + claim.avgEnterpriseClaim.toLocaleString() + '，本单金额显著偏低，可能存在未决或录入缺失。">⚠️</span>';
+            }
+            html += '</div>';
+            html += '</div>';
+            
+            html += '<div class="claim-kpi-card" style="padding:16px;border-radius:8px;background:#fff;border:1px solid #e8e8e8;cursor:pointer;" onclick="goToYearReport()">';
+            html += '<div style="font-size:12px;color:#999;margin-bottom:8px;">累计赔付总额 (本年度)</div>';
+            html += '<div style="font-size:20px;font-weight:600;color:#333;margin-bottom:4px;">¥' + claim.yearTotalClaim.toLocaleString() + '</div>';
+            html += '<div style="display:flex;align-items:center;gap:4px;">';
+            html += '<span style="font-size:12px;color:' + (claim.yearGrowth >= 0 ? '#ff4d4f' : '#52c41a') + ';">';
+            html += '较上一年度 ' + (claim.yearGrowth >= 0 ? '🔺' : '🔻') + ' ' + Math.abs(claim.yearGrowth) + '%';
+            html += '</span>';
+            html += '</div>';
+            html += '</div>';
+            
+            html += '<div class="claim-kpi-card" style="padding:16px;border-radius:8px;background:#fff;border:1px solid #e8e8e8;">';
+            html += '<div style="font-size:12px;color:#999;margin-bottom:8px;">案件处理时效</div>';
+            html += '<div style="font-size:20px;font-weight:600;color:#333;margin-bottom:4px;">' + days + '</div>';
+            html += '<div style="font-size:12px;color:#52c41a;">' + efficiencyLevel + ' (优于 90% 的平台案件)</div>';
+            html += '</div>';
+            
+            html += '<div class="claim-kpi-card" style="padding:16px;border-radius:8px;background:#fff;border:1px solid #e8e8e8;">';
+            html += '<div style="font-size:12px;color:#999;margin-bottom:8px;">风险等级</div>';
+            html += '<div style="font-size:20px;font-weight:600;color:' + rc.color + ';margin-bottom:4px;">' + riskLevel + '</div>';
+            html += '<div style="font-size:12px;color:#999;">伤亡人数多 (' + claim.deathCount + '死' + claim.injuryCount + '伤) + 事故类型为"' + claim.accidentType + '"</div>';
+            html += '</div>';
+            
+            html += '</div>';
+            
+            html += '<div style="display:grid;grid-template-columns:60% 40%;gap:16px;margin-bottom:20px;">';
+            
+            html += '<div style="background:#fff;border-radius:8px;border:1px solid #e8e8e8;padding:16px;">';
+            html += '<div style="font-size:14px;font-weight:600;color:#333;margin-bottom:16px;">趋势与构成</div>';
+            
+            html += '<div style="margin-bottom:16px;">';
+            html += '<div style="font-size:12px;color:#666;margin-bottom:12px;">近12个月赔付趋势</div>';
+            html += '<div style="height:220px;background:#fafafa;border-radius:4px;padding:12px;display:flex;align-items:flex-end;justify-content:space-between;box-sizing:border-box;overflow:hidden;">';
+            var months = ['1月','2月','3月','4月','5月','6月','7月','8月','9月','10月','11月','12月'];
+            var monthData = [35000, 42000, 28000, 55000, 48000, 72000, 38000, 65000, 52000, 45000, 78000, 92000];
+            var caseCount = [2, 3, 2, 4, 3, 5, 2, 4, 3, 3, 5, 6];
+            var maxAmount = Math.max(...monthData);
+            var maxCase = Math.max(...caseCount);
+            months.forEach(function(month, idx) {
+                var height = (monthData[idx] / maxAmount) * 160;
+                var isCurrent = idx === 5;
+                html += '<div style="display:flex;flex-direction:column;align-items:center;flex:1;min-width:0;">';
+                html += '<div style="display:flex;align-items:flex-end;gap:2px;height:170px;width:100%;justify-content:center;">';
+                html += '<div style="width:20px;background:' + (isCurrent ? '#ff4d4f' : '#1890ff') + ';border-radius:3px 3px 0 0;transition:all 0.3s;cursor:pointer;min-height:4px;" style="height:' + Math.max(height, 4) + 'px;" onclick="showMonthCases(' + (idx + 1) + ')"></div>';
+                html += '<div style="display:flex;flex-direction:column;justify-content:flex-end;height:170px;margin-left:2px;">';
+                var prevDotHeight = 0;
+                caseCount.forEach(function(c, i) {
+                    if (i <= idx) {
+                        var dotHeight = Math.max((c / maxCase) * 6, 2);
+                        html += '<div style="width:4px;height:' + dotHeight + 'px;background:#fa8c16;border-radius:50%;margin-bottom:2px;"></div>';
+                        prevDotHeight = dotHeight;
+                    }
+                });
+                for (var j = idx + 1; j < caseCount.length; j++) {
+                    html += '<div style="width:4px;height:2px;background:transparent;"></div>';
+                }
+                html += '</div>';
+                html += '</div>';
+                html += '<div style="font-size:10px;color:#999;margin-top:4px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">' + month + '</div>';
+                html += '</div>';
+            });
+            html += '</div>';
+            html += '<div style="font-size:10px;color:#999;text-align:right;">柱状：赔付金额 | 折线：案件数量</div>';
+            html += '</div>';
+            
+            html += '<div>';
+            html += '<div style="font-size:12px;color:#666;margin-bottom:12px;">定损金额构成</div>';
+            html += '<div style="height:160px;background:#fafafa;border-radius:4px;padding:12px;">';
+            var pieData = [
+                { name: '从业人员伤亡', value: 4500, color: '#1890ff' },
+                { name: '第三者伤亡', value: 2500, color: '#52c41a' },
+                { name: '医疗费', value: 1500, color: '#fa8c16' },
+                { name: '抢救费', value: 500, color: '#ff4d4f' }
+            ];
+            var total = pieData.reduce(function(sum, item) { return sum + item.value; }, 0);
+            var startAngle = 0;
+            html += '<svg viewBox="0 0 100 100" style="width:100%;height:100%;">';
+            pieData.forEach(function(item) {
+                var angle = (item.value / total) * 360;
+                var endAngle = startAngle + angle;
+                var x1 = 50 + 40 * Math.cos((startAngle - 90) * Math.PI / 180);
+                var y1 = 50 + 40 * Math.sin((startAngle - 90) * Math.PI / 180);
+                var x2 = 50 + 40 * Math.cos((endAngle - 90) * Math.PI / 180);
+                var y2 = 50 + 40 * Math.sin((endAngle - 90) * Math.PI / 180);
+                var largeArc = angle > 180 ? 1 : 0;
+                html += '<path d="M 50 50 L ' + x1 + ' ' + y1 + ' A 40 40 0 ' + largeArc + ' 1 ' + x2 + ' ' + y2 + ' Z" fill="' + item.color + '" />';
+                startAngle = endAngle;
+            });
+            html += '</svg>';
+            html += '</div>';
+            html += '<div style="display:flex;flex-wrap:wrap;gap:8px;margin-top:8px;">';
+            pieData.forEach(function(item) {
+                html += '<div style="display:flex;align-items:center;gap:4px;">';
+                html += '<div style="width:12px;height:12px;border-radius:50%;background:' + item.color + ';"></div>';
+                html += '<span style="font-size:11px;color:#666;">' + item.name + '</span>';
+                html += '<span style="font-size:11px;color:#333;">' + ((item.value / total) * 100).toFixed(1) + '%</span>';
+                html += '</div>';
+            });
+            html += '</div>';
+            html += '</div>';
+            
+            html += '</div>';
+            
+            html += '<div>';
+            html += '<div style="font-size:14px;font-weight:600;color:#333;margin-bottom:16px;">多维画像</div>';
+            
+            html += '<div style="margin-bottom:16px;">';
+            html += '<div style="font-size:12px;color:#666;margin-bottom:12px;">事故原因帕累托图</div>';
+            html += '<div style="background:#fafafa;border-radius:4px;padding:12px;">';
+            var causeData = [
+                { name: '技术和设计有缺陷', value: 45 },
+                { name: '安全防护措施缺失', value: 25 },
+                { name: '违规操作', value: 15 },
+                { name: '设备维护不当', value: 10 },
+                { name: '其他', value: 5 }
+            ];
+            var maxCause = Math.max(...causeData.map(function(d) { return d.value; }));
+            causeData.forEach(function(item) {
+                var width = (item.value / maxCause) * 100;
+                html += '<div style="display:flex;align-items:center;margin-bottom:8px;">';
+                html += '<div style="width:80px;font-size:11px;color:#666;white-space:nowrap;">' + item.name + '</div>';
+                html += '<div style="flex:1;height:16px;background:#e8e8e8;border-radius:8px;margin:0 8px;overflow:hidden;">';
+                html += '<div style="height:100%;background:#1890ff;border-radius:8px;transition:width 0.3s;" style="width:' + width + '%"></div>';
+                html += '</div>';
+                html += '<div style="width:30px;font-size:11px;color:#333;text-align:right;">' + item.value + '%</div>';
+                html += '</div>';
+            });
+            html += '</div>';
+            html += '</div>';
+            
+            html += '<div>';
+            html += '<div style="font-size:12px;color:#666;margin-bottom:12px;">保险机构赔付对比</div>';
+            html += '<div style="background:#fafafa;border-radius:4px;padding:12px;">';
+            var companyData = [
+                { name: '都邦财险', amount: claim.claimAmount > 0 ? claim.claimAmount : 9000 },
+                { name: '平安财险', amount: 45000 },
+                { name: '人保财险', amount: 52000 },
+                { name: '太平洋财险', amount: 38000 }
+            ];
+            var maxCompany = Math.max(...companyData.map(function(d) { return d.amount; }));
+            companyData.forEach(function(item) {
+                var height = (item.amount / maxCompany) * 100;
+                var isCurrent = item.name === '都邦财险';
+                html += '<div style="display:flex;align-items:center;margin-bottom:8px;">';
+                html += '<div style="width:60px;font-size:11px;color:#666;">' + item.name + '</div>';
+                html += '<div style="flex:1;height:20px;background:#e8e8e8;border-radius:10px;margin:0 8px;display:flex;align-items:center;justify-content:flex-end;padding-right:4px;">';
+                html += '<div style="height:16px;background:' + (isCurrent ? '#ff4d4f' : '#52c41a') + ';border-radius:8px;transition:width 0.3s;" style="width:' + height + '%"></div>';
+                html += '</div>';
+                html += '<div style="width:60px;font-size:11px;color:#333;text-align:right;">¥' + item.amount.toLocaleString() + '</div>';
+                html += '</div>';
+            });
+            html += '</div>';
+            html += '</div>';
+            
+            html += '</div>';
+            
+            html += '<div style="background:#f5f5f5;border-radius:8px;padding:16px;">';
+            html += '<div style="font-size:14px;font-weight:600;color:#333;margin-bottom:12px;">智能分析小结</div>';
+            
+            if (isAbnormal) {
+                html += '<div style="display:flex;gap:12px;padding:12px;background:#fff2f0;border-radius:4px;margin-bottom:12px;">';
+                html += '<span style="font-size:18px;">⚠️</span>';
+                html += '<div>';
+                html += '<div style="font-size:13px;font-weight:500;color:#ff4d4f;margin-bottom:4px;">异常预警</div>';
+                html += '<div style="font-size:12px;color:#666;">检测到本案件"死亡人数"为' + claim.deathCount + '人，但"赔付总金额"仅为¥' + claim.claimAmount.toLocaleString() + '，数据存在严重逻辑异常，建议核查是否仅录入了小额医疗费，或存在后续赔付未录入。</div>';
+                html += '</div>';
+                html += '</div>';
+            }
+            
+            html += '<div style="display:flex;gap:12px;padding:12px;background:#e6f7ff;border-radius:4px;margin-bottom:12px;">';
+            html += '<span style="font-size:18px;">💡</span>';
+            html += '<div>';
+            html += '<div style="font-size:13px;font-weight:500;color:#1890ff;margin-bottom:4px;">风险建议</div>';
+            html += '<div style="font-size:12px;color:#666;">该企业"' + claim.accidentType + '"类事故频发，且集中在"' + claim.accidentCause + '"，建议企业安环部门检查设备防护装置。</div>';
+            html += '</div>';
+            html += '</div>';
+            
+            html += '<div style="display:flex;gap:12px;padding:12px;background:#f6ffed;border-radius:4px;">';
+            html += '<span style="font-size:18px;">📊</span>';
+            html += '<div>';
+            html += '<div style="font-size:13px;font-weight:500;color:#52c41a;margin-bottom:4px;">同类对比</div>';
+            html += '<div style="font-size:12px;color:#666;">该企业本年度赔付率已超过保费的 80%，属于续保重点关注客户。</div>';
+            html += '</div>';
+            html += '</div>';
+            
+            html += '</div>';
+            
+            return html;
+        }
+        
+        function goToYearReport() {
+            alert('跳转至该企业的年度理赔报表');
+        }
+        
+        function showMonthCases(month) {
+            alert('显示' + month + '月份的所有理赔案件列表');
         }
 
         function deleteClaim(id) {
@@ -32926,6 +33209,8 @@ function showPcPortalSelector() {
                 // 操作
                 html += '<td class="col-action"><div class="insurance-list-actions" style="flex-wrap:wrap;gap:4px;">';
                 html += '<button class="art-action-btn" onclick="applyArtTemplate(' + item.id + ')">应用</button>';
+                html += '<button class="art-action-btn" onclick="generateArtReport(' + item.id + ')">生成报表</button>';
+                html += '<button class="art-action-btn" onclick="exportArtTemplate(' + item.id + ')">导出</button>';
                 if (!item.isShared) {
                     html += '<button class="art-action-btn" onclick="editArtTemplate(' + item.id + ')">编辑配置</button>';
                     html += '<div class="art-more-dropdown"><button class="art-action-btn-text" onclick="toggleArtMoreMenu(this)">更多</button>';
@@ -33065,6 +33350,28 @@ function showPcPortalSelector() {
             if (!item) return;
             alert('应用模板：' + item.name + '\n将打开悬浮窗并加载此模板配置');
             toggleAiAssistant();
+        }
+        
+        // 生成报表
+        function generateArtReport(id) {
+            const item = artTemplateData.find(function(t) { return t.id === id; });
+            if (!item) return;
+            alert('正在生成报表：' + item.name + '\n将根据模板配置生成数据报表');
+        }
+        
+        // 导出模板
+        function exportArtTemplate(id) {
+            const item = artTemplateData.find(function(t) { return t.id === id; });
+            if (!item) return;
+            const exportData = JSON.stringify(item, null, 2);
+            const blob = new Blob([exportData], { type: 'application/json;charset=utf-8' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = item.name + '_template.json';
+            a.click();
+            URL.revokeObjectURL(url);
+            alert('模板已导出：' + item.name + '.json');
         }
         
         // 编辑模板配置
