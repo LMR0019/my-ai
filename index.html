@@ -14044,6 +14044,9 @@
                             <button class="insurance-list-btn insurance-list-btn-outline" onclick="batchAssignService()">
                                 批量下达服务
                             </button>
+                            <button class="insurance-list-btn insurance-list-btn-outline" onclick="openCoinsuranceMatch()">
+                                共保匹配
+                            </button>
                         </div>
                         <div class="insurance-list-toolbar-right">
                             <button class="insurance-list-btn insurance-list-btn-purple" id="btnAIDetect" onclick="showAIIdentifyModal()" style="display:none;">
@@ -14181,12 +14184,13 @@
                     <!-- 数据表格 -->
                     <div class="insurance-list-table-wrapper">
                         <div class="insurance-list-table-scroll" style="width:0;min-width:100%;">
-                            <table class="insurance-list-table" style="width:100%;table-layout:fixed;min-width:850px;">
+                            <table class="insurance-list-table" style="width:100%;table-layout:fixed;min-width:1050px;">
                                 <thead>
                                     <tr>
                                         <th style="width:50px;">ID</th>
                                         <th style="width:250px;">PDF文件/图片文件</th>
                                         <th style="width:90px;">状态</th>
+                                        <th style="width:200px;">失败原因</th>
                                         <th style="width:150px;">创建时间</th>
                                         <th style="width:150px;">修改时间</th>
                                         <th style="width:120px;" class="col-action">操作</th>
@@ -14628,12 +14632,13 @@
                     <!-- 数据表格区域 -->
                     <div class="insurance-list-table-wrapper">
                         <div class="insurance-list-table-scroll" style="width:0;min-width:100%;">
-                            <table class="insurance-list-table" style="width:100%;table-layout:fixed;min-width:850px;">
+                            <table class="insurance-list-table" style="width:100%;table-layout:fixed;min-width:1050px;">
                                 <thead>
                                     <tr>
                                         <th style="width:50px;">ID</th>
                                         <th style="width:250px;">PDF文件/图片文件</th>
                                         <th style="width:90px;">状态</th>
+                                        <th style="width:200px;">失败原因</th>
                                         <th style="width:150px;">创建时间</th>
                                         <th style="width:150px;">修改时间</th>
                                         <th style="width:130px;" class="col-action">操作</th>
@@ -17697,7 +17702,7 @@
                     <div class="insurance-list-table-wrapper">
                         <div class="insurance-list-table-scroll" style="width:0;min-width:100%;">
                             <table class="insurance-list-table" style="width:100%;table-layout:fixed;min-width:1200px;">
-                                <thead><tr><th style="width:50px;">ID</th><th style="width:180px;">机构名称</th><th style="width:100px;">账号</th><th style="width:80px;">地区</th><th style="width:200px;">实际经营地址</th><th style="width:80px;">服务人员数</th><th style="width:100px;">创建日期</th><th style="width:150px;">关联保险机构</th><th style="width:70px;">状态</th><th style="width:280px;" class="col-action">操作</th></tr></thead>
+                                <thead><tr><th style="width:50px;">ID</th><th style="width:180px;">机构名称</th><th style="width:100px;">账号</th><th style="width:80px;">地区</th><th style="width:200px;">实际经营地址</th><th style="width:80px;">服务人员数</th><th style="width:100px;">创建日期</th><th style="width:150px;">关联保险机构</th><th style="width:70px;">综合评分</th><th style="width:70px;">状态</th><th style="width:280px;" class="col-action">操作</th></tr></thead>
                                 <tbody id="soTableBody"></tbody>
                             </table>
                         </div>
@@ -19314,6 +19319,32 @@
         </div>
         </div>
 
+        <!-- 服务机构详情抽屉 -->
+        <div class="insurance-list-drawer insurance-list-drawer-wide" id="serviceOrgDetailDrawer" style="display:none;position:fixed;top:0;right:0;width:700px;height:100vh;background:#fff;box-shadow:-2px 0 8px rgba(0,0,0,0.15);z-index:1100;overflow-y:auto;">
+        <div class="insurance-list-drawer-header">
+        <span class="insurance-list-drawer-title" id="serviceOrgDrawerTitle">服务机构详情</span>
+        <button class="insurance-list-drawer-close" onclick="closeServiceOrgDrawer()">×</button>
+        </div>
+        <div class="insurance-list-drawer-body" id="serviceOrgDrawerBody">
+        </div>
+        <div class="insurance-list-drawer-footer">
+        <button class="insurance-list-btn insurance-list-btn-gray insurance-list-btn-sm" onclick="closeServiceOrgDrawer()">关闭</button>
+        </div>
+        </div>
+
+        <!-- 服务机构评价流水弹窗 -->
+        <div class="insurance-list-modal" id="serviceOrgEvaluationModal" style="min-width:700px;display:none;">
+        <div class="insurance-list-modal-header">
+        <span class="insurance-list-modal-title" id="serviceOrgEvaluationModalTitle">评价详情</span>
+        <button class="insurance-list-modal-close" onclick="closeModal('serviceOrgEvaluationModal')">×</button>
+        </div>
+        <div class="insurance-list-modal-body" id="serviceOrgEvaluationModalBody" style="max-height:60vh;overflow-y:auto;">
+        </div>
+        <div class="insurance-list-modal-footer">
+        <button class="insurance-list-btn insurance-list-btn-gray insurance-list-btn-sm" onclick="closeModal('serviceOrgEvaluationModal')">关闭</button>
+        </div>
+        </div>
+
         <!-- 签章申请详情抽屉 -->
         <div class="insurance-list-drawer insurance-list-drawer-wide" id="signatureApplyDetailDrawer" style="display:none;position:fixed;top:0;right:0;width:640px;height:100vh;background:#fff;box-shadow:-2px 0 8px rgba(0,0,0,0.15);z-index:1100;overflow-y:auto;">
         <div class="insurance-list-drawer-header">
@@ -19988,6 +20019,20 @@
         <div class="insurance-list-modal-footer">
         <button class="insurance-list-btn insurance-list-btn-gray insurance-list-btn-sm" onclick="closeModal('modifySubServiceFeeModal')">取消</button>
         <button class="insurance-list-btn insurance-list-btn-primary insurance-list-btn-sm" onclick="confirmModifySubServiceFee()">确认</button>
+        </div>
+        </div>
+
+        <!-- 服务评价弹窗 -->
+        <div class="insurance-list-modal" id="serviceEvaluationModal" style="min-width:600px;display:none;">
+        <div class="insurance-list-modal-header">
+        <span class="insurance-list-modal-title" id="serviceEvaluationModalTitle">服务评价</span>
+        <button class="insurance-list-modal-close" onclick="closeModal('serviceEvaluationModal')">×</button>
+        </div>
+        <div class="insurance-list-modal-body" id="serviceEvaluationModalBody">
+        </div>
+        <div class="insurance-list-modal-footer" id="serviceEvaluationModalFooter">
+        <button class="insurance-list-btn insurance-list-btn-gray insurance-list-btn-sm" onclick="closeModal('serviceEvaluationModal')">取消</button>
+        <button class="insurance-list-btn insurance-list-btn-primary insurance-list-btn-sm" id="serviceEvaluationSubmitBtn" onclick="submitServiceEvaluation()">提交评价</button>
         </div>
         </div>
 
@@ -23272,11 +23317,14 @@ function showPcPortalSelector() {
                     effectiveDate: '2024-04-01',
                     premiumChange: 3000,
                     serviceFeeChange: 600,
+                    insuredChange: 7,
                     status: '已生效',
                     operator: '承保专员-张伟',
                     applyTime: '2024-03-20 10:30',
                     approveTime: '2024-03-25 14:00',
                     reason: '因企业扩产增加投保人数（45人→52人），调整保费',
+                    batchContent: '因企业生产规模扩大，新增7名生产作业人员，需相应增加投保数量及保费，并同步增加事故预防服务费',
+                    attachment: '批改申请书.pdf,企业扩产证明.pdf',
                     changes: [
                         { field: '投保数量', oldValue: '45', newValue: '52', remark: '企业扩产新增7人' },
                         { field: '保费', oldValue: '¥80,000', newValue: '¥83,000', remark: '按人数比例调增' },
@@ -23290,11 +23338,14 @@ function showPcPortalSelector() {
                     effectiveDate: '2024-07-01',
                     premiumChange: 2000,
                     serviceFeeChange: 400,
+                    insuredChange: 0,
                     status: '已生效',
                     operator: '承保专员-张伟',
                     applyTime: '2024-06-15 09:00',
                     approveTime: '2024-06-20 11:30',
                     reason: '新增危化品储存险种保障',
+                    batchContent: '企业新增危化品仓储业务，需增加危化品储存相关保险责任，因此相应调整保费及服务费',
+                    attachment: '危化品经营许可证.pdf,批改申请书.pdf',
                     changes: [
                         { field: '险种范围', oldValue: '基础险', newValue: '基础险+危化品储存险', remark: '企业申请增加' },
                         { field: '保费', oldValue: '¥83,000', newValue: '¥85,000', remark: '新增险种保费' },
@@ -23308,11 +23359,14 @@ function showPcPortalSelector() {
                     effectiveDate: '',
                     premiumChange: 0,
                     serviceFeeChange: 0,
+                    insuredChange: 0,
                     status: '审核中',
                     operator: '承保专员-李娜',
                     applyTime: '2024-09-10 14:20',
                     approveTime: '',
                     reason: '变更企业联系人及联系电话',
+                    batchContent: '原企业联系人李明华先生离职，现变更为王建国先生为新的企业联系人，并同步更新联系电话',
+                    attachment: '人事变动说明.pdf',
                     changes: [
                         { field: '企业联系人', oldValue: '李明华', newValue: '王建国', remark: '原联系人离职' },
                         { field: '企业联系人手机号', oldValue: '13800138001', newValue: '13900139888', remark: '新联系人电话' }
@@ -23327,11 +23381,14 @@ function showPcPortalSelector() {
                     effectiveDate: '2024-06-01',
                     premiumChange: -5000,
                     serviceFeeChange: -1000,
+                    insuredChange: -10,
                     status: '已生效',
                     operator: '承保专员-陈静',
                     applyTime: '2024-05-10 11:00',
                     approveTime: '2024-05-16 16:00',
                     reason: '企业缩减部分生产线，降低保额',
+                    batchContent: '企业因业务调整，缩减了一条生产线，减少10名作业人员，因此相应降低累计责任限额及保费',
+                    attachment: '生产线调整说明.pdf',
                     changes: [
                         { field: '累计责任限额', oldValue: '800 万元', newValue: '700 万元', remark: '生产线缩减' },
                         { field: '保费', oldValue: '¥125,000', newValue: '¥120,000', remark: '随保额下调' }
@@ -23346,11 +23403,14 @@ function showPcPortalSelector() {
                     effectiveDate: '2024-05-01',
                     premiumChange: 8000,
                     serviceFeeChange: 1600,
+                    insuredChange: 0,
                     status: '已生效',
                     operator: '共保协调员-赵强',
                     applyTime: '2024-04-15 10:00',
                     approveTime: '2024-04-22 14:30',
                     reason: '矿山作业面扩展，提高责任限额',
+                    batchContent: '企业新增了一个采矿作业面，为保障安全生产，提高了累计责任限额，并相应调整共保比例',
+                    attachment: '采矿许可证变更件.pdf,共保协议补充.pdf',
                     changes: [
                         { field: '累计责任限额', oldValue: '1000 万元', newValue: '1200 万元', remark: '新增采矿区' },
                         { field: '保费', oldValue: '¥148,000', newValue: '¥156,000', remark: '保额提升对应调增' },
@@ -23364,11 +23424,14 @@ function showPcPortalSelector() {
                     effectiveDate: '2024-08-15',
                     premiumChange: 0,
                     serviceFeeChange: 0,
+                    insuredChange: 0,
                     status: '已生效',
                     operator: '共保协调员-赵强',
                     applyTime: '2024-08-05 09:30',
                     approveTime: '2024-08-12 11:00',
                     reason: '变更被保险人名称（企业更名）',
+                    batchContent: '企业完成工商变更登记，单位名称由"四会市某矿业有限公司"变更为"四会市新能源材料有限公司"，同时经营地址也进行了变更',
+                    attachment: '营业执照变更件.pdf,工商变更通知书.pdf',
                     changes: [
                         { field: '单位名称/被保险人', oldValue: '四会市某矿业有限公司', newValue: '四会市新能源材料有限公司', remark: '企业工商更名' },
                         { field: '投保标的所在地', oldValue: '广东省肇庆市四会市龙甫镇矿山路88号', newValue: '广东省肇庆市四会市龙埔镇新材料园区A座', remark: '搬迁至新厂区' }
@@ -23578,7 +23641,7 @@ function showPcPortalSelector() {
 
             // 核心信息卡片
             html += '<div style="background:#f9fbfd;border:1px solid #d6e4ff;border-radius:8px;padding:18px 20px;margin-bottom:18px;">';
-            html += '<div style="font-size:13px;font-weight:600;color:#1890ff;margin-bottom:12px;">💰 费用变动</div>';
+            html += '<div style="font-size:13px;font-weight:600;color:#1890ff;margin-bottom:12px;">💰 费用及人员变动</div>';
             html += '<div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">';
             html += '<div style="background:#fff;border-radius:6px;padding:12px;border:1px solid #eee;">';
             html += '<div style="font-size:12px;color:#888;margin-bottom:4px;">保费变化</div>';
@@ -23587,6 +23650,12 @@ function showPcPortalSelector() {
             html += '<div style="background:#fff;border-radius:6px;padding:12px;border:1px solid #eee;">';
             html += '<div style="font-size:12px;color:#888;margin-bottom:4px;">服务费变化</div>';
             html += '<div style="font-size:20px;font-weight:700;color:' + sfColor + ';">' + (sfc >= 0 ? '+' : '') + '¥' + formatNumber(sfc) + '</div>';
+            html += '</div>';
+            var insuredChange = record.insuredChange || 0;
+            var insuredColor = insuredChange >= 0 ? '#52c41a' : '#ff4d4f';
+            html += '<div style="background:#fff;border-radius:6px;padding:12px;border:1px solid #eee;grid-column:span 2;">';
+            html += '<div style="font-size:12px;color:#888;margin-bottom:4px;">参保人数变化</div>';
+            html += '<div style="font-size:20px;font-weight:700;color:' + insuredColor + ';">' + (insuredChange >= 0 ? '+' : '') + insuredChange + ' 人</div>';
             html += '</div>';
             html += '</div>';
             html += '</div>';
@@ -23599,6 +23668,14 @@ function showPcPortalSelector() {
             html += '<div class="insurance-list-desc-label">申请时间</div><div class="insurance-list-desc-value">' + (record.applyTime || '-') + '</div>';
             html += '<div class="insurance-list-desc-label">审批时间</div><div class="insurance-list-desc-value">' + (record.approveTime || '-') + '</div>';
             html += '</div>';
+            
+            // 批改内容
+            if (record.batchContent) {
+                html += '<div style="margin-bottom:18px;">';
+                html += '<div style="font-size:13px;font-weight:600;color:#333;margin-bottom:8px;">📝 批改内容</div>';
+                html += '<div style="background:#f5f7fa;border:1px solid #e8e8e8;border-radius:6px;padding:12px 16px;font-size:13px;color:#333;line-height:1.6;">' + record.batchContent + '</div>';
+                html += '</div>';
+            }
 
             // 批改原因
             if (record.reason) {
@@ -23621,6 +23698,22 @@ function showPcPortalSelector() {
                     html += '<div style="flex:1;text-align:center;color:#999;text-decoration:line-through;">' + c.oldValue + '</div>';
                     html += '<div style="flex:1;text-align:center;color:#52c41a;font-weight:500;">' + c.newValue + '</div>';
                     html += '<div style="flex:1.2;font-size:12px;color:#888;">' + (c.remark || '-') + '</div>';
+                    html += '</div>';
+                });
+                html += '</div>';
+                html += '</div>';
+            }
+            
+            // 附件
+            if (record.attachment) {
+                html += '<div style="margin-bottom:18px;">';
+                html += '<div style="font-size:13px;font-weight:600;color:#333;margin-bottom:8px;">📎 附件</div>';
+                var attachments = record.attachment.split(',');
+                html += '<div style="border:1px solid #e8e8e8;border-radius:6px;padding:12px 16px;">';
+                attachments.forEach(function(file, idx) {
+                    html += '<div style="display:flex;align-items:center;padding:8px 0;' + (idx < attachments.length - 1 ? 'border-bottom:1px solid #f5f5f5;' : '') + '">';
+                    html += '<svg viewBox="0 0 24 24" fill="#1890ff" style="width:18px;height:18px;margin-right:8px;"><path d="M14,2H6A2,2 0 0,0 4,4V20A2,2 0 0,0 6,22H18A2,2 0 0,0 20,20V8L14,2M18,20H6V4H13V9H18V20Z"></path></svg>';
+                    html += '<a href="#" style="color:#1890ff;text-decoration:none;font-size:13px;">' + file.trim() + '</a>';
                     html += '</div>';
                 });
                 html += '</div>';
@@ -23819,6 +23912,19 @@ function showPcPortalSelector() {
             alert('导出功能');
         }
         
+        function openCoinsuranceMatch() {
+            var input = document.createElement('input');
+            input.type = 'file';
+            input.accept = '*';
+            input.onchange = function(e) {
+                var files = e.target.files;
+                if (files && files.length > 0) {
+                    console.log('共保匹配选择了文件:', files[0].name);
+                }
+            };
+            input.click();
+        }
+        
         // AI智能识别 - 选择PDF/图片文件
         function showAIIdentifyModal() {
             var input = document.createElement('input');
@@ -23875,11 +23981,11 @@ function showPcPortalSelector() {
 
         // AI OCR模拟数据
         var aiOcrData = [
-            { id: 1, fileName: '保单_中国人民财产保险_2024.pdf', fileSize: '2.3 MB', status: '已完成', createTime: '2026-05-17 14:30', modifyTime: '2026-05-17 14:31' },
-            { id: 2, fileName: '保单_太平洋保险_四会化工.pdf', fileSize: '1.8 MB', status: '已完成', createTime: '2026-05-17 15:10', modifyTime: '2026-05-17 15:11' },
-            { id: 3, fileName: '保单_平安保险_广宁矿业.jpg', fileSize: '856 KB', status: '识别失败', createTime: '2026-05-17 16:22', modifyTime: '2026-05-17 16:23' },
-            { id: 4, fileName: '保单_中华联合_鼎湖建设.pdf', fileSize: '3.1 MB', status: '识别中', createTime: '2026-05-18 09:15', modifyTime: '2026-05-18 09:15' },
-            { id: 5, fileName: '保单_人保_高要运输.pdf', fileSize: '1.5 MB', status: '待识别', createTime: '2026-05-18 10:05', modifyTime: '2026-05-18 10:05' }
+            { id: 1, fileName: '保单_中国人民财产保险_2024.pdf', fileSize: '2.3 MB', status: '已完成', createTime: '2026-05-17 14:30', modifyTime: '2026-05-17 14:31', failureReason: '' },
+            { id: 2, fileName: '保单_太平洋保险_四会化工.pdf', fileSize: '1.8 MB', status: '已完成', createTime: '2026-05-17 15:10', modifyTime: '2026-05-17 15:11', failureReason: '' },
+            { id: 3, fileName: '保单_平安保险_广宁矿业.jpg', fileSize: '856 KB', status: '识别失败', createTime: '2026-05-17 16:22', modifyTime: '2026-05-17 16:23', failureReason: '图片模糊无法识别，请上传更高清晰度的图片' },
+            { id: 4, fileName: '保单_中华联合_鼎湖建设.pdf', fileSize: '3.1 MB', status: '识别中', createTime: '2026-05-18 09:15', modifyTime: '2026-05-18 09:15', failureReason: '' },
+            { id: 5, fileName: '保单_人保_高要运输.pdf', fileSize: '1.5 MB', status: '待识别', createTime: '2026-05-18 10:05', modifyTime: '2026-05-18 10:05', failureReason: '' }
         ];
         var ocrCurrentPage = 1;
         var ocrPageSize = 10;
@@ -23910,6 +24016,12 @@ function showPcPortalSelector() {
                 html += '<div style="font-size:12px;color:#999;">' + item.fileSize + '</div></div>';
                 html += '</div></td>';
                 html += '<td><span style="display:inline-block;padding:2px 10px;border-radius:4px;font-size:12px;background:' + sc.bg + ';color:' + sc.color + ';border:1px solid ' + sc.border + ';">' + item.status + '</span></td>';
+                // 失败原因列
+                if (item.status === '识别失败' && item.failureReason) {
+                    html += '<td><div style="color:#ff4d4f;font-size:12px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;" title="' + item.failureReason + '">' + item.failureReason + '</div></td>';
+                } else {
+                    html += '<td><span style="color:#999;font-size:12px;">-</span></td>';
+                }
                 html += '<td>' + item.createTime + '</td>';
                 html += '<td>' + item.modifyTime + '</td>';
                 html += '<td class="col-action" style="position:sticky;right:0;background:#fff;z-index:5;box-shadow:-2px 0 6px rgba(0,0,0,0.08);">';
@@ -24112,14 +24224,14 @@ function showPcPortalSelector() {
 
         // 批单模拟数据
         var batchData = [
-            { id: 1, batchType: '保费批改', holderName: '李明华', policyNo: 'PXAZ20240100001', insuranceCompany: '中国人民财产保险股份有限公司肇庆分公司', basePremium: 180000, startDate: '2024-01-01', endDate: '2024-12-31', batchTime: '2024-06-15 10:30', status: '已生效' },
-            { id: 2, batchType: '人员变更', holderName: '张伟强', policyNo: 'PXAZ20240200002', insuranceCompany: '中国太平洋财产保险股份有限公司', basePremium: 250000, startDate: '2024-02-01', endDate: '2025-01-31', batchTime: '2024-07-20 14:22', status: '已生效' },
-            { id: 3, batchType: '保额批改', holderName: '陈志远', policyNo: 'PXAZ20240300003', insuranceCompany: '中国平安财产保险股份有限公司肇庆中心支公司', basePremium: 320000, startDate: '2024-03-01', endDate: '2025-02-28', batchTime: '2024-08-10 09:15', status: '待审核' },
-            { id: 4, batchType: '退保批改', holderName: '王建军', policyNo: 'PXAZ20240400004', insuranceCompany: '中华联合财产保险股份有限公司肇庆中心支公司', basePremium: 95000, startDate: '2023-07-01', endDate: '2024-06-30', batchTime: '2024-09-05 16:45', status: '已驳回' },
-            { id: 5, batchType: '保费批改', holderName: '刘德明', policyNo: 'PXAZ20240500005', insuranceCompany: '中国人民财产保险股份有限公司肇庆分公司', basePremium: 56000, startDate: '2023-06-01', endDate: '2024-05-31', batchTime: '2024-10-12 11:00', status: '已生效' },
-            { id: 6, batchType: '人员变更', holderName: '赵国华', policyNo: 'PAIC20240600011', insuranceCompany: '中国平安财产保险股份有限公司肇庆中心支公司', basePremium: 135000, startDate: '2024-05-01', endDate: '2025-04-30', batchTime: '2024-11-18 08:30', status: '已生效' },
-            { id: 7, batchType: '保额批改', holderName: '黄启明', policyNo: 'CIC20240600012', insuranceCompany: '中华联合财产保险股份有限公司肇庆中心支公司', basePremium: 320000, startDate: '2024-02-15', endDate: '2025-02-14', batchTime: '2024-12-03 13:50', status: '待审核' },
-            { id: 8, batchType: '退保批改', holderName: '周建平', policyNo: 'TPIC20240600014', insuranceCompany: '中国太平洋财产保险股份有限公司', basePremium: 450000, startDate: '2024-01-01', endDate: '2025-12-31', batchTime: '2025-01-08 15:20', status: '已生效' }
+            { id: 1, batchType: '保费批改', holderName: '李明华', policyNo: 'PXAZ20240100001', insuranceCompany: '中国人民财产保险股份有限公司肇庆分公司', basePremium: 180000, premiumChange: 30000, insuredChange: 7, batchContent: '因企业扩产新增7名员工，申请增加保额', attachment: '批单申请材料_001.pdf', startDate: '2024-01-01', endDate: '2024-12-31', batchTime: '2024-06-15 10:30', status: '已生效' },
+            { id: 2, batchType: '人员变更', holderName: '张伟强', policyNo: 'PXAZ20240200002', insuranceCompany: '中国太平洋财产保险股份有限公司', basePremium: 250000, premiumChange: -2000, insuredChange: -3, batchContent: '3名员工离职，申请减少相应保额', attachment: '离职证明汇总_002.pdf', startDate: '2024-02-01', endDate: '2025-01-31', batchTime: '2024-07-20 14:22', status: '已生效' },
+            { id: 3, batchType: '保额批改', holderName: '陈志远', policyNo: 'PXAZ20240300003', insuranceCompany: '中国平安财产保险股份有限公司肇庆中心支公司', basePremium: 320000, premiumChange: 50000, insuredChange: 0, batchContent: '企业新增一条生产线，申请提高风险保额', attachment: '风险评估报告_003.pdf', startDate: '2024-03-01', endDate: '2025-02-28', batchTime: '2024-08-10 09:15', status: '待审核' },
+            { id: 4, batchType: '退保批改', holderName: '王建军', policyNo: 'PXAZ20240400004', insuranceCompany: '中华联合财产保险股份有限公司肇庆中心支公司', basePremium: 95000, premiumChange: -95000, insuredChange: -50, batchContent: '企业经营转型，申请退保', attachment: '退保申请书_004.pdf', startDate: '2023-07-01', endDate: '2024-06-30', batchTime: '2024-09-05 16:45', status: '已驳回' },
+            { id: 5, batchType: '保费批改', holderName: '刘德明', policyNo: 'PXAZ20240500005', insuranceCompany: '中国人民财产保险股份有限公司肇庆分公司', basePremium: 56000, premiumChange: 12000, insuredChange: 15, batchContent: '新增季节性员工，申请临时增加保额', attachment: '临时用工协议_005.pdf', startDate: '2023-06-01', endDate: '2024-05-31', batchTime: '2024-10-12 11:00', status: '已生效' },
+            { id: 6, batchType: '人员变更', holderName: '赵国华', policyNo: 'PAIC20240600011', insuranceCompany: '中国平安财产保险股份有限公司肇庆中心支公司', basePremium: 135000, premiumChange: 0, insuredChange: 25, batchContent: '旧员工10人离职，新员工35人入职', attachment: '人员名单汇总_006.pdf', startDate: '2024-05-01', endDate: '2025-04-30', batchTime: '2024-11-18 08:30', status: '已生效' },
+            { id: 7, batchType: '保额批改', holderName: '黄启明', policyNo: 'CIC20240600012', insuranceCompany: '中华联合财产保险股份有限公司肇庆中心支公司', basePremium: 320000, premiumChange: 80000, insuredChange: 0, batchContent: '企业完成安全标准化升级，申请增加保险额度', attachment: '安全标准化证书_007.pdf', startDate: '2024-02-15', endDate: '2025-02-14', batchTime: '2024-12-03 13:50', status: '待审核' },
+            { id: 8, batchType: '退保批改', holderName: '周建平', policyNo: 'TPIC20240600014', insuranceCompany: '中国太平洋财产保险股份有限公司', basePremium: 450000, premiumChange: -450000, insuredChange: -120, batchContent: '企业业务转移至其他区域，申请全部退保', attachment: '业务转移证明_008.pdf', startDate: '2024-01-01', endDate: '2025-12-31', batchTime: '2025-01-08 15:20', status: '已生效' }
         ];
         var batchCurrentPage = 1;
         var batchPageSize = 10;
@@ -24440,6 +24552,8 @@ function showPcPortalSelector() {
                 '已撤回': { bg: '#fff7e6', color: '#fa8c16', border: '#ffd591' }
             };
             var sc = statusColors[item.status] || { bg: '#f5f5f5', color: '#999', border: '#d9d9d9' };
+            var premiumChangeColor = item.premiumChange >= 0 ? '#52c41a' : '#ff4d4f';
+            var insuredChangeColor = item.insuredChange >= 0 ? '#52c41a' : '#ff4d4f';
             var detailHtml = '<div style="padding:20px;">' +
                 '<h4 style="margin:0 0 16px;font-size:16px;color:#333;">批单详情</h4>' +
                 '<div style="display:grid;grid-template-columns:1fr 1fr;gap:0;border:1px solid #e8e8e8;border-radius:6px;overflow:hidden;">' +
@@ -24455,6 +24569,10 @@ function showPcPortalSelector() {
                 '<div style="padding:10px 16px;border-bottom:1px solid #e8e8e8;">' + item.insuranceCompany + '</div>' +
                 '<div style="padding:10px 16px;border-bottom:1px solid #e8e8e8;border-right:1px solid #e8e8e8;background:#fafafa;font-weight:500;">基础保费</div>' +
                 '<div style="padding:10px 16px;border-bottom:1px solid #e8e8e8;">¥' + formatNumber(item.basePremium) + '</div>' +
+                '<div style="padding:10px 16px;border-bottom:1px solid #e8e8e8;border-right:1px solid #e8e8e8;background:#fafafa;font-weight:500;">保费增减</div>' +
+                '<div style="padding:10px 16px;border-bottom:1px solid #e8e8e8;color:' + premiumChangeColor + ';font-weight:500;">' + (item.premiumChange >= 0 ? '+' : '') + '¥' + formatNumber(item.premiumChange) + '</div>' +
+                '<div style="padding:10px 16px;border-bottom:1px solid #e8e8e8;border-right:1px solid #e8e8e8;background:#fafafa;font-weight:500;">参保人数增减</div>' +
+                '<div style="padding:10px 16px;border-bottom:1px solid #e8e8e8;color:' + insuredChangeColor + ';font-weight:500;">' + (item.insuredChange >= 0 ? '+' : '') + item.insuredChange + '</div>' +
                 '<div style="padding:10px 16px;border-bottom:1px solid #e8e8e8;border-right:1px solid #e8e8e8;background:#fafafa;font-weight:500;">保单起始时间</div>' +
                 '<div style="padding:10px 16px;border-bottom:1px solid #e8e8e8;">' + item.startDate + '</div>' +
                 '<div style="padding:10px 16px;border-bottom:1px solid #e8e8e8;border-right:1px solid #e8e8e8;background:#fafafa;font-weight:500;">保单终止时间</div>' +
@@ -24463,6 +24581,19 @@ function showPcPortalSelector() {
                 '<div style="padding:10px 16px;border-bottom:1px solid #e8e8e8;">' + item.batchTime + '</div>' +
                 '<div style="padding:10px 16px;border-right:1px solid #e8e8e8;background:#fafafa;font-weight:500;">状态</div>' +
                 '<div style="padding:10px 16px;"><span style="display:inline-block;padding:2px 10px;border-radius:4px;font-size:12px;background:' + sc.bg + ';color:' + sc.color + ';border:1px solid ' + sc.border + ';">' + item.status + '</span></div>' +
+                '</div>' +
+                '<div style="margin-top:16px;">' +
+                '<div style="font-size:14px;font-weight:600;color:#333;margin-bottom:8px;">批改内容</div>' +
+                '<div style="padding:12px 16px;background:#fafafa;border:1px solid #e8e8e8;border-radius:6px;color:#555;line-height:1.6;">' + (item.batchContent || '-') + '</div>' +
+                '</div>' +
+                '<div style="margin-top:16px;">' +
+                '<div style="font-size:14px;font-weight:600;color:#333;margin-bottom:8px;">附件</div>' +
+                '<div style="padding:10px 16px;background:#fafafa;border:1px solid #e8e8e8;border-radius:6px;">' +
+                (item.attachment ? 
+                    '<a href="javascript:void(0)" style="color:#1890ff;text-decoration:none;"><svg style="width:16px;height:16px;margin-right:6px;vertical-align:middle;" viewBox="0 0 24 24" fill="currentColor"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>' + item.attachment + '</a>' : 
+                    '-'
+                ) +
+                '</div>' +
                 '</div></div>';
             var detailDrawer = document.getElementById('viewPolicyDrawer');
             if (detailDrawer) {
@@ -26082,11 +26213,11 @@ function showPcPortalSelector() {
            ================================================ */
 
         var aiClaimOcrData = [
-            { id: 1, fileName: '理赔_鑫达化工_2024.pdf', fileSize: '1.8 MB', status: '已完成', createTime: '2024-12-01 09:30', modifyTime: '2024-12-01 09:35' },
-            { id: 2, fileName: '理赔_宏盛冶炼_事故证明.pdf', fileSize: '2.3 MB', status: '识别中', createTime: '2024-12-15 14:20', modifyTime: '2024-12-15 14:20' },
-            { id: 3, fileName: '理赔_金鼎矿业_现场照片.jpg', fileSize: '3.1 MB', status: '已完成', createTime: '2024-12-10 11:00', modifyTime: '2024-12-10 11:05' },
-            { id: 4, fileName: '理赔_永安烟花_材料.pdf', fileSize: '1.2 MB', status: '识别失败', createTime: '2024-12-08 16:45', modifyTime: '2024-12-08 16:50' },
-            { id: 5, fileName: '理赔_建安建筑_医疗凭证.pdf', fileSize: '0.9 MB', status: '待识别', createTime: '2024-12-20 08:30', modifyTime: '2024-12-20 08:30' }
+            { id: 1, fileName: '理赔_鑫达化工_2024.pdf', fileSize: '1.8 MB', status: '已完成', createTime: '2024-12-01 09:30', modifyTime: '2024-12-01 09:35', failureReason: '' },
+            { id: 2, fileName: '理赔_宏盛冶炼_事故证明.pdf', fileSize: '2.3 MB', status: '识别中', createTime: '2024-12-15 14:20', modifyTime: '2024-12-15 14:20', failureReason: '' },
+            { id: 3, fileName: '理赔_金鼎矿业_现场照片.jpg', fileSize: '3.1 MB', status: '已完成', createTime: '2024-12-10 11:00', modifyTime: '2024-12-10 11:05', failureReason: '' },
+            { id: 4, fileName: '理赔_永安烟花_材料.pdf', fileSize: '1.2 MB', status: '识别失败', createTime: '2024-12-08 16:45', modifyTime: '2024-12-08 16:50', failureReason: 'PDF文件格式损坏，无法解析内容，请重新上传' },
+            { id: 5, fileName: '理赔_建安建筑_医疗凭证.pdf', fileSize: '0.9 MB', status: '待识别', createTime: '2024-12-20 08:30', modifyTime: '2024-12-20 08:30', failureReason: '' }
         ];
         var aiClaimOcrCurrentPage = 1;
         var aiClaimOcrPageSize = 10;
@@ -26105,7 +26236,14 @@ function showPcPortalSelector() {
                 html += '<div style="overflow:hidden;text-overflow:ellipsis;white-space:nowrap;min-width:0;"><div style="font-weight:500;color:#333;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;" title="' + item.fileName + '">' + item.fileName + '</div>';
                 html += '<div style="font-size:12px;color:#999;">' + item.fileSize + '</div></div></div></td>';
                 html += '<td><span style="display:inline-block;padding:2px 10px;border-radius:4px;font-size:12px;background:' + sc.bg + ';color:' + sc.color + ';border:1px solid ' + sc.border + ';">' + item.status + '</span></td>';
-                html += '<td>' + item.createTime + '</td><td>' + item.modifyTime + '</td>';
+                // 失败原因列
+                if (item.status === '识别失败' && item.failureReason) {
+                    html += '<td><div style="color:#ff4d4f;font-size:12px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;" title="' + item.failureReason + '">' + item.failureReason + '</div></td>';
+                } else {
+                    html += '<td><span style="color:#999;font-size:12px;">-</span></td>';
+                }
+                html += '<td>' + item.createTime + '</td>';
+                html += '<td>' + item.modifyTime + '</td>';
                 html += '<td class="col-action" style="position:sticky;right:0;background:#fff;z-index:5;box-shadow:-2px 0 6px rgba(0,0,0,0.08);">';
                 html += '<div class="insurance-list-actions">';
                 if (item.status === '识别失败' || item.status === '待识别') { html += '<button class="insurance-list-action-btn" onclick="retryAiClaimOcr(' + item.id + ')">重新识别</button>'; }
@@ -26192,7 +26330,7 @@ function showPcPortalSelector() {
            ================================================ */
 
         var preventServiceData = [
-            { id: 1, serviceNo: 'FW2024010001', insuredName: '肇庆市鑫达化工有限公司', policyNo: 'PXAZ20240100001', policyStatus: '在保', insuranceCompany: '中国人民财产保险股份有限公司肇庆分公司', category: '危险化学品', premium: 180000, insuredAddress: '肇庆市端州区工业大道18号', startDate: '2024-01-01', endDate: '2024-12-31', serviceForm: '单独', serviceCategory: '生产安全事故隐患排查', serviceOrg: '肇庆市安全生产协会', serviceFee: 8000, status: '服务完成', servicePerson: '张明华', serviceTime: '2024-06-15', pendingRectification: 0, pendingReview: 0, completedRectification: 3, hasMajorHazard: '否', createTime: '2024-05-20 09:00', remark: '' },
+            { id: 1, serviceNo: 'FW2024010001', insuredName: '肇庆市鑫达化工有限公司', policyNo: 'PXAZ20240100001', policyStatus: '在保', insuranceCompany: '中国人民财产保险股份有限公司肇庆分公司', category: '危险化学品', premium: 180000, insuredAddress: '肇庆市端州区工业大道18号', startDate: '2024-01-01', endDate: '2024-12-31', serviceForm: '单独', serviceCategory: '生产安全事故隐患排查', serviceOrg: '肇庆市安全生产协会', serviceFee: 8000, status: '服务完成', servicePerson: '张明华', serviceTime: '2024-06-15', pendingRectification: 0, pendingReview: 0, completedRectification: 3, hasMajorHazard: '否', createTime: '2024-05-20 09:00', remark: '', hasEvaluation: true, evaluation: { companyStar: 5, companyTags: '专业,准时,负责', companyComment: '服务团队非常专业，按时完成隐患排查工作，提出了很多建设性建议。', adminResult: '合格', adminScore: '95', adminComment: '服务流程规范，报告完整详实。' } },
             { id: 2, serviceNo: 'FW2024010002', insuredName: '四会市宏盛冶炼厂', policyNo: 'PXAZ20240200002', policyStatus: '在保', insuranceCompany: '中国太平洋财产保险股份有限公司', category: '金属冶炼', premium: 250000, insuredAddress: '四会市大沙镇工业园区', startDate: '2024-02-01', endDate: '2025-01-31', serviceForm: '集中', serviceCategory: '安全生产宣传教育培训', serviceOrg: '肇庆市应急管理服务中心', serviceFee: 5000, status: '隐患整改中', servicePerson: '李建国', serviceTime: '2024-08-20', pendingRectification: 2, pendingReview: 1, completedRectification: 1, hasMajorHazard: '是', createTime: '2024-07-15 10:30', remark: '存在重大安全隐患需重点关注' },
             { id: 3, serviceNo: 'FW2024010003', insuredName: '高要区金鼎矿业公司', policyNo: 'PXAZ20240300003', policyStatus: '在保', insuranceCompany: '中国平安财产保险股份有限公司肇庆中心支公司', category: '非煤矿山', premium: 320000, insuredAddress: '高要区白土镇矿区', startDate: '2024-03-01', endDate: '2025-02-28', serviceForm: '单独', serviceCategory: '安全风险辨识评估和安全评价', serviceOrg: '广东省安全生产技术中心', serviceFee: 15000, status: '待指派专家', servicePerson: '', serviceTime: '', pendingRectification: 0, pendingReview: 0, completedRectification: 0, hasMajorHazard: '否', createTime: '2024-10-01 14:00', remark: '' },
             { id: 4, serviceNo: 'FW2024010004', insuredName: '广宁县永安烟花爆竹经营部', policyNo: 'PXAZ20240400004', policyStatus: '脱保', insuranceCompany: '中华联合财产保险股份有限公司肇庆中心支公司', category: '烟花爆竹', premium: 95000, insuredAddress: '广宁县南街镇仓库', startDate: '2023-07-01', endDate: '2024-06-30', serviceForm: '单独', serviceCategory: '生产安全事故隐患排查', serviceOrg: '肇庆市安全生产协会', serviceFee: 6000, status: '整改待审核', servicePerson: '王秀芳', serviceTime: '2024-05-10', pendingRectification: 1, pendingReview: 2, completedRectification: 2, hasMajorHazard: '否', createTime: '2024-04-20 16:00', remark: '' },
@@ -26396,12 +26534,203 @@ function showPcPortalSelector() {
                     '<div class="desc-item"><div class="desc-label">重大隐患</div><div class="desc-value"><span style="display:inline-block;padding:2px 8px;border-radius:4px;font-size:12px;background:' + hazardColor.bg + ';color:' + hazardColor.color + ';border:1px solid ' + hazardColor.border + ';">' + item.hasMajorHazard + '</span></div></div>' +
                     '<div class="desc-item"><div class="desc-label">创建时间</div><div class="desc-value">' + item.createTime + '</div></div>' +
                     '<div class="desc-item" style="grid-column:1/-1;"><div class="desc-label">备注</div><div class="desc-value">' + (item.remark || '-') + '</div></div>' +
+                    '<div class="desc-item" style="grid-column:1/-1;"><div class="desc-label">评价状态</div><div class="desc-value" id="serviceEvaluationStatus-' + item.id + '">' +
+                    (item.hasEvaluation ?
+                        '<span style="color:#52c41a;font-weight:500;">✓ 已评价</span> <a href="javascript:void(0)" onclick="showServiceEvaluationModal(' + item.id + ')" style="color:#1890ff;margin-left:8px;text-decoration:none;">查看详情</a>' :
+                        '<span style="color:#999;">未评价</span> <a href="javascript:void(0)" onclick="showServiceEvaluationModal(' + item.id + ')" style="color:#1890ff;margin-left:8px;text-decoration:none;">去评价</a>'
+                    ) + '</div></div>' +
                     '</div>';
             }
 
             // 确保render的时候不触发恢复
             drawer.setAttribute('data-skip-restore', 'true');
             showDrawer('viewPolicyDrawer');
+        }
+
+        var currentEvaluationServiceId = null;
+        var currentEvaluationData = {};
+
+        function showServiceEvaluationModal(id) {
+            var item = preventServiceData.find(function(d) { return d.id === id; });
+            if (!item) return;
+            currentEvaluationServiceId = id;
+            
+            var modalTitle = document.getElementById('serviceEvaluationModalTitle');
+            if (modalTitle) modalTitle.textContent = '服务评价 - ' + item.serviceNo;
+            
+            var isAdmin = false;
+            var isEnterprise = true;
+            
+            var html = '';
+            
+            html += '<div style="background:#fafafa;border-radius:8px;padding:16px;margin-bottom:16px;">';
+            html += '<div style="font-size:13px;color:#666;margin-bottom:8px;">被保险人（企业）评价</div>';
+            
+            if (item.evaluation) {
+                html += '<div style="margin-bottom:12px;">';
+                html += '<div style="font-size:12px;color:#999;margin-bottom:4px;">星级评分</div>';
+                for (var i = 1; i <= 5; i++) {
+                    html += '<span style="color:' + (i <= (item.evaluation.companyStar || 0) ? '#faad14' : '#d9d9d9') + ';font-size:18px;cursor:pointer;">★</span>';
+                }
+                html += '</div>';
+                if (item.evaluation.companyTags) {
+                    html += '<div style="margin-bottom:8px;">';
+                    html += '<div style="font-size:12px;color:#999;margin-bottom:4px;">评价标签</div>';
+                    var tags = item.evaluation.companyTags.split(',');
+                    tags.forEach(function(tag) {
+                        html += '<span style="display:inline-block;padding:2px 8px;background:#e6f7ff;color:#1890ff;border-radius:4px;font-size:12px;margin-right:4px;margin-bottom:4px;">' + tag.trim() + '</span>';
+                    });
+                    html += '</div>';
+                }
+                if (item.evaluation.companyComment) {
+                    html += '<div style="font-size:12px;color:#999;margin-bottom:4px;">文字评语</div>';
+                    html += '<div style="font-size:13px;color:#333;background:#fff;padding:8px;border-radius:4px;">' + item.evaluation.companyComment + '</div>';
+                }
+            } else {
+                if (isEnterprise) {
+                    html += '<div style="margin-bottom:12px;">';
+                    html += '<div style="font-size:12px;color:#999;margin-bottom:4px;">请评分</div>';
+                    html += '<div id="companyStarRating" onclick="setCompanyStar(event)">';
+                    for (var i = 1; i <= 5; i++) {
+                        html += '<span data-star="' + i + '" style="color:#d9d9d9;font-size:20px;cursor:pointer;margin-right:2px;">★</span>';
+                    }
+                    html += '</div>';
+                    html += '<input type="hidden" id="companyStarValue" value="0">';
+                    html += '</div>';
+                    html += '<div style="margin-bottom:12px;">';
+                    html += '<div style="font-size:12px;color:#999;margin-bottom:4px;">评价标签（可多选）</div>';
+                    html += '<div style="display:flex;flex-wrap:wrap;gap:8px;">';
+                    var companyTags = ['专业', '准时', '负责', '细致', '高效', '耐心'];
+                    companyTags.forEach(function(tag) {
+                        html += '<label style="cursor:pointer;"><input type="checkbox" value="' + tag + '" style="margin-right:4px;" onchange="toggleCompanyTag(this)"><span style="font-size:13px;color:#333;">' + tag + '</span></label>';
+                    });
+                    html += '</div>';
+                    html += '</div>';
+                    html += '<div>';
+                    html += '<div style="font-size:12px;color:#999;margin-bottom:4px;">文字评语</div>';
+                    html += '<textarea id="companyCommentInput" class="insurance-list-form-textarea" rows="3" placeholder="请输入您的评价..."></textarea>';
+                    html += '</div>';
+                } else {
+                    html += '<div style="color:#999;font-size:13px;text-align:center;padding:16px;">该企业尚未评价</div>';
+                }
+            }
+            html += '</div>';
+            
+            html += '<div style="background:#fafafa;border-radius:8px;padding:16px;margin-bottom:16px;">';
+            html += '<div style="font-size:13px;color:#666;margin-bottom:8px;">管理员评价（平台方）</div>';
+            if (item.evaluation && item.evaluation.adminResult) {
+                html += '<div style="margin-bottom:8px;">';
+                html += '<div style="font-size:12px;color:#999;margin-bottom:4px;">审核意见</div>';
+                html += '<div><span style="display:inline-block;padding:2px 8px;background:' + (item.evaluation.adminResult === '合格' ? '#f6ffed;color:#52c41a;border:1px solid #b7eb8f' : '#fff2f0;color:#ff4d4f;border:1px solid #ffccc7') + ';border-radius:4px;font-size:12px;">' + item.evaluation.adminResult + '</span></div>';
+                html += '</div>';
+                html += '<div style="margin-bottom:8px;">';
+                html += '<div style="font-size:12px;color:#999;margin-bottom:4px;">合规性打分</div>';
+                html += '<div style="font-size:14px;color:#333;">' + (item.evaluation.adminScore || '-') + ' / 100</div>';
+                html += '</div>';
+                if (item.evaluation.adminComment) {
+                    html += '<div>';
+                    html += '<div style="font-size:12px;color:#999;margin-bottom:4px;">文字备注</div>';
+                    html += '<div style="font-size:13px;color:#333;background:#fff;padding:8px;border-radius:4px;">' + item.evaluation.adminComment + '</div>';
+                    html += '</div>';
+                }
+            } else {
+                if (isAdmin) {
+                    html += '<div style="margin-bottom:12px;">';
+                    html += '<div style="font-size:12px;color:#999;margin-bottom:4px;"><span class="required">*</span>审核意见</div>';
+                    html += '<select id="adminResultInput" class="insurance-list-form-select">';
+                    html += '<option value="">请选择</option>';
+                    html += '<option value="合格">合格</option>';
+                    html += '<option value="不合格">不合格</option>';
+                    html += '</select>';
+                    html += '</div>';
+                    html += '<div style="margin-bottom:12px;">';
+                    html += '<div style="font-size:12px;color:#999;margin-bottom:4px;">合规性打分</div>';
+                    html += '<input type="number" id="adminScoreInput" class="insurance-list-form-input" placeholder="请输入0-100的分数" min="0" max="100">';
+                    html += '</div>';
+                    html += '<div>';
+                    html += '<div style="font-size:12px;color:#999;margin-bottom:4px;">文字备注</div>';
+                    html += '<textarea id="adminCommentInput" class="insurance-list-form-textarea" rows="3" placeholder="请输入审核备注..."></textarea>';
+                    html += '</div>';
+                } else {
+                    html += '<div style="color:#999;font-size:13px;text-align:center;padding:16px;">管理员尚未评价</div>';
+                }
+            }
+            html += '</div>';
+            
+            var bodyEl = document.getElementById('serviceEvaluationModalBody');
+            if (bodyEl) bodyEl.innerHTML = html;
+            
+            var submitBtn = document.getElementById('serviceEvaluationSubmitBtn');
+            if (submitBtn) {
+                if (!isAdmin && !isEnterprise) {
+                    submitBtn.style.display = 'none';
+                } else {
+                    submitBtn.style.display = 'inline-block';
+                }
+            }
+            
+            showModal('serviceEvaluationModal');
+        }
+
+        function setCompanyStar(event) {
+            var star = event.target.dataset.star;
+            if (!star) return;
+            var ratingEl = document.getElementById('companyStarRating');
+            var inputEl = document.getElementById('companyStarValue');
+            if (ratingEl && inputEl) {
+                inputEl.value = star;
+                var stars = ratingEl.querySelectorAll('span');
+                stars.forEach(function(s, index) {
+                    s.style.color = index < star ? '#faad14' : '#d9d9d9';
+                });
+            }
+        }
+
+        function toggleCompanyTag(checkbox) {
+        }
+
+        function submitServiceEvaluation() {
+            if (!currentEvaluationServiceId) return;
+            var item = preventServiceData.find(function(d) { return d.id === currentEvaluationServiceId; });
+            if (!item) return;
+            
+            var companyStar = document.getElementById('companyStarValue');
+            var companyComment = document.getElementById('companyCommentInput');
+            var adminResult = document.getElementById('adminResultInput');
+            var adminScore = document.getElementById('adminScoreInput');
+            var adminComment = document.getElementById('adminCommentInput');
+            
+            if (!item.evaluation) item.evaluation = {};
+            
+            if (companyStar && companyStar.value && companyStar.value !== '0') {
+                item.evaluation.companyStar = parseInt(companyStar.value);
+            }
+            
+            if (companyComment && companyComment.value.trim()) {
+                var checkboxes = document.querySelectorAll('#serviceEvaluationModalBody input[type="checkbox"]:checked');
+                var tags = [];
+                checkboxes.forEach(function(cb) { tags.push(cb.value); });
+                item.evaluation.companyTags = tags.join(',');
+                item.evaluation.companyComment = companyComment.value.trim();
+            }
+            
+            if (adminResult && adminResult.value) {
+                item.evaluation.adminResult = adminResult.value;
+                item.evaluation.adminScore = adminScore && adminScore.value ? adminScore.value : '';
+                item.evaluation.adminComment = adminComment && adminComment.value.trim() ? adminComment.value.trim() : '';
+            }
+            
+            if (item.evaluation.companyStar || item.evaluation.adminResult) {
+                item.hasEvaluation = true;
+            }
+            
+            var statusEl = document.getElementById('serviceEvaluationStatus-' + item.id);
+            if (statusEl) {
+                statusEl.innerHTML = '<span style="color:#52c41a;font-weight:500;">✓ 已评价</span> <a href="javascript:void(0)" onclick="showServiceEvaluationModal(' + item.id + ')" style="color:#1890ff;margin-left:8px;text-decoration:none;">查看详情</a>';
+            }
+            
+            closeModal('serviceEvaluationModal');
+            alert('评价提交成功！');
         }
 
         function deletePreventServiceRemark(id) {
@@ -31947,11 +32276,11 @@ function showPcPortalSelector() {
         
         /* ====== 服务机构列表 ====== */
         const serviceOrgData = [
-            {id:1, name:'肇庆市安全生产协会', account:'aqsc_zq@001', area:'肇庆', address:'肇庆市端州区星湖大道1号', staffCount:25, createDate:'2023-06-15', relatedInsurance:'中国人民财产保险', status:'启用'},
-            {id:2, name:'肇庆市应急管理协会', account:'yjgl_zq@001', area:'肇庆', address:'肇庆市端州区天宁北路8号', staffCount:18, createDate:'2023-08-20', relatedInsurance:'中国太平洋财产保险', status:'启用'},
-            {id:3, name:'肇庆市安全生产技术服务中心', account:'jsfw_zq@001', area:'肇庆', address:'肇庆市鼎湖区桂城街道办', staffCount:12, createDate:'2024-01-10', relatedInsurance:'中国平安财产保险', status:'启用'},
-            {id:4, name:'四会市安全生产协会', account:'aqsh_sh@001', area:'四会', address:'四会市东城街道工业大道', staffCount:8, createDate:'2024-02-28', relatedInsurance:'中华联合财产保险', status:'启用'},
-            {id:5, name:'高要区安全生产协会', account:'aqgy_gy@001', area:'高要', address:'高要区南岸街道府前大街', staffCount:6, createDate:'2024-04-12', relatedInsurance:'大地财产保险', status:'启用'},
+            {id:1, name:'肇庆市安全生产协会', account:'aqsc_zq@001', area:'肇庆', address:'肇庆市端州区星湖大道1号', staffCount:25, createDate:'2023-06-15', relatedInsurance:'中国人民财产保险', status:'启用', overallScore:4.8, companyAvgScore:4.9, companyReviewCount:50, adminAvgScore:4.7, lastAdminReview:'2024-05-20', lastAdminResult:'合格', dimensions:{professionalism:4.9, responseSpeed:4.7, serviceAttitude:4.8}},
+            {id:2, name:'肇庆市应急管理协会', account:'yjgl_zq@001', area:'肇庆', address:'肇庆市端州区天宁北路8号', staffCount:18, createDate:'2023-08-20', relatedInsurance:'中国太平洋财产保险', status:'启用', overallScore:4.6, companyAvgScore:4.5, companyReviewCount:35, adminAvgScore:4.7, lastAdminReview:'2024-04-15', lastAdminResult:'合格', dimensions:{professionalism:4.6, responseSpeed:4.5, serviceAttitude:4.7}},
+            {id:3, name:'肇庆市安全生产技术服务中心', account:'jsfw_zq@001', area:'肇庆', address:'肇庆市鼎湖区桂城街道办', staffCount:12, createDate:'2024-01-10', relatedInsurance:'中国平安财产保险', status:'启用', overallScore:4.9, companyAvgScore:5.0, companyReviewCount:28, adminAvgScore:4.8, lastAdminReview:'2024-05-18', lastAdminResult:'合格', dimensions:{professionalism:5.0, responseSpeed:4.8, serviceAttitude:4.9}},
+            {id:4, name:'四会市安全生产协会', account:'aqsh_sh@001', area:'四会', address:'四会市东城街道工业大道', staffCount:8, createDate:'2024-02-28', relatedInsurance:'中华联合财产保险', status:'启用', overallScore:4.3, companyAvgScore:4.2, companyReviewCount:18, adminAvgScore:4.5, lastAdminReview:'2024-03-20', lastAdminResult:'合格', dimensions:{professionalism:4.3, responseSpeed:4.2, serviceAttitude:4.4}},
+            {id:5, name:'高要区安全生产协会', account:'aqgy_gy@001', area:'高要', address:'高要区南岸街道府前大街', staffCount:6, createDate:'2024-04-12', relatedInsurance:'大地财产保险', status:'启用', overallScore:0, companyAvgScore:0, companyReviewCount:0, adminAvgScore:0, lastAdminReview:'', lastAdminResult:'', dimensions:{professionalism:0, responseSpeed:0, serviceAttitude:0}},
         ];
         let soPage = 1, soPageSize = 10;
         
@@ -31962,6 +32291,12 @@ function showPcPortalSelector() {
             const data = serviceOrgData.slice(start, start + soPageSize);
             let html = '';
             data.forEach(item => {
+                var scoreHtml = '';
+                if (item.overallScore > 0) {
+                    scoreHtml = '<span style="color:#faad14;">' + item.overallScore + '</span>';
+                } else {
+                    scoreHtml = '<span style="color:#999;">-</span>';
+                }
                 html += '<tr>';
                 html += '<td>' + item.id + '</td>';
                 html += '<td style="overflow:hidden;text-overflow:ellipsis;white-space:nowrap;" title="' + item.name + '">' + item.name + '</td>';
@@ -31971,8 +32306,9 @@ function showPcPortalSelector() {
                 html += '<td>' + item.staffCount + '</td>';
                 html += '<td>' + item.createDate + '</td>';
                 html += '<td style="overflow:hidden;text-overflow:ellipsis;white-space:nowrap;" title="' + item.relatedInsurance + '">' + item.relatedInsurance + '</td>';
+                html += '<td>' + scoreHtml + '</td>';
                 html += '<td><span class="insurance-list-tag insurance-list-tag-green">' + item.status + '</span></td>';
-                html += '<td class="col-action"><button class="insurance-list-btn insurance-list-btn-outline insurance-list-btn-xs" onclick="editSO(' + item.id + ')">编辑</button><button class="insurance-list-btn insurance-list-btn-gray insurance-list-btn-xs" onclick="viewSO(' + item.id + ')" style="margin-left:4px;">查看</button><button class="insurance-list-btn insurance-list-btn-outline insurance-list-btn-xs" onclick="addExpert(' + item.id + ')" style="margin-left:4px;">添加专家</button><button class="insurance-list-btn insurance-list-btn-red insurance-list-btn-xs" onclick="deleteSO(' + item.id + ')" style="margin-left:4px;">删除</button></td>';
+                html += '<td class="col-action"><button class="insurance-list-btn insurance-list-btn-outline insurance-list-btn-xs" onclick="editSO(' + item.id + ')">编辑</button><button class="insurance-list-btn insurance-list-btn-gray insurance-list-btn-xs" onclick="viewSODetail(' + item.id + ')" style="margin-left:4px;">查看</button><button class="insurance-list-btn insurance-list-btn-outline insurance-list-btn-xs" onclick="addExpert(' + item.id + ')" style="margin-left:4px;">添加专家</button><button class="insurance-list-btn insurance-list-btn-red insurance-list-btn-xs" onclick="deleteSO(' + item.id + ')" style="margin-left:4px;">删除</button></td>';
                 html += '</tr>';
             });
             tbody.innerHTML = html;
@@ -31983,6 +32319,359 @@ function showPcPortalSelector() {
         function soNextPage(){if(soPage*soPageSize<serviceOrgData.length){soPage++;renderSOTable();}}
         function doSOFilter(){renderSOTable();}
         function resetSOFilter(){document.getElementById('soFilterKeyword').value='';renderSOTable();}
+        
+        var currentServiceOrgId = null;
+        var isAdminUser = false;
+        
+        var serviceOrgEvaluationRecords = {
+            1: [
+                {id:1, serviceNo:'FW2024010001', company:'肇庆市鑫达化工有限公司', serviceDate:'2024-06-15', star:5, tags:'专业,准时,负责', comment:'服务团队非常专业，按时完成隐患排查工作。', createTime:'2024-06-16'},
+                {id:2, serviceNo:'FW2024020002', company:'广东华昌铝材有限公司', serviceDate:'2024-07-20', star:5, tags:'专业,高效', comment:'专家水平很高，给出了很多实用建议。', createTime:'2024-07-21'},
+                {id:3, serviceNo:'FW2024030003', company:'四会市宏盛冶炼厂', serviceDate:'2024-08-10', star:4, tags:'准时,负责', comment:'服务态度好，响应及时。', createTime:'2024-08-11'},
+            ],
+            2: [
+                {id:1, serviceNo:'FW2024040004', company:'高要区金鼎矿业公司', serviceDate:'2024-05-10', star:5, tags:'专业,细致', comment:'隐患排查非常全面。', createTime:'2024-05-11'},
+            ],
+            3: [
+                {id:1, serviceNo:'FW2024050005', company:'鼎湖区建安建筑工程有限公司', serviceDate:'2024-09-05', star:5, tags:'专业,准时,负责,细致,高效', comment:'五星服务，无可挑剔！', createTime:'2024-09-06'},
+            ],
+            4: [
+                {id:1, serviceNo:'FW2024060006', company:'广宁县永安烟花爆竹经营部', serviceDate:'2024-04-20', star:4, tags:'负责,耐心', comment:'服务人员耐心解答问题。', createTime:'2024-04-21'},
+            ]
+        };
+        
+        var serviceOrgAdminRecords = {
+            1: [
+                {id:1, reviewDate:'2024-05-20', score:95, result:'合格', reviewer:'管理员A', comment:'服务流程规范，报告完整详实。'},
+                {id:2, reviewDate:'2024-02-15', score:90, result:'合格', reviewer:'管理员B', comment:'整体表现良好。'},
+            ],
+            2: [
+                {id:1, reviewDate:'2024-04-15', score:92, result:'合格', reviewer:'管理员A', comment:'服务态度好。'},
+            ],
+            3: [
+                {id:1, reviewDate:'2024-05-18', score:98, result:'合格', reviewer:'管理员A', comment:'优秀典范，值得推广。'},
+            ],
+            4: [
+                {id:1, reviewDate:'2024-03-20', score:85, result:'合格', reviewer:'管理员B', comment:'基本达标。'},
+            ]
+        };
+        
+        function viewSODetail(id) {
+            var item = serviceOrgData.find(function(d) { return d.id === id; });
+            if (!item) return;
+            currentServiceOrgId = id;
+            
+            var titleEl = document.getElementById('serviceOrgDrawerTitle');
+            if (titleEl) titleEl.textContent = item.name + ' - 详情';
+            
+            var bodyEl = document.getElementById('serviceOrgDrawerBody');
+            if (!bodyEl) return;
+            
+            var html = '';
+            
+            html += '<div style="margin-bottom:24px;">';
+            html += '<div style="font-size:15px;font-weight:600;color:#333;margin-bottom:12px;padding-left:10px;border-left:3px solid #1890ff;">机构基础信息</div>';
+            html += '<div style="display:grid;grid-template-columns:repeat(2,1fr);gap:12px;">';
+            html += '<div><div style="font-size:12px;color:#999;margin-bottom:2px;">机构名称</div><div style="font-size:14px;color:#333;">' + item.name + '</div></div>';
+            html += '<div><div style="font-size:12px;color:#999;margin-bottom:2px;">账号</div><div style="font-size:14px;color:#333;">' + item.account + '</div></div>';
+            html += '<div><div style="font-size:12px;color:#999;margin-bottom:2px;">地区</div><div style="font-size:14px;color:#333;">' + item.area + '</div></div>';
+            html += '<div><div style="font-size:12px;color:#999;margin-bottom:2px;">服务人员数</div><div style="font-size:14px;color:#333;">' + item.staffCount + ' 人</div></div>';
+            html += '<div><div style="font-size:12px;color:#999;margin-bottom:2px;">关联保险机构</div><div style="font-size:14px;color:#333;">' + item.relatedInsurance + '</div></div>';
+            html += '<div><div style="font-size:12px;color:#999;margin-bottom:2px;">创建日期</div><div style="font-size:14px;color:#333;">' + item.createDate + '</div></div>';
+            html += '<div style="grid-column:1/-1;"><div style="font-size:12px;color:#999;margin-bottom:2px;">实际经营地址</div><div style="font-size:14px;color:#333;">' + item.address + '</div></div>';
+            html += '<div><div style="font-size:12px;color:#999;margin-bottom:2px;">状态</div><div style="font-size:14px;"><span class="insurance-list-tag insurance-list-tag-green">' + item.status + '</span></div></div>';
+            html += '</div>';
+            html += '</div>';
+            
+            html += '<div>';
+            html += '<div style="font-size:15px;font-weight:600;color:#333;margin-bottom:12px;padding-left:10px;border-left:3px solid #1890ff;">评价信息</div>';
+            
+            html += '<div style="background:#fafafa;border-radius:8px;padding:16px;margin-bottom:16px;">';
+            html += '<div style="font-size:13px;color:#666;margin-bottom:12px;font-weight:500;">综合评分</div>';
+            if (item.overallScore > 0) {
+                html += '<div style="display:flex;align-items:center;gap:16px;margin-bottom:16px;">';
+                html += '<div style="font-size:32px;color:#faad14;font-weight:600;">' + item.overallScore + '</div>';
+                html += '<div style="flex:1;">';
+                for (var i = 1; i <= 5; i++) {
+                    html += '<span style="color:' + (i <= Math.round(item.overallScore) ? '#faad14' : '#d9d9d9') + ';font-size:16px;">★</span>';
+                }
+                html += '</div>';
+                html += '</div>';
+                
+                html += '<div style="display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:12px;">';
+                html += '<div style="text-align:center;padding:8px;background:#fff;border-radius:4px;">';
+                html += '<div style="font-size:11px;color:#999;margin-bottom:2px;">专业度</div>';
+                html += '<div style="font-size:16px;color:#333;font-weight:500;">' + (item.dimensions && item.dimensions.professionalism > 0 ? item.dimensions.professionalism : '-') + '</div>';
+                html += '</div>';
+                html += '<div style="text-align:center;padding:8px;background:#fff;border-radius:4px;">';
+                html += '<div style="font-size:11px;color:#999;margin-bottom:2px;">响应速度</div>';
+                html += '<div style="font-size:16px;color:#333;font-weight:500;">' + (item.dimensions && item.dimensions.responseSpeed > 0 ? item.dimensions.responseSpeed : '-') + '</div>';
+                html += '</div>';
+                html += '<div style="text-align:center;padding:8px;background:#fff;border-radius:4px;">';
+                html += '<div style="font-size:11px;color:#999;margin-bottom:2px;">服务态度</div>';
+                html += '<div style="font-size:16px;color:#333;font-weight:500;">' + (item.dimensions && item.dimensions.serviceAttitude > 0 ? item.dimensions.serviceAttitude : '-') + '</div>';
+                html += '</div>';
+                html += '</div>';
+                
+                html += '<div style="height:8px;background:#e8e8e8;border-radius:4px;overflow:hidden;margin-bottom:4px;">';
+                var barWidth = (item.overallScore / 5) * 100;
+                html += '<div style="height:100%;width:' + barWidth + '%;background:linear-gradient(90deg,#faad14,#ff9c2e);border-radius:4px;"></div>';
+                html += '</div>';
+                html += '<div style="font-size:11px;color:#999;text-align:right;">满分5分</div>';
+            } else {
+                html += '<div style="text-align:center;padding:20px;color:#999;">暂无评分数据</div>';
+            }
+            html += '</div>';
+            
+            html += '<div style="background:#fff;border:1px solid #e8e8e8;border-radius:8px;padding:16px;margin-bottom:12px;">';
+            html += '<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;">';
+            html += '<div><span style="font-size:13px;color:#333;font-weight:500;margin-right:8px;">企业评价</span><span style="font-size:12px;color:#999;">（来自服务对象）</span></div>';
+            if (item.companyReviewCount > 0) {
+                html += '<a href="javascript:void(0)" onclick="showCompanyEvaluations(' + id + ')" style="color:#1890ff;font-size:12px;text-decoration:none;">查看具体评价列表 →</a>';
+            }
+            html += '</div>';
+            html += '<div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">';
+            html += '<div style="padding:12px;background:#fafafa;border-radius:4px;text-align:center;">';
+            html += '<div style="font-size:11px;color:#999;margin-bottom:4px;">平均分</div>';
+            html += '<div style="font-size:20px;color:#faad14;font-weight:600;">' + (item.companyAvgScore > 0 ? item.companyAvgScore : '-') + '</div>';
+            html += '</div>';
+            html += '<div style="padding:12px;background:#fafafa;border-radius:4px;text-align:center;">';
+            html += '<div style="font-size:11px;color:#999;margin-bottom:4px;">评价数</div>';
+            html += '<div style="font-size:20px;color:#333;font-weight:600;">' + item.companyReviewCount + ' 条</div>';
+            html += '</div>';
+            html += '</div>';
+            html += '</div>';
+            
+            html += '<div style="background:#fff;border:1px solid #e8e8e8;border-radius:8px;padding:16px;">';
+            html += '<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;">';
+            html += '<div><span style="font-size:13px;color:#333;font-weight:500;margin-right:8px;">平台/管理员评价</span><span style="font-size:12px;color:#999;">（内部考核）</span></div>';
+            if (item.lastAdminReview) {
+                html += '<a href="javascript:void(0)" onclick="showAdminEvaluations(' + id + ')" style="color:#1890ff;font-size:12px;text-decoration:none;">查看记录 →</a>';
+            }
+            if (isAdminUser) {
+                html += '<button class="insurance-list-btn insurance-list-btn-primary insurance-list-btn-xs" onclick="showAddAdminEvaluation(' + id + ')">新增考核</button>';
+            }
+            html += '</div>';
+            html += '<div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;">';
+            html += '<div style="padding:12px;background:#fafafa;border-radius:4px;text-align:center;">';
+            html += '<div style="font-size:11px;color:#999;margin-bottom:4px;">平均分</div>';
+            html += '<div style="font-size:20px;color:#722ed1;font-weight:600;">' + (item.adminAvgScore > 0 ? item.adminAvgScore : '-') + '</div>';
+            html += '</div>';
+            html += '<div style="padding:12px;background:#fafafa;border-radius:4px;text-align:center;">';
+            html += '<div style="font-size:11px;color:#999;margin-bottom:4px;">最近考核</div>';
+            html += '<div style="font-size:13px;color:#333;font-weight:500;">' + (item.lastAdminReview || '-') + '</div>';
+            html += '</div>';
+            html += '<div style="padding:12px;background:#fafafa;border-radius:4px;text-align:center;">';
+            html += '<div style="font-size:11px;color:#999;margin-bottom:4px;">考核结果</div>';
+            html += '<div style="font-size:14px;">' + (item.lastAdminResult ? '<span style="display:inline-block;padding:2px 8px;background:' + (item.lastAdminResult === '合格' ? '#f6ffed;color:#52c41a;border:1px solid #b7eb8f' : '#fff2f0;color:#ff4d4f;border:1px solid #ffccc7') + ';border-radius:4px;">' + item.lastAdminResult + '</span>' : '-') + '</div>';
+            html += '</div>';
+            html += '</div>';
+            html += '</div>';
+            
+            html += '</div>';
+            
+            bodyEl.innerHTML = html;
+            
+            var drawer = document.getElementById('serviceOrgDetailDrawer');
+            if (drawer) {
+                drawer.style.display = 'block';
+                drawer.classList.add('show');
+            }
+        }
+        
+        function closeServiceOrgDrawer() {
+            var drawer = document.getElementById('serviceOrgDetailDrawer');
+            if (drawer) {
+                drawer.style.display = 'none';
+                drawer.classList.remove('show');
+            }
+        }
+        
+        function showCompanyEvaluations(orgId) {
+            var records = serviceOrgEvaluationRecords[orgId] || [];
+            var item = serviceOrgData.find(function(d) { return d.id === orgId; });
+            
+            var titleEl = document.getElementById('serviceOrgEvaluationModalTitle');
+            if (titleEl) titleEl.textContent = '企业评价详情 - ' + (item ? item.name : '');
+            
+            var bodyEl = document.getElementById('serviceOrgEvaluationModalBody');
+            if (!bodyEl) return;
+            
+            var html = '';
+            
+            if (records.length === 0) {
+                html += '<div style="text-align:center;padding:40px;color:#999;">暂无企业评价记录</div>';
+            } else {
+                html += '<div style="font-size:13px;color:#666;margin-bottom:16px;">共 ' + records.length + ' 条评价记录</div>';
+                records.forEach(function(record) {
+                    html += '<div style="background:#fafafa;border-radius:8px;padding:16px;margin-bottom:12px;">';
+                    html += '<div style="display:flex;justify-content:space-between;margin-bottom:8px;">';
+                    html += '<div><span style="font-size:14px;color:#333;font-weight:500;">' + record.company + '</span></div>';
+                    html += '<div style="color:#999;font-size:12px;">' + record.createTime + '</div>';
+                    html += '</div>';
+                    html += '<div style="font-size:12px;color:#666;margin-bottom:6px;">服务编号：' + record.serviceNo + ' | 服务日期：' + record.serviceDate + '</div>';
+                    html += '<div style="margin-bottom:8px;">';
+                    for (var i = 1; i <= 5; i++) {
+                        html += '<span style="color:' + (i <= record.star ? '#faad14' : '#d9d9d9') + ';font-size:14px;">★</span>';
+                    }
+                    html += '</div>';
+                    if (record.tags) {
+                        html += '<div style="margin-bottom:8px;">';
+                        var tags = record.tags.split(',');
+                        tags.forEach(function(tag) {
+                            html += '<span style="display:inline-block;padding:2px 8px;background:#e6f7ff;color:#1890ff;border-radius:4px;font-size:12px;margin-right:4px;">' + tag.trim() + '</span>';
+                        });
+                        html += '</div>';
+                    }
+                    if (record.comment) {
+                        html += '<div style="font-size:13px;color:#333;line-height:1.6;padding:8px;background:#fff;border-radius:4px;">' + record.comment + '</div>';
+                    }
+                    html += '</div>';
+                });
+            }
+            
+            bodyEl.innerHTML = html;
+            showModal('serviceOrgEvaluationModal');
+        }
+        
+        function showAdminEvaluations(orgId) {
+            var records = serviceOrgAdminRecords[orgId] || [];
+            var item = serviceOrgData.find(function(d) { return d.id === orgId; });
+            
+            var titleEl = document.getElementById('serviceOrgEvaluationModalTitle');
+            if (titleEl) titleEl.textContent = '管理员考核记录 - ' + (item ? item.name : '');
+            
+            var bodyEl = document.getElementById('serviceOrgEvaluationModalBody');
+            if (!bodyEl) return;
+            
+            var html = '';
+            
+            if (records.length === 0) {
+                html += '<div style="text-align:center;padding:40px;color:#999;">暂无考核记录</div>';
+            } else {
+                html += '<div style="font-size:13px;color:#666;margin-bottom:16px;">共 ' + records.length + ' 条考核记录</div>';
+                records.forEach(function(record) {
+                    html += '<div style="background:#fafafa;border-radius:8px;padding:16px;margin-bottom:12px;border-left:3px solid #722ed1;">';
+                    html += '<div style="display:flex;justify-content:space-between;margin-bottom:8px;">';
+                    html += '<div><span style="font-size:14px;color:#722ed1;font-weight:500;">' + record.reviewer + '</span></div>';
+                    html += '<div style="color:#999;font-size:12px;">' + record.reviewDate + '</div>';
+                    html += '</div>';
+                    html += '<div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:8px;">';
+                    html += '<div style="padding:8px;background:#fff;border-radius:4px;text-align:center;">';
+                    html += '<div style="font-size:11px;color:#999;margin-bottom:2px;">合规性打分</div>';
+                    html += '<div style="font-size:18px;color:#722ed1;font-weight:600;">' + record.score + '</div>';
+                    html += '</div>';
+                    html += '<div style="padding:8px;background:#fff;border-radius:4px;text-align:center;">';
+                    html += '<div style="font-size:11px;color:#999;margin-bottom:2px;">考核结果</div>';
+                    html += '<div style="font-size:14px;"><span style="display:inline-block;padding:2px 8px;background:' + (record.result === '合格' ? '#f6ffed;color:#52c41a;border:1px solid #b7eb8f' : '#fff2f0;color:#ff4d4f;border:1px solid #ffccc7') + ';border-radius:4px;">' + record.result + '</span></div>';
+                    html += '</div>';
+                    html += '</div>';
+                    if (record.comment) {
+                        html += '<div style="font-size:13px;color:#333;line-height:1.6;">' + record.comment + '</div>';
+                    }
+                    html += '</div>';
+                });
+            }
+            
+            if (isAdminUser) {
+                html += '<div style="text-align:center;margin-top:16px;">';
+                html += '<button class="insurance-list-btn insurance-list-btn-primary" onclick="showAddAdminEvaluation(' + orgId + ')">新增考核</button>';
+                html += '</div>';
+            }
+            
+            bodyEl.innerHTML = html;
+            showModal('serviceOrgEvaluationModal');
+        }
+        
+        function showAddAdminEvaluation(orgId) {
+            var item = serviceOrgData.find(function(d) { return d.id === orgId; });
+            if (!item) return;
+            
+            var titleEl = document.getElementById('serviceOrgEvaluationModalTitle');
+            if (titleEl) titleEl.textContent = '新增管理员考核 - ' + item.name;
+            
+            var bodyEl = document.getElementById('serviceOrgEvaluationModalBody');
+            if (!bodyEl) return;
+            
+            var html = '';
+            html += '<div class="insurance-list-form-group">';
+            html += '<label class="insurance-list-form-label"><span class="required">*</span>考核日期</label>';
+            html += '<input type="date" class="insurance-list-form-input" id="adminReviewDate" value="' + new Date().toISOString().split('T')[0] + '">';
+            html += '</div>';
+            html += '<div class="insurance-list-form-group">';
+            html += '<label class="insurance-list-form-label"><span class="required">*</span>合规性打分（0-100）</label>';
+            html += '<input type="number" class="insurance-list-form-input" id="adminReviewScore" placeholder="请输入0-100的分数" min="0" max="100">';
+            html += '</div>';
+            html += '<div class="insurance-list-form-group">';
+            html += '<label class="insurance-list-form-label"><span class="required">*</span>考核结果</label>';
+            html += '<select class="insurance-list-form-select" id="adminReviewResult">';
+            html += '<option value="">请选择</option>';
+            html += '<option value="合格">合格</option>';
+            html += '<option value="不合格">不合格</option>';
+            html += '</select>';
+            html += '</div>';
+            html += '<div class="insurance-list-form-group">';
+            html += '<label class="insurance-list-form-label">考核意见</label>';
+            html += '<textarea class="insurance-list-form-textarea" id="adminReviewComment" rows="4" placeholder="请输入考核意见..."></textarea>';
+            html += '</div>';
+            html += '<div style="text-align:center;margin-top:20px;">';
+            html += '<button class="insurance-list-btn insurance-list-btn-gray" onclick="showAdminEvaluations(' + orgId + ')" style="margin-right:12px;">取消</button>';
+            html += '<button class="insurance-list-btn insurance-list-btn-primary" onclick="submitAdminEvaluation(' + orgId + ')">提交考核</button>';
+            html += '</div>';
+            
+            bodyEl.innerHTML = html;
+            showModal('serviceOrgEvaluationModal');
+        }
+        
+        function submitAdminEvaluation(orgId) {
+            var scoreInput = document.getElementById('adminReviewScore');
+            var resultInput = document.getElementById('adminReviewResult');
+            var dateInput = document.getElementById('adminReviewDate');
+            var commentInput = document.getElementById('adminReviewComment');
+            
+            if (!scoreInput || !scoreInput.value) {
+                alert('请输入合规性打分');
+                return;
+            }
+            if (!resultInput || !resultInput.value) {
+                alert('请选择考核结果');
+                return;
+            }
+            
+            var item = serviceOrgData.find(function(d) { return d.id === orgId; });
+            if (!item) return;
+            
+            item.lastAdminReview = dateInput ? dateInput.value : new Date().toISOString().split('T')[0];
+            item.lastAdminResult = resultInput.value;
+            
+            var newRecord = {
+                id: Date.now(),
+                reviewDate: item.lastAdminReview,
+                score: scoreInput.value,
+                result: resultInput.value,
+                reviewer: '管理员A',
+                comment: commentInput ? commentInput.value : ''
+            };
+            
+            if (!serviceOrgAdminRecords[orgId]) {
+                serviceOrgAdminRecords[orgId] = [];
+            }
+            serviceOrgAdminRecords[orgId].unshift(newRecord);
+            
+            var totalScore = 0;
+            var count = 0;
+            serviceOrgAdminRecords[orgId].forEach(function(r) {
+                totalScore += parseInt(r.score);
+                count++;
+            });
+            item.adminAvgScore = (totalScore / count).toFixed(1);
+            item.overallScore = ((parseFloat(item.companyAvgScore) + parseFloat(item.adminAvgScore)) / 2).toFixed(1);
+            
+            renderSOTable();
+            closeModal('serviceOrgEvaluationModal');
+            viewSODetail(orgId);
+            alert('考核提交成功！');
+        }
         
         /* ====== 政府机构列表 ====== */
         const govOrgData = [
