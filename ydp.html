@@ -1,0 +1,1492 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>安责险信息平台智能看板</title>
+    <script src="https://cdn.jsdelivr.net/npm/echarts@5.4.3/dist/echarts.min.js"></script>
+    <style>
+        :root {
+            --bg-primary: #030B1F;
+            --bg-panel: rgba(10, 25, 55, 0.75);
+            --bg-panel-solid: #0A1937;
+            --border-glow: rgba(0, 224, 255, 0.35);
+            --border-glow-strong: rgba(0, 224, 255, 0.6);
+            --accent-cyan: #00E0FF;
+            --accent-cyan-dim: rgba(0, 224, 255, 0.15);
+            --accent-blue: #1E90FF;
+            --accent-green: #00D68F;
+            --accent-yellow: #FFB800;
+            --accent-orange: #FF6B35;
+            --accent-red: #FF4D4F;
+            --text-primary: #FFFFFF;
+            --text-secondary: #AABBCC;
+            --text-dim: #6B7A90;
+            --table-header-bg: #0D2240;
+            --table-row-even: rgba(10, 25, 55, 0.5);
+            --table-row-odd: rgba(15, 35, 70, 0.5);
+            --font-numbers: 'Segoe UI', 'Arial', 'Helvetica Neue', sans-serif;
+            --font-cn: 'Microsoft YaHei', '微软雅黑', 'PingFang SC', 'Source Han Sans CN', sans-serif;
+            --radius: 6px;
+            --gap: 10px;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        html, body {
+            width: 100vw;
+            height: 100vh;
+            overflow: hidden;
+            background: var(--bg-primary);
+            font-family: var(--font-cn);
+            color: var(--text-primary);
+            font-size: 13px;
+        }
+
+        /* ===== 星空背景 ===== */
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background-image:
+                radial-gradient(1px 1px at 10% 15%, rgba(0,224,255,0.4), transparent),
+                radial-gradient(1px 1px at 25% 35%, rgba(0,224,255,0.3), transparent),
+                radial-gradient(1px 1px at 40% 10%, rgba(255,255,255,0.25), transparent),
+                radial-gradient(1px 1px at 55% 45%, rgba(0,224,255,0.35), transparent),
+                radial-gradient(1px 1px at 70% 20%, rgba(0,224,255,0.2), transparent),
+                radial-gradient(1px 1px at 85% 40%, rgba(255,255,255,0.3), transparent),
+                radial-gradient(1px 1px at 15% 65%, rgba(0,224,255,0.25), transparent),
+                radial-gradient(1px 1px at 35% 75%, rgba(255,255,255,0.2), transparent),
+                radial-gradient(1px 1px at 60% 70%, rgba(0,224,255,0.3), transparent),
+                radial-gradient(1px 1px at 80% 65%, rgba(0,224,255,0.2), transparent),
+                radial-gradient(1px 1px at 90% 85%, rgba(255,255,255,0.25), transparent),
+                radial-gradient(1px 1px at 5% 90%, rgba(0,224,255,0.3), transparent),
+                radial-gradient(2px 2px at 20% 5%, rgba(0,224,255,0.5), transparent),
+                radial-gradient(2px 2px at 75% 5%, rgba(0,224,255,0.45), transparent),
+                radial-gradient(2px 2px at 50% 90%, rgba(0,224,255,0.4), transparent);
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        /* 网格线 */
+        body::after {
+            content: '';
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background-image:
+                linear-gradient(rgba(0,224,255,0.03) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(0,224,255,0.03) 1px, transparent 1px);
+            background-size: 50px 50px;
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        /* ===== 主布局容器 ===== */
+        .dashboard {
+            position: relative;
+            z-index: 1;
+            width: 100%;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            padding: 6px 10px 10px 10px;
+            gap: 8px;
+        }
+
+        /* ===== 顶部标题区 ===== */
+        .header {
+            flex: 0 0 66px;
+            background: linear-gradient(180deg, rgba(10,28,70,0.9) 0%, rgba(5,18,45,0.85) 100%);
+            border: 1px solid var(--border-glow);
+            border-radius: var(--radius);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .header::after {
+            content: '';
+            position: absolute;
+            bottom: 0; left: 5%; right: 5%;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, var(--accent-cyan), transparent);
+            box-shadow: 0 0 8px var(--accent-cyan), 0 0 20px rgba(0,224,255,0.4);
+        }
+
+        .header-left {
+            position: absolute;
+            left: 24px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .header-icon {
+            width: 36px;
+            height: 28px;
+            position: relative;
+        }
+
+        .header-icon svg { width: 100%; height: 100%; }
+
+        .header-logo-text {
+            font-size: 13px;
+            color: var(--accent-cyan);
+            font-weight: 600;
+            letter-spacing: 2px;
+            opacity: 0.7;
+        }
+
+        .header-title {
+            display: flex;
+            align-items: center;
+            gap: 18px;
+        }
+
+        .header-title .deco {
+            color: var(--accent-cyan);
+            font-size: 22px;
+            opacity: 0.6;
+            text-shadow: 0 0 12px var(--accent-cyan);
+        }
+
+        .header-title h1 {
+            font-size: 26px;
+            font-weight: 700;
+            color: #FFFFFF;
+            letter-spacing: 8px;
+            text-shadow: 0 0 20px rgba(0,224,255,0.3);
+        }
+
+        .header-right {
+            position: absolute;
+            right: 24px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .header-right span {
+            color: var(--text-secondary);
+            font-size: 13px;
+        }
+
+        .year-selector {
+            background: rgba(0,30,60,0.8);
+            border: 1px solid rgba(0,224,255,0.4);
+            border-radius: 4px;
+            color: #FFFFFF;
+            padding: 6px 28px 6px 12px;
+            font-size: 14px;
+            font-family: var(--font-cn);
+            cursor: pointer;
+            outline: none;
+            appearance: none;
+            -webkit-appearance: none;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath d='M6 8L1 3h10z' fill='%2300E0FF'/%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: right 8px center;
+            transition: border-color 0.3s;
+        }
+
+        .year-selector:hover { border-color: var(--accent-cyan); }
+
+        /* ===== 三栏内容区 ===== */
+        .content {
+            flex: 1;
+            display: flex;
+            gap: var(--gap);
+            min-height: 0;
+        }
+
+        .col-left, .col-right {
+            flex: 0 0 31.5%;
+            display: flex;
+            flex-direction: column;
+            gap: var(--gap);
+            min-height: 0;
+            overflow-y: auto;
+        }
+
+        .col-center {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            gap: var(--gap);
+            min-height: 0;
+        }
+
+        .col-left::-webkit-scrollbar,
+        .col-right::-webkit-scrollbar { width: 3px; }
+        .col-left::-webkit-scrollbar-thumb,
+        .col-right::-webkit-scrollbar-thumb {
+            background: rgba(0,224,255,0.2);
+            border-radius: 3px;
+        }
+
+        /* ===== 通用面板样式 ===== */
+        .panel {
+            background: var(--bg-panel);
+            border: 1px solid var(--border-glow);
+            border-radius: var(--radius);
+            padding: 12px 14px;
+            position: relative;
+            overflow: hidden;
+            flex-shrink: 0;
+        }
+
+        .panel::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0;
+            width: 18px; height: 18px;
+            border-top: 2px solid var(--accent-cyan);
+            border-left: 2px solid var(--accent-cyan);
+            border-radius: 2px 0 0 0;
+            opacity: 0.7;
+        }
+
+        .panel-title {
+            font-size: 14px;
+            font-weight: 700;
+            color: #FFFFFF;
+            margin-bottom: 10px;
+            padding-left: 4px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .panel-title::before {
+            content: '';
+            display: inline-block;
+            width: 3px; height: 14px;
+            background: var(--accent-cyan);
+            margin-right: 8px;
+            border-radius: 2px;
+            box-shadow: 0 0 6px var(--accent-cyan);
+        }
+
+        /* ===== 关键指标卡片 ===== */
+        .metrics-card {
+            padding: 14px 16px;
+        }
+
+        .metrics-header {
+            display: flex;
+            justify-content: space-between;
+            color: var(--text-secondary);
+            font-size: 12px;
+            margin-bottom: 12px;
+        }
+
+        .metrics-values {
+            display: flex;
+            justify-content: space-between;
+            text-align: center;
+        }
+
+        .metric-item {
+            flex: 1;
+            position: relative;
+        }
+
+        .metric-item + .metric-item {
+            border-left: 1px solid rgba(0,224,255,0.12);
+        }
+
+        .metric-value {
+            font-family: var(--font-numbers);
+            font-size: 28px;
+            font-weight: 700;
+            color: var(--accent-cyan);
+            text-shadow: 0 0 12px rgba(0,224,255,0.5);
+            letter-spacing: 2px;
+            line-height: 1.2;
+        }
+
+        .metric-label {
+            font-size: 11px;
+            color: var(--text-dim);
+            margin-top: 2px;
+        }
+
+        /* ===== 图表容器 ===== */
+        .chart-box {
+            width: 100%;
+        }
+
+        /* ===== Tab切换按钮 ===== */
+        .tab-btns {
+            display: flex;
+            gap: 4px;
+        }
+
+        .tab-btn {
+            background: rgba(0,224,255,0.08);
+            border: 1px solid rgba(0,224,255,0.2);
+            border-radius: 3px;
+            color: var(--text-secondary);
+            padding: 3px 10px;
+            font-size: 11px;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-family: var(--font-cn);
+        }
+
+        .tab-btn.active {
+            background: rgba(0,224,255,0.2);
+            border-color: var(--accent-cyan);
+            color: var(--accent-cyan);
+            box-shadow: 0 0 8px rgba(0,224,255,0.2);
+        }
+
+        .tab-btn:hover {
+            border-color: var(--accent-cyan);
+            color: #FFFFFF;
+        }
+
+        /* ===== 排名统计Tab卡片 ===== */
+        .rank-content {
+            margin-top: 8px;
+        }
+
+        .rank-tab {
+            display: none;
+        }
+
+        .rank-tab.active {
+            display: block;
+        }
+
+        .rank-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 11px;
+        }
+
+        .rank-table th {
+            background: var(--table-header-bg);
+            color: #FFFFFF;
+            font-weight: 600;
+            padding: 6px 8px;
+            text-align: center;
+            border-bottom: 1px solid rgba(0,224,255,0.2);
+            white-space: nowrap;
+            font-size: 11px;
+        }
+
+        .rank-table td {
+            padding: 5px 8px;
+            text-align: center;
+            color: var(--text-secondary);
+            border-bottom: 1px solid rgba(0,224,255,0.06);
+            white-space: nowrap;
+        }
+
+        .rank-table tr:nth-child(even) td {
+            background: var(--table-row-even);
+        }
+        .rank-table tr:nth-child(odd) td {
+            background: var(--table-row-odd);
+        }
+        .rank-table tr:hover td {
+            background: rgba(0,224,255,0.08);
+        }
+
+        .risk-high {
+            color: var(--accent-orange) !important;
+            font-weight: 700;
+            text-shadow: 0 0 6px rgba(255,107,53,0.4);
+        }
+        .risk-mid {
+            color: var(--accent-yellow) !important;
+        }
+
+        /* ===== 核心指标统计卡片 ===== */
+        .stats-overview-card {
+            padding: 16px 14px;
+        }
+
+        .stats-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .stat-item {
+            flex: 1;
+            text-align: center;
+            position: relative;
+        }
+
+        .stat-item + .stat-item::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 1px;
+            height: 40px;
+            background: rgba(0,224,255,0.1);
+        }
+
+        .stat-value {
+            font-family: var(--font-numbers);
+            font-size: 32px;
+            font-weight: 700;
+            color: #FFFFFF;
+            line-height: 1.2;
+            margin-bottom: 8px;
+        }
+
+        .stat-unit {
+            font-size: 18px;
+            font-weight: 600;
+            margin-left: 2px;
+        }
+
+        .stat-label {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+            font-size: 12px;
+            color: var(--text-secondary);
+        }
+
+        .stat-dot {
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            display: inline-block;
+        }
+
+        .dot-orange {
+            background: var(--accent-orange);
+            box-shadow: 0 0 4px var(--accent-orange);
+        }
+
+        /* ===== 底部双指标卡 ===== */
+        .dual-cards {
+            display: flex;
+            gap: var(--gap);
+        }
+
+        .dual-cards .mini-card {
+            flex: 1;
+            background: var(--bg-panel);
+            border: 1px solid var(--border-glow);
+            border-radius: var(--radius);
+            padding: 10px 12px;
+            text-align: center;
+        }
+
+        .mini-card .mini-title {
+            font-size: 12px;
+            color: var(--text-secondary);
+            margin-bottom: 6px;
+        }
+
+        .mini-card .mini-value {
+            font-family: var(--font-numbers);
+            font-size: 26px;
+            font-weight: 700;
+            color: var(--accent-cyan);
+            text-shadow: 0 0 10px rgba(0,224,255,0.5);
+        }
+
+        .mini-card .mini-sub {
+            display: flex;
+            justify-content: space-between;
+            font-size: 10px;
+            color: var(--text-dim);
+            margin-top: 4px;
+        }
+
+        .mini-card .mini-sub-row {
+            display: flex;
+            justify-content: space-between;
+            font-size: 11px;
+            color: var(--text-dim);
+            margin-top: 4px;
+        }
+
+        .mini-card .mini-sub-row span {
+            color: var(--text-secondary);
+        }
+
+        /* ===== 中间栏 - 核心概览 ===== */
+        .overview-numbers {
+            display: flex;
+            justify-content: space-around;
+            padding: 8px 0;
+        }
+
+        .overview-item {
+            text-align: center;
+            flex: 1;
+        }
+
+        .overview-value {
+            font-family: var(--font-numbers);
+            font-size: 38px;
+            font-weight: 700;
+            color: var(--accent-cyan);
+            text-shadow: 0 0 18px rgba(0,224,255,0.5);
+            line-height: 1.1;
+        }
+
+        .overview-value.green {
+            color: var(--accent-green);
+            text-shadow: 0 0 18px rgba(0,214,143,0.5);
+        }
+
+        .overview-value.blue {
+            color: var(--accent-blue);
+            text-shadow: 0 0 18px rgba(30,144,255,0.5);
+        }
+
+        .overview-label {
+            font-size: 11px;
+            color: var(--text-dim);
+            margin-top: 2px;
+        }
+
+        .overview-dots {
+            display: flex;
+            justify-content: center;
+            gap: 3px;
+            margin-top: 4px;
+        }
+        .overview-dots span {
+            width: 4px; height: 4px;
+            border-radius: 50%;
+            display: inline-block;
+        }
+        .dot-cyan { background: var(--accent-cyan); box-shadow: 0 0 4px var(--accent-cyan); }
+        .dot-green { background: var(--accent-green); box-shadow: 0 0 4px var(--accent-green); }
+        .dot-blue { background: var(--accent-blue); box-shadow: 0 0 4px var(--accent-blue); }
+
+        .overview-tag {
+            display: inline-block;
+            background: rgba(255,184,0,0.15);
+            border: 1px solid rgba(255,184,0,0.4);
+            border-radius: 3px;
+            color: var(--accent-yellow);
+            font-size: 11px;
+            padding: 2px 8px;
+            margin-left: 8px;
+        }
+
+        /* ===== 中间栏 - 底部统计 ===== */
+        .progress-bottom {
+            display: flex;
+            gap: var(--gap);
+        }
+
+        .progress-left {
+            flex: 1.2;
+        }
+
+        .progress-right {
+            flex: 0.8;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+
+        .stat-num-card {
+            background: rgba(0,224,255,0.05);
+            border: 1px solid rgba(0,224,255,0.15);
+            border-radius: 4px;
+            padding: 8px 12px;
+            text-align: center;
+        }
+
+        .stat-num-card .sn-value {
+            font-family: var(--font-numbers);
+            font-size: 22px;
+            font-weight: 700;
+            color: var(--accent-cyan);
+        }
+        .stat-num-card .sn-label {
+            font-size: 11px;
+            color: var(--text-dim);
+        }
+
+        /* ===== 右侧栏 - 列表统计 ===== */
+        .region-list {
+            display: flex;
+            gap: 6px;
+        }
+
+        .region-list .region-col {
+            flex: 1;
+        }
+
+        .region-list .region-header {
+            display: flex;
+            justify-content: space-between;
+            padding: 4px 8px;
+            font-size: 11px;
+            font-weight: 600;
+            color: #FFFFFF;
+            background: var(--table-header-bg);
+            border-bottom: 1px solid rgba(0,224,255,0.2);
+        }
+
+        .region-list .region-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 5px 8px;
+            font-size: 11px;
+            color: var(--text-secondary);
+            border-bottom: 1px solid rgba(0,224,255,0.05);
+        }
+
+        .region-list .region-row:nth-child(even) {
+            background: var(--table-row-even);
+        }
+        .region-row .region-val {
+            color: var(--accent-cyan);
+            font-family: var(--font-numbers);
+            font-weight: 600;
+        }
+
+        /* ===== 饼图图例 ===== */
+        .pie-legend {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px 16px;
+            margin-top: 8px;
+        }
+
+        .pie-legend-item {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 11px;
+            color: var(--text-secondary);
+        }
+
+        .pie-legend-dot {
+            width: 8px; height: 8px;
+            border-radius: 2px;
+        }
+
+        /* ===== 响应式微调 ===== */
+        @media (max-width: 1600px) {
+            .overview-value { font-size: 32px; }
+            .metric-value { font-size: 24px; }
+            .header-title h1 { font-size: 22px; letter-spacing: 6px; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="dashboard">
+    <!-- ==================== 顶部标题区 ==================== -->
+    <div class="header">
+        <div class="header-left">
+            <div class="header-icon">
+                <svg viewBox="0 0 36 28" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <polyline points="2,26 8,14 14,18 20,6 26,12 34,2" stroke="#00E0FF" stroke-width="1.8" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+                    <polyline points="2,26 8,14 14,18 20,6 26,12 34,2" stroke="#00E0FF" stroke-width="1.8" fill="none" stroke-linecap="round" stroke-linejoin="round" opacity="0.5" transform="translate(0.5, 0.5)"/>
+                    <circle cx="34" cy="2" r="2.5" fill="#00E0FF" opacity="0.9">
+                        <animate attributeName="opacity" values="0.9;0.3;0.9" dur="2s" repeatCount="indefinite"/>
+                    </circle>
+                    <circle cx="2" cy="26" r="2" fill="#00E0FF" opacity="0.6">
+                        <animate attributeName="opacity" values="0.6;0.2;0.6" dur="2.5s" repeatCount="indefinite"/>
+                    </circle>
+                </svg>
+            </div>
+            <span class="header-logo-text">SAFETY PLATFORM</span>
+        </div>
+
+        <div class="header-title">
+            <span class="deco">&#x2770;</span>
+            <h1>安责险信息平台智能看板</h1>
+            <span class="deco">&#x2771;</span>
+        </div>
+
+        <div class="header-right">
+            <span>数据年度</span>
+            <select class="year-selector" id="yearSelect">
+                <option value="2026" selected>2026年</option>
+                <option value="2025">2025年</option>
+                <option value="2024">2024年</option>
+            </select>
+        </div>
+    </div>
+
+    <!-- ==================== 三栏内容区 ==================== -->
+    <div class="content">
+        <!-- ===== 左侧栏 ===== -->
+        <div class="col-left">
+
+            <!-- 关键指标卡片 -->
+            <div class="panel metrics-card">
+                <div class="metrics-header">
+                    <span style="color:#FFFFFF;font-weight:600;">起保保单</span>
+                    <span style="color:#FFFFFF;font-weight:600;">有效期保单</span>
+                </div>
+                <div class="metrics-values">
+                    <div class="metric-item">
+                        <div class="metric-value">12</div>
+                        <div class="metric-label">保单数量</div>
+                    </div>
+                    <div class="metric-item">
+                        <div class="metric-value">1.30</div>
+                        <div class="metric-label">保费规模(万元)</div>
+                    </div>
+                    <div class="metric-item">
+                        <div class="metric-value">10510.00</div>
+                        <div class="metric-label">保障额度(万元)</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 折线图：保费规模趋势 -->
+            <div class="panel">
+                <div class="panel-title">
+                    <span>保费规模趋势</span>
+                    <div class="tab-btns" id="trendTabs">
+                        <button class="tab-btn" data-period="year">年</button>
+                        <button class="tab-btn active" data-period="quarter">季</button>
+                        <button class="tab-btn" data-period="month">月</button>
+                    </div>
+                </div>
+                <div class="chart-box" id="chartTrend" style="height:200px;"></div>
+            </div>
+
+            <!-- 排名统计卡片（Tab切换） -->
+            <div class="panel" style="flex:1;">
+                <div class="panel-title">
+                    <span>保险机构排名统计</span>
+                    <div class="tab-btns" id="rankTabs">
+                        <button class="tab-btn active" data-tab="premium">承保保费排名</button>
+                        <button class="tab-btn" data-tab="service">服务开展排名</button>
+                        <button class="tab-btn" data-tab="risk">AI监测风险保单排名</button>
+                    </div>
+                </div>
+                <div class="rank-content">
+                    <!-- 表一：承保保费排名 -->
+                    <div class="rank-tab active" id="tabPremium">
+                        <table class="rank-table">
+                            <thead>
+                                <tr><th>保险机构</th><th>承保企业数</th><th>实收保费(万元)</th><th>市场占比</th></tr>
+                            </thead>
+                            <tbody id="tblPremium"></tbody>
+                        </table>
+                    </div>
+                    <!-- 表二：服务开展排名 -->
+                    <div class="rank-tab" id="tabService">
+                        <table class="rank-table">
+                            <thead>
+                                <tr><th>保险机构</th><th>承保企业数</th><th>开展服务次数</th><th>开展率</th></tr>
+                            </thead>
+                            <tbody id="tblService"></tbody>
+                        </table>
+                    </div>
+                    <!-- 表三：AI监测风险保单排名 -->
+                    <div class="rank-tab" id="tabRisk">
+                        <table class="rank-table">
+                            <thead>
+                                <tr><th>保险机构</th><th>风险保单数</th><th>平均合规评分</th><th>风险占比(%)</th></tr>
+                            </thead>
+                            <tbody id="tblRisk"></tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 底部双指标卡 -->
+            <div class="dual-cards">
+                <div class="mini-card">
+                    <div class="mini-title">服务费用统计(万元)</div>
+                    <div class="mini-value">0.00</div>
+                    <div class="mini-sub">
+                        <span>0 完成进度</span>
+                        <span>0.19约定总额 | 0.12计划总额</span>
+                    </div>
+                </div>
+                <div class="mini-card">
+                    <div class="mini-title">理赔情况</div>
+                    <div class="mini-value" style="font-size:20px;letter-spacing:1px;">0家 / 0家</div>
+                    <div class="mini-sub-row">
+                        <span>报案数量</span><span>赔付案件数</span>
+                    </div>
+                    <div class="mini-sub-row" style="margin-top:6px;">
+                        <span style="color:var(--accent-orange);">0<span style="font-size:10px;">万元</span> 赔付金额</span>
+                        <span style="color:var(--accent-yellow);">0.00% 赔付率</span>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+        <!-- ===== 中间栏 ===== -->
+        <div class="col-center">
+
+            <!-- 核心数字概览 -->
+            <div class="panel">
+                <div class="panel-title">
+                    <span>安责险概况一张图</span>
+                    <span class="overview-tag">投保率</span>
+                </div>
+                <div class="overview-numbers">
+                    <div class="overview-item">
+                        <div class="overview-value">2,847</div>
+                        <div class="overview-label">应投保企业数</div>
+                        <div class="overview-dots">
+                            <span class="dot-cyan"></span><span class="dot-cyan"></span><span class="dot-cyan"></span>
+                        </div>
+                    </div>
+                    <div class="overview-item">
+                        <div class="overview-value green">2,563</div>
+                        <div class="overview-label">已承保企业数</div>
+                        <div class="overview-dots">
+                            <span class="dot-green"></span><span class="dot-green"></span><span class="dot-green"></span>
+                        </div>
+                    </div>
+                    <div class="overview-item">
+                        <div class="overview-value blue">2,710</div>
+                        <div class="overview-label">应配投保数</div>
+                        <div class="overview-dots">
+                            <span class="dot-blue"></span><span class="dot-blue"></span><span class="dot-blue"></span>
+                        </div>
+                    </div>
+                    <div class="overview-item">
+                        <div class="overview-value" style="font-size:44px;">90.88<span style="font-size:20px;">%</span></div>
+                        <div class="overview-label">应配投保率</div>
+                        <div class="overview-dots">
+                            <span class="dot-cyan"></span><span class="dot-green"></span><span class="dot-blue"></span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 地图可视化 -->
+            <div class="panel" style="flex:1;display:flex;flex-direction:column;min-height:0;">
+                <div class="panel-title">惠州市投保服务分布地图</div>
+                <div class="chart-box" id="chartMap" style="flex:1;min-height:0;"></div>
+            </div>
+
+            <!-- 底部统计 -->
+            <div class="panel">
+                <div class="panel-title">
+                    <span>事故预防服务进度统计</span>
+                    <div class="tab-btns">
+                        <button class="tab-btn active">服务进度</button>
+                        <button class="tab-btn">服务项目统计</button>
+                    </div>
+                </div>
+                <div class="progress-bottom">
+                    <div class="progress-left">
+                        <div class="chart-box" id="chartProgress" style="height:180px;"></div>
+                    </div>
+                    <div class="progress-right">
+                        <div class="stat-num-card">
+                            <div class="sn-value">186</div>
+                            <div class="sn-label">本月开展次数</div>
+                        </div>
+                        <div class="stat-num-card">
+                            <div class="sn-value">52</div>
+                            <div class="sn-label">本月开展企业数</div>
+                        </div>
+                        <div class="stat-num-card">
+                            <div class="sn-value">1,204</div>
+                            <div class="sn-label">累计开展次数</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+        <!-- ===== 右侧栏 ===== -->
+        <div class="col-right">
+
+            <!-- 核心指标统计卡片 -->
+            <div class="panel stats-overview-card">
+                <div class="stats-row">
+                    <div class="stat-item">
+                        <div class="stat-value">32</div>
+                        <div class="stat-label"><span class="stat-dot dot-blue"></span>应投保企业数</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-value">34</div>
+                        <div class="stat-label"><span class="stat-dot dot-green"></span>已承保企业数</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-value">7</div>
+                        <div class="stat-label"><span class="stat-dot dot-cyan"></span>匹配投保数</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-value">21.88<span class="stat-unit">%</span></div>
+                        <div class="stat-label"><span class="stat-dot dot-orange"></span>匹配投保率</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 列表统计 -->
+            <div class="panel"style="flex:0.8;">
+                <div class="panel-title">
+                    <span>地区预防服务开展情况</span>
+                    <div class="tab-btns">
+                        <button class="tab-btn active">地区</button>
+                        <button class="tab-btn">行业</button>
+                    </div>
+                </div>
+                <div class="region-list">
+                    <div class="region-col">
+                        <div class="region-header"><span>地区</span></div>
+                        <div class="region-row"><span>惠城区</span></div>
+                        <div class="region-row"><span>惠阳区</span></div>
+                        <div class="region-row"><span>博罗县</span></div>
+                        <div class="region-row"><span>惠东县</span></div>
+                        <div class="region-row"><span>龙门县</span></div>
+                        <div class="region-row"><span>仲恺区</span></div>
+                        <div class="region-row"><span>大亚湾区</span></div>
+                    </div>
+                    <div class="region-col">
+                        <div class="region-header"><span>承保企业数</span></div>
+                        <div class="region-row"><span class="region-val">856</span></div>
+                        <div class="region-row"><span class="region-val">623</span></div>
+                        <div class="region-row"><span class="region-val">482</span></div>
+                        <div class="region-row"><span class="region-val">398</span></div>
+                        <div class="region-row"><span class="region-val">215</span></div>
+                        <div class="region-row"><span class="region-val">187</span></div>
+                        <div class="region-row"><span class="region-val">142</span></div>
+                    </div>
+                    <div class="region-col">
+                        <div class="region-header"><span>计划服务</span></div>
+                        <div class="region-row"><span class="region-val">320</span></div>
+                        <div class="region-row"><span class="region-val">245</span></div>
+                        <div class="region-row"><span class="region-val">198</span></div>
+                        <div class="region-row"><span class="region-val">156</span></div>
+                        <div class="region-row"><span class="region-val">89</span></div>
+                        <div class="region-row"><span class="region-val">72</span></div>
+                        <div class="region-row"><span class="region-val">58</span></div>
+                    </div>
+                    <div class="region-col">
+                        <div class="region-header"><span>实际服务</span></div>
+                        <div class="region-row"><span class="region-val">286</span></div>
+                        <div class="region-row"><span class="region-val">198</span></div>
+                        <div class="region-row"><span class="region-val">165</span></div>
+                        <div class="region-row"><span class="region-val">132</span></div>
+                        <div class="region-row"><span class="region-val">74</span></div>
+                        <div class="region-row"><span class="region-val">61</span></div>
+                        <div class="region-row"><span class="region-val">47</span></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 饼图统计 -->
+            <div class="panel" style="flex:0.7;">
+                <div class="panel-title">隐患排查统计</div>
+                <div class="chart-box" id="chartPie" style="height:260px;"></div>
+                <div class="pie-legend">
+                    <div class="pie-legend-item"><span class="pie-legend-dot" style="background:#FF4D4F;"></span>重大隐患 <b style="color:#FF4D4F;">2</b></div>
+                    <div class="pie-legend-item"><span class="pie-legend-dot" style="background:#FFB800;"></span>较大隐患 <b style="color:#FFB800;">1</b></div>
+                    <div class="pie-legend-item"><span class="pie-legend-dot" style="background:#1890FF;"></span>一般隐患 <b style="color:#1890FF;">2</b></div>
+                    <div class="pie-legend-item"><span class="pie-legend-dot" style="background:#00D68F;"></span>低风险 <b style="color:#00D68F;">1</b></div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+<script>
+// =============================================
+// 惠州各区县简化GeoJSON（用于地图注册）
+// =============================================
+var huizhouGeo = {
+    "type": "FeatureCollection",
+    "features": [
+        {
+            "type": "Feature",
+            "properties": {"name": "龙门县", "cp": [114.13, 23.73], "投保率": 78.5, "服务率": 82.3},
+            "geometry": {"type": "Polygon", "coordinates": [[[113.88,23.88],[114.28,23.88],[114.38,23.68],[114.33,23.53],[114.08,23.48],[113.83,23.60],[113.78,23.78],[113.88,23.88]]]}
+        },
+        {
+            "type": "Feature",
+            "properties": {"name": "博罗县", "cp": [114.28, 23.17], "投保率": 85.2, "服务率": 76.8},
+            "geometry": {"type": "Polygon", "coordinates": [[[113.88,23.42],[114.48,23.42],[114.58,23.27],[114.53,23.02],[114.28,22.92],[114.03,22.97],[113.88,23.10],[113.83,23.27],[113.88,23.42]]]}
+        },
+        {
+            "type": "Feature",
+            "properties": {"name": "惠城区", "cp": [114.41, 23.08], "投保率": 92.1, "服务率": 88.5},
+            "geometry": {"type": "Polygon", "coordinates": [[[114.18,23.28],[114.63,23.28],[114.73,23.13],[114.68,22.88],[114.33,22.88],[114.08,23.03],[114.08,23.18],[114.18,23.28]]]}
+        },
+        {
+            "type": "Feature",
+            "properties": {"name": "惠东县", "cp": [114.72, 22.98], "投保率": 81.3, "服务率": 72.6},
+            "geometry": {"type": "Polygon", "coordinates": [[[114.43,23.20],[115.03,23.20],[115.13,23.00],[115.03,22.78],[114.58,22.73],[114.28,22.83],[114.33,23.05],[114.43,23.20]]]}
+        },
+        {
+            "type": "Feature",
+            "properties": {"name": "惠阳区", "cp": [114.46, 22.79], "投保率": 88.7, "服务率": 84.2},
+            "geometry": {"type": "Polygon", "coordinates": [[[114.23,22.98],[114.68,22.98],[114.78,22.83],[114.73,22.63],[114.43,22.58],[114.18,22.68],[114.13,22.83],[114.23,22.98]]]}
+        }
+    ]
+};
+
+// =============================================
+// 通用ECharts深色主题配置
+// =============================================
+var darkTheme = {
+    textStyle: { color: '#AABBCC' },
+    backgroundColor: 'transparent'
+};
+
+function getCommonOpts() {
+    return {
+        grid: { top: 10, right: 20, bottom: 24, left: 50, containLabel: false },
+        textStyle: { color: '#AABBCC', fontSize: 11, fontFamily: 'Microsoft YaHei, sans-serif' },
+    };
+}
+
+// =============================================
+// 1. 保费规模趋势折线图
+// =============================================
+(function() {
+    var dom = document.getElementById('chartTrend');
+    var chart = echarts.init(dom);
+    var xData = ['08-23','08-24','08-25','08-26','08-27','08-28','08-29','08-30','08-31','09-01'];
+    var yData = [0.30, 0.35, 0.42, 0.38, 0.55, 0.50, 0.68, 0.72, 0.85, 0.98];
+
+    var option = {
+        grid: { top: 10, right: 20, bottom: 28, left: 52 },
+        xAxis: {
+            type: 'category',
+            data: xData,
+            axisLine: { lineStyle: { color: 'rgba(0,224,255,0.3)' } },
+            axisTick: { show: false },
+            axisLabel: { color: '#6B7A90', fontSize: 11 },
+            splitLine: { show: false }
+        },
+        yAxis: {
+            type: 'value',
+            min: 0,
+            max: 1.0,
+            interval: 0.2,
+            axisLine: { show: false },
+            axisTick: { show: false },
+            axisLabel: { color: '#6B7A90', fontSize: 11 },
+            splitLine: { lineStyle: { color: 'rgba(0,224,255,0.08)', type: 'dashed' } }
+        },
+        series: [{
+            type: 'line',
+            data: yData,
+            smooth: true,
+            symbol: 'circle',
+            symbolSize: 8,
+            lineStyle: {
+                width: 2.5,
+                color: new echarts.graphic.LinearGradient(0,0,1,0,[
+                    {offset:0, color:'#00B4D8'},{offset:1, color:'#00E0FF'}
+                ]),
+                shadowBlur: 10,
+                shadowColor: 'rgba(0,224,255,0.6)'
+            },
+            itemStyle: {
+                color: '#00E0FF',
+                borderColor: '#FFFFFF',
+                borderWidth: 2,
+                shadowBlur: 8,
+                shadowColor: 'rgba(0,224,255,0.8)'
+            },
+            areaStyle: {
+                color: new echarts.graphic.LinearGradient(0,0,0,1,[
+                    {offset:0, color:'rgba(0,224,255,0.25)'},
+                    {offset:1, color:'rgba(0,224,255,0.01)'}
+                ])
+            },
+            animationDuration: 1500,
+            animationEasing: 'cubicOut'
+        }]
+    };
+    chart.setOption(option);
+    window.addEventListener('resize', function() { chart.resize(); });
+})();
+
+// =============================================
+// 2. 地图可视化
+// =============================================
+(function() {
+    var dom = document.getElementById('chartMap');
+    var chart = echarts.init(dom);
+
+    // 注册惠州地图
+    echarts.registerMap('huizhou', huizhouGeo);
+
+    var option = {
+        tooltip: {
+            trigger: 'item',
+            backgroundColor: 'rgba(5,18,45,0.92)',
+            borderColor: 'rgba(0,224,255,0.5)',
+            textStyle: { color: '#FFFFFF', fontSize: 12 },
+            formatter: function(p) {
+                if (p.seriesType === 'map') {
+                    return '<b>' + p.name + '</b><br/>' +
+                           '投保率：<span style="color:#00E0FF;font-weight:bold;">' + (p.data ? p.data.toubao : '--') + '%</span><br/>' +
+                           '服务开展率：<span style="color:#00D68F;font-weight:bold;">' + (p.data ? p.data.fuwu : '--') + '%</span>';
+                }
+                return p.name;
+            }
+        },
+        geo: {
+            map: 'huizhou',
+            roam: false,
+            zoom: 1.15,
+            center: [114.38, 23.15],
+            itemStyle: {
+                areaColor: '#0A1937',
+                borderColor: 'rgba(0,224,255,0.5)',
+                borderWidth: 1.5,
+                shadowBlur: 0
+            },
+            emphasis: {
+                disabled: true
+            },
+            label: { show: false }
+        },
+        series: [{
+            type: 'map',
+            map: 'huizhou',
+            geoIndex: 0,
+            roam: false,
+            data: [
+                {name: '惠城区', value: 92.1, toubao: 92.1, fuwu: 88.5},
+                {name: '惠阳区', value: 88.7, toubao: 88.7, fuwu: 84.2},
+                {name: '博罗县', value: 85.2, toubao: 85.2, fuwu: 76.8},
+                {name: '惠东县', value: 81.3, toubao: 81.3, fuwu: 72.6},
+                {name: '龙门县', value: 78.5, toubao: 78.5, fuwu: 82.3}
+            ],
+            itemStyle: {
+                borderColor: 'rgba(0,224,255,0.6)',
+                borderWidth: 1.5
+            },
+            emphasis: {
+                itemStyle: {
+                    areaColor: 'rgba(0,224,255,0.15)',
+                    borderColor: '#00E0FF',
+                    borderWidth: 2,
+                    shadowBlur: 15,
+                    shadowColor: 'rgba(0,224,255,0.5)'
+                },
+                label: {
+                    show: true,
+                    color: '#FFFFFF',
+                    fontSize: 13,
+                    fontWeight: 'bold',
+                    textShadowBlur: 8,
+                    textShadowColor: 'rgba(0,224,255,0.8)'
+                }
+            },
+            label: {
+                show: true,
+                color: '#AABBCC',
+                fontSize: 11,
+                position: 'inside'
+            }
+        }, {
+            // 散点标记
+            type: 'effectScatter',
+            coordinateSystem: 'geo',
+            data: [
+                {name: '惠城区', value: [114.41, 23.10, 92]},
+                {name: '惠阳区', value: [114.46, 22.79, 88]},
+                {name: '博罗县', value: [114.28, 23.18, 85]},
+                {name: '惠东县', value: [114.72, 22.98, 81]},
+                {name: '龙门县', value: [114.13, 23.73, 78]}
+            ],
+            symbolSize: function(val) { return val[2] / 8 + 6; },
+            showEffectOn: 'render',
+            rippleEffect: {
+                brushType: 'stroke',
+                scale: 3,
+                period: 4,
+                color: 'rgba(0,224,255,0.3)'
+            },
+            itemStyle: {
+                color: '#00E0FF',
+                shadowBlur: 10,
+                shadowColor: 'rgba(0,224,255,0.7)'
+            },
+            label: {
+                show: true,
+                formatter: function(p) { return p.name + '\n投保率 ' + p.value[2] + '%'; },
+                position: 'right',
+                color: '#FFFFFF',
+                fontSize: 11,
+                lineHeight: 16,
+                distance: 8,
+                backgroundColor: 'rgba(5,18,45,0.85)',
+                borderColor: 'rgba(0,224,255,0.5)',
+                borderWidth: 1,
+                borderRadius: 4,
+                padding: [4, 8]
+            },
+            zlevel: 1
+        }]
+    };
+
+    chart.setOption(option);
+    window.addEventListener('resize', function() { chart.resize(); });
+})();
+
+// =============================================
+// 3. 事故预防服务进度统计 - 横向柱状图
+// =============================================
+(function() {
+    var dom = document.getElementById('chartProgress');
+    var chart = echarts.init(dom);
+
+    var categories = ['其他有关事故预防工作', '安全生产宣传教育', '安全风险辨识评估', '生产安全事故隐患排查', '安全生产标准化建设', '应急预案编制与演练'];
+    var values = [86, 72, 58, 45, 32, 18];
+
+    var option = {
+        grid: { top: 5, right: 40, bottom: 5, left: 10, containLabel: true },
+        xAxis: {
+            type: 'value',
+            axisLine: { show: false },
+            axisTick: { show: false },
+            axisLabel: { color: '#6B7A90', fontSize: 10 },
+            splitLine: { lineStyle: { color: 'rgba(0,224,255,0.06)', type: 'dashed' } }
+        },
+        yAxis: {
+            type: 'category',
+            data: categories,
+            axisLine: { lineStyle: { color: 'rgba(0,224,255,0.2)' } },
+            axisTick: { show: false },
+            axisLabel: { color: '#AABBCC', fontSize: 11 },
+            inverse: true
+        },
+        series: [{
+            type: 'bar',
+            data: values,
+            barWidth: 14,
+            itemStyle: {
+                borderRadius: [0, 4, 4, 0],
+                color: new echarts.graphic.LinearGradient(0,0,1,0,[
+                    {offset:0, color:'#005584'},{offset:0.5, color:'#0099CC'},{offset:1, color:'#00E0FF'}
+                ])
+            },
+            label: {
+                show: true,
+                position: 'right',
+                color: '#00E0FF',
+                fontSize: 11,
+                fontWeight: 'bold',
+                formatter: '{c} 次'
+            },
+            emphasis: {
+                itemStyle: {
+                    shadowBlur: 10,
+                    shadowColor: 'rgba(0,224,255,0.5)'
+                }
+            }
+        }]
+    };
+
+    chart.setOption(option);
+    window.addEventListener('resize', function() { chart.resize(); });
+})();
+
+// =============================================
+// 4. 隐患排查统计 - 环形饼图
+// =============================================
+(function() {
+    var dom = document.getElementById('chartPie');
+    var chart = echarts.init(dom);
+
+    var option = {
+        tooltip: {
+            trigger: 'item',
+            backgroundColor: 'rgba(5,18,45,0.92)',
+            borderColor: 'rgba(0,224,255,0.5)',
+            textStyle: { color: '#FFFFFF', fontSize: 12 },
+            formatter: '{b}: {c} 项 ({d}%)'
+        },
+        legend: { show: false },
+        series: [{
+            type: 'pie',
+            radius: ['55%', '78%'],
+            center: ['50%', '52%'],
+            roseType: false,
+            itemStyle: {
+                borderColor: 'rgba(3,11,31,1)',
+                borderWidth: 3,
+                borderRadius: 3
+            },
+            label: {
+                show: true,
+                position: 'outside',
+                color: '#AABBCC',
+                fontSize: 11,
+                formatter: '{b}\n{d}%'
+            },
+            labelLine: {
+                lineStyle: { color: 'rgba(0,224,255,0.3)' },
+                length: 18,
+                length2: 30
+            },
+            emphasis: {
+                scaleSize: 8,
+                label: { fontSize: 14, fontWeight: 'bold', color: '#FFFFFF' }
+            },
+            data: [
+                {value: 2, name: '重大隐患', itemStyle: {color: '#FF4D4F', shadowBlur: 10, shadowColor: 'rgba(255,77,79,0.4)'}},
+                {value: 1, name: '较大隐患', itemStyle: {color: '#FFB800', shadowBlur: 10, shadowColor: 'rgba(255,184,0,0.4)'}},
+                {value: 2, name: '一般隐患', itemStyle: {color: '#1890FF', shadowBlur: 10, shadowColor: 'rgba(24,144,255,0.4)'}},
+                {value: 1, name: '低风险',    itemStyle: {color: '#00D68F', shadowBlur: 10, shadowColor: 'rgba(0,214,143,0.4)'}}
+            ]
+        }, {
+            // 中心文字
+            type: 'pie',
+            radius: ['0%', '48%'],
+            center: ['50%', '52%'],
+            silent: true,
+            label: { show: false },
+            data: [{value: 1, itemStyle: {color: 'transparent'}}],
+            z: 1
+        }],
+        graphic: [{
+            type: 'text',
+            left: 'center',
+            top: '46%',
+            style: {
+                text: '6',
+                textAlign: 'center',
+                fill: '#FFFFFF',
+                fontSize: 28,
+                fontWeight: 'bold',
+                fontFamily: 'Segoe UI, Arial, sans-serif',
+                textShadowBlur: 12,
+                textShadowColor: 'rgba(0,224,255,0.6)'
+            }
+        }, {
+            type: 'text',
+            left: 'center',
+            top: '55%',
+            style: {
+                text: '隐患总数',
+                textAlign: 'center',
+                fill: '#6B7A90',
+                fontSize: 12
+            }
+        }]
+    };
+
+    chart.setOption(option);
+    window.addEventListener('resize', function() { chart.resize(); });
+})();
+
+// =============================================
+// 5. 填充三列表格数据
+// =============================================
+(function() {
+    // 表一：承保保费排名
+    var tblPremium = document.getElementById('tblPremium');
+    var data1 = [
+        {org:'都邦保险惠州中支', count:156, premium:286.50, share:'21.8%'},
+        {org:'PICC',            count:142, premium:254.30, share:'19.3%'},
+        {org:'中国太平洋',       count:128, premium:218.60, share:'16.6%'},
+        {org:'平安财险',         count:115, premium:192.40, share:'14.6%'},
+        {org:'中国人寿财险',     count:98,  premium:165.20, share:'12.6%'}
+    ];
+    data1.forEach(function(r) {
+        var tr = '<tr><td>' + r.org + '</td><td>' + r.count + '</td><td>' + r.premium.toFixed(2) + '</td><td>' + r.share + '</td></tr>';
+        tblPremium.innerHTML += tr;
+    });
+
+    // 表二：服务开展排名
+    var tblService = document.getElementById('tblService');
+    var data2 = [
+        {org:'中国太平洋',       count:128, times:86, rate:'67.2%'},
+        {org:'都邦保险惠州中支', count:156, times:78, rate:'50.0%'},
+        {org:'PICC',            count:142, times:65, rate:'45.8%'},
+        {org:'中国人寿财险',     count:98,  times:42, rate:'42.9%'},
+        {org:'平安财险',         count:115, times:38, rate:'33.0%'}
+    ];
+    data2.forEach(function(r) {
+        var tr = '<tr><td>' + r.org + '</td><td>' + r.count + '</td><td>' + r.times + '</td><td>' + r.rate + '</td></tr>';
+        tblService.innerHTML += tr;
+    });
+
+    // 表三：AI监测风险保单排名
+    var tblRisk = document.getElementById('tblRisk');
+    var data3 = [
+        {org:'平安财险',     riskCount:18, score:72.5, riskRate:'25.7%', cls:'risk-high'},
+        {org:'人保财险',     riskCount:14, score:76.8, riskRate:'20.0%', cls:'risk-high'},
+        {org:'中国人寿财险', riskCount:10, score:81.2, riskRate:'14.3%', cls:'risk-mid'},
+        {org:'中国太平洋',   riskCount:6,  score:85.6, riskRate:'8.6%',  cls:''},
+        {org:'都邦保险',     riskCount:3,  score:90.2, riskRate:'4.3%',  cls:''}
+    ];
+    data3.forEach(function(r) {
+        var tr = '<tr><td>' + r.org + '</td><td>' + r.riskCount + '</td><td>' + r.score + '</td><td class="' + r.cls + '">' + r.riskRate + '</td></tr>';
+        tblRisk.innerHTML += tr;
+    });
+})();
+
+// =============================================
+// 6. 交互事件绑定
+// =============================================
+
+// 趋势图时间粒度切换
+document.getElementById('trendTabs').addEventListener('click', function(e) {
+    if (e.target.classList.contains('tab-btn')) {
+        var btns = this.querySelectorAll('.tab-btn');
+        btns.forEach(function(b) { b.classList.remove('active'); });
+        e.target.classList.add('active');
+    }
+});
+
+// 排名统计Tab切换
+document.getElementById('rankTabs').addEventListener('click', function(e) {
+    if (e.target.classList.contains('tab-btn')) {
+        var tabId = e.target.getAttribute('data-tab');
+        var btns = this.querySelectorAll('.tab-btn');
+        var tabs = document.querySelectorAll('.rank-tab');
+        
+        btns.forEach(function(b) { b.classList.remove('active'); });
+        tabs.forEach(function(t) { t.classList.remove('active'); });
+        
+        e.target.classList.add('active');
+        document.getElementById('tab' + tabId.charAt(0).toUpperCase() + tabId.slice(1)).classList.add('active');
+    }
+});
+
+// 右侧栏 地区/行业 切换
+document.querySelectorAll('.col-right .tab-btns').forEach(function(container) {
+    container.addEventListener('click', function(e) {
+        if (e.target.classList.contains('tab-btn')) {
+            var btns = container.querySelectorAll('.tab-btn');
+            btns.forEach(function(b) { b.classList.remove('active'); });
+            e.target.classList.add('active');
+        }
+    });
+});
+
+// 年份选择器
+document.getElementById('yearSelect').addEventListener('change', function() {
+    console.log('切换年度数据至：' + this.value + '年');
+    // TODO: 联动数据刷新
+});
+
+// =============================================
+// 全局resize
+// =============================================
+window.addEventListener('resize', function() {
+    // ECharts 实例已在各自闭包中绑定 resize
+});
+</script>
+
+</body>
+</html>
