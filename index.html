@@ -1792,7 +1792,7 @@
             
             /* 表格宽度保持可滚动 */
             .insurance-list-table {
-                min-width: 3120px;
+                min-width: 3220px;
             }
             
             /* 操作栏：小屏时按钮换行 */
@@ -4905,7 +4905,7 @@
         .insurance-list-table {
             border-collapse: collapse;
             font-size: 13px;
-            min-width: 3120px;
+            min-width: 3220px;
         }
         
         /* 各列宽度定义 */
@@ -4924,6 +4924,7 @@
         .insurance-list-table .col-policy-no { width: 170px; }
         .insurance-list-table .col-premium { width: 120px; }
         .insurance-list-table .col-coinsurance { width: 80px; }
+        .insurance-list-table .col-selfbuild { width: 100px; }
         .insurance-list-table .col-project { width: 180px; }
         .insurance-list-table .col-build-addr { width: 180px; }
         .insurance-list-table .col-license { width: 140px; }
@@ -14940,15 +14941,16 @@
                                         <th class="col-policy-no">保险编号</th>
                                         <th class="col-number col-premium">实收保费(元)</th>
                                         <th class="col-coinsurance">是否共保</th>
+                                        <th class="col-selfbuild">是否自建房项目</th>
                                         <th class="col-project" id="colProjectName">工程名称</th>
                                         <th class="col-build-addr" id="colBuildAddr">建设地址</th>
                                         <th class="col-license" id="colLicenseNo">许可证号</th>
                                         <th class="col-date">保单起始时间</th>
                                         <th class="col-date">保单终止时间</th>
-                                        <th class="col-entry-type">投保形式</th>
+                                        <th class="col-entry-type">数据来源</th>
                                         <th class="col-tongbao">是否统保</th>
                                         <th class="col-date">创建日期</th>
-                                        <th class="col-source" id="colSourceFrom">数据来源</th>
+                                        <th class="col-source" id="colSourceFrom">录入端口</th>
                                         <th class="col-action">操作</th>
                                     </tr>
                                 </thead>
@@ -23525,6 +23527,7 @@ function showPcPortalSelector() {
                 policyNo: 'PXAZ20240600001',
                 premium: 85000,
                 isCoinsurance: true,
+                isSelfbuild: false,
                 projectName: '-',
                 buildAddr: '-',
                 licenseNo: '-',
@@ -23575,6 +23578,7 @@ function showPcPortalSelector() {
                 policyNo: 'TPIC20240600002',
                 premium: 120000,
                 isCoinsurance: false,
+                isSelfbuild: false,
                 projectName: '-',
                 buildAddr: '-',
                 licenseNo: '-',
@@ -23625,6 +23629,7 @@ function showPcPortalSelector() {
                 policyNo: 'PAIC20240600003',
                 premium: 156000,
                 isCoinsurance: true,
+                isSelfbuild: false,
                 projectName: '-',
                 buildAddr: '-',
                 licenseNo: '-',
@@ -23671,6 +23676,7 @@ function showPcPortalSelector() {
                 policyNo: 'CIC20240500004',
                 premium: 68000,
                 isCoinsurance: false,
+                isSelfbuild: false,
                 projectName: '-',
                 buildAddr: '-',
                 licenseNo: '-',
@@ -23699,6 +23705,7 @@ function showPcPortalSelector() {
                 policyNo: 'PXAZ20240600005',
                 premium: 95000,
                 isCoinsurance: false,
+                isSelfbuild: false,
                 projectName: '-',
                 buildAddr: '-',
                 licenseNo: '-',
@@ -23727,6 +23734,7 @@ function showPcPortalSelector() {
                 policyNo: 'TPIC20240600006',
                 premium: 280000,
                 isCoinsurance: true,
+                isSelfbuild: true,
                 projectName: '高要区某某住宅小区项目',
                 buildAddr: '肇庆市高要区南岸镇',
                 licenseNo: 'GX-2024-001',
@@ -23755,6 +23763,7 @@ function showPcPortalSelector() {
                 policyNo: 'PAIC20240600007',
                 premium: 198000,
                 isCoinsurance: false,
+                isSelfbuild: false,
                 projectName: '-',
                 buildAddr: '-',
                 licenseNo: '-',
@@ -23783,6 +23792,7 @@ function showPcPortalSelector() {
                 policyNo: 'CIC20240600008',
                 premium: 42000,
                 isCoinsurance: false,
+                isSelfbuild: false,
                 projectName: '-',
                 buildAddr: '-',
                 licenseNo: '-',
@@ -23811,6 +23821,7 @@ function showPcPortalSelector() {
                 policyNo: 'PXAZ20240600009',
                 premium: 78000,
                 isCoinsurance: true,
+                isSelfbuild: false,
                 projectName: '-',
                 buildAddr: '-',
                 licenseNo: '-',
@@ -23839,6 +23850,7 @@ function showPcPortalSelector() {
                 policyNo: 'TPIC20240500010',
                 premium: 56000,
                 isCoinsurance: false,
+                isSelfbuild: false,
                 projectName: '-',
                 buildAddr: '-',
                 licenseNo: '-',
@@ -23867,6 +23879,7 @@ function showPcPortalSelector() {
                 policyNo: 'PAIC20240600011',
                 premium: 135000,
                 isCoinsurance: false,
+                isSelfbuild: false,
                 projectName: '-',
                 buildAddr: '-',
                 licenseNo: '-',
@@ -23923,6 +23936,7 @@ function showPcPortalSelector() {
                 policyNo: 'PXAZ20240500013',
                 premium: 168000,
                 isCoinsurance: true,
+                isSelfbuild: false,
                 projectName: '-',
                 buildAddr: '-',
                 licenseNo: '-',
@@ -23979,6 +23993,7 @@ function showPcPortalSelector() {
                 policyNo: 'PAIC20240600015',
                 premium: 68000,
                 isCoinsurance: false,
+                isSelfbuild: false,
                 projectName: '-',
                 buildAddr: '-',
                 licenseNo: '-',
@@ -24276,6 +24291,11 @@ function showPcPortalSelector() {
                     ? '<span class="insurance-list-tag insurance-list-tag-blue">是</span>'
                     : '<span class="insurance-list-tag insurance-list-tag-gray">否</span>';
                 
+                // 是否自建房项目
+                const selfbuildTag = item.isSelfbuild 
+                    ? '<span class="insurance-list-tag insurance-list-tag-blue">是</span>'
+                    : '<span class="insurance-list-tag insurance-list-tag-gray">否</span>';
+                
                 // 是否统保
                 const tongbaoTag = item.isTongbao 
                     ? '<span class="insurance-list-tag insurance-list-tag-green">是</span>'
@@ -24300,6 +24320,7 @@ function showPcPortalSelector() {
                     '<td class="col-policy-no insurance-list-cell' + (needExpand(item.policyNo) ? ' expandable' : '') + '"><span>' + item.policyNo + '</span>' + (needExpand(item.policyNo) ? '<div class="cell-tooltip">' + item.policyNo + '</div>' : '') + '</td>' +
                     '<td class="col-number col-premium">' + formatNumber(item.premium) + premiumWarnHtml + '</td>' +
                     '<td class="col-coinsurance">' + coinsuranceTag + '</td>' +
+                    '<td class="col-selfbuild">' + selfbuildTag + '</td>' +
                     '<td class="col-project insurance-list-cell' + (item.projectName !== '-' && needExpand(item.projectName) ? ' expandable' : '') + '" id="colProj' + item.id + '"><span>' + (item.projectName !== '-' ? item.projectName : '-') + '</span>' + (item.projectName !== '-' && needExpand(item.projectName) ? '<div class="cell-tooltip">' + item.projectName + '</div>' : '') + '</td>' +
                     '<td class="col-build-addr insurance-list-cell' + (item.buildAddr !== '-' && needExpand(item.buildAddr) ? ' expandable' : '') + '" id="colBuild' + item.id + '"><span>' + (item.buildAddr !== '-' ? item.buildAddr : '-') + '</span>' + (item.buildAddr !== '-' && needExpand(item.buildAddr) ? '<div class="cell-tooltip">' + item.buildAddr + '</div>' : '') + '</td>' +
                     '<td class="col-license insurance-list-cell' + (item.licenseNo !== '-' && needExpand(item.licenseNo) ? ' expandable' : '') + '" id="colLic' + item.id + '"><span>' + (item.licenseNo !== '-' ? item.licenseNo : '-') + '</span>' + (item.licenseNo !== '-' && needExpand(item.licenseNo) ? '<div class="cell-tooltip">' + item.licenseNo + '</div>' : '') + '</td>' +
