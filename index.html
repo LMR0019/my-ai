@@ -1792,7 +1792,7 @@
             
             /* 表格宽度保持可滚动 */
             .insurance-list-table {
-                min-width: 3500px;
+                min-width: 3120px;
             }
             
             /* 操作栏：小屏时按钮换行 */
@@ -4905,7 +4905,7 @@
         .insurance-list-table {
             border-collapse: collapse;
             font-size: 13px;
-            min-width: 3500px;
+            min-width: 3120px;
         }
         
         /* 各列宽度定义 */
@@ -6999,6 +6999,13 @@
         }
         .art-action-btn-danger:hover {
             background: #fff2f0;
+        }
+        .art-action-btn-history {
+            color: #722ed1;
+            background: #f9f0ff;
+        }
+        .art-action-btn-history:hover {
+            background: #efd5ff;
         }
         .art-more-dropdown {
             position: relative;
@@ -13221,7 +13228,7 @@
         @media(max-width:1100px){.mrc-body{grid-template-columns:1fr;}.mrc-calc-card{position:static;}}
 
         /* ============ AI监测结果样式 ============ */
-        .col-ai-monitor{min-width:90px;text-align:center;}
+        .col-ai-monitor{width:100px;text-align:center;}
         .ai-monitor-badge{display:inline-flex;align-items:center;gap:4px;padding:3px 10px;border-radius:10px;font-size:12px;font-weight:500;cursor:default;position:relative;}
         .ai-monitor-badge.normal{background:#f6ffed;color:#52c41a;border:1px solid #b7eb8f;}
         .ai-monitor-badge.warning{background:#fff7e6;color:#fa8c16;border:1px solid #ffd591;}
@@ -13229,7 +13236,7 @@
         .ai-monitor-badge svg{width:13px;height:13px;}
         /* AI监测 Tooltip */
         .ai-monitor-tip{position:relative;display:inline-flex;}
-        .ai-monitor-tip .ai-tip-box{display:none;position:absolute;bottom:calc(100% + 6px);left:50%;transform:translateX(-50%);background:#333;color:#fff;font-size:12px;padding:8px 12px;border-radius:6px;white-space:nowrap;z-index:100;max-width:280px;white-space:normal;line-height:1.5;box-shadow:0 4px 12px rgba(0,0,0,0.15);}
+        .ai-monitor-tip .ai-tip-box{display:none;position:fixed;background:#333;color:#fff;font-size:12px;padding:8px 12px;border-radius:6px;white-space:normal;z-index:9999;max-width:280px;line-height:1.5;box-shadow:0 4px 12px rgba(0,0,0,0.15);pointer-events:none;}
         .ai-monitor-tip .ai-tip-box::after{content:'';position:absolute;top:100%;left:50%;transform:translateX(-50%);border:5px solid transparent;border-top-color:#333;}
         .ai-monitor-tip:hover .ai-tip-box{display:block;}
         /* 保费/天数旁边的警告图标 */
@@ -14920,14 +14927,13 @@
                                             <input type="checkbox" class="insurance-list-checkbox" id="selectAll" onchange="toggleSelectAll()">
                                         </th>
                                         <th class="col-id">ID</th>
-                                        <th class="col-company">单位名称</th>
+                                        <th class="col-company">被保险单位</th>
                                         <th class="col-category">管理分类</th>
                                         <th class="col-area">地区</th>
                                         <th class="col-status">状态</th>
-                                        <th class="col-ai-monitor">AI监测结果</th>
-                                        <th class="col-policy-status">保单状态</th>
+                                        <th class="col-ai-monitor">AI监测</th>
                                         <th class="col-days">剩余天数</th>
-                                        <th class="col-ai" id="colAIIssue">是否开启AI</th>
+                                        <th class="col-ai" id="colAIIssue">是否开启企业自主排查AI功能</th>
                                         <th class="col-service">服务状态</th>
                                         <th class="col-upload" id="colUploadImg">影像上传</th>
                                         <th class="col-ins-company" id="colInsuranceCompany">保险机构</th>
@@ -14937,14 +14943,12 @@
                                         <th class="col-project" id="colProjectName">工程名称</th>
                                         <th class="col-build-addr" id="colBuildAddr">建设地址</th>
                                         <th class="col-license" id="colLicenseNo">许可证号</th>
-                                        <th class="col-number col-emp-limit">从业人员赔偿限额</th>
-                                        <th class="col-number col-third-limit">第三者赔偿限额</th>
                                         <th class="col-date">保单起始时间</th>
                                         <th class="col-date">保单终止时间</th>
                                         <th class="col-entry-type">投保形式</th>
                                         <th class="col-tongbao">是否统保</th>
                                         <th class="col-date">创建日期</th>
-                                        <th class="col-source" id="colSourceFrom">来源归属</th>
+                                        <th class="col-source" id="colSourceFrom">数据来源</th>
                                         <th class="col-action">操作</th>
                                     </tr>
                                 </thead>
@@ -21069,6 +21073,27 @@
             </div>
         </div>
 
+        <!-- 历史下载记录弹窗 -->
+        <div class="insurance-list-modal" id="artDownloadHistoryModal" style="min-width:560px;display:none;">
+            <div class="insurance-list-modal-header">
+                <span class="insurance-list-modal-title">历史下载记录</span>
+                <button class="insurance-list-modal-close" onclick="closeDownloadHistoryModal()">×</button>
+            </div>
+            <div class="insurance-list-modal-body" style="padding:16px 24px;">
+                <p style="color:#666;font-size:13px;margin-bottom:12px;">以下为您曾经下载过的报表模板，可以再次下载相同的数据。</p>
+                <div id="artDownloadHistoryList" style="max-height:400px;overflow-y:auto;">
+                    <!-- 历史记录列表 -->
+                </div>
+                <div id="artDownloadHistoryEmpty" style="text-align:center;padding:40px 20px;color:#999;display:none;">
+                    <svg viewBox="0 0 24 24" fill="#d9d9d9" style="width:48px;height:48px;margin-bottom:12px;"><path d="M19 19H5V5h7V3H5c-1.11 0-2 .9-2 2v14c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2v-7h-2v7zM14 3v2h3.59l-9.83 9.83 1.41 1.41L19 6.41V10h2V3h-7z"/></svg>
+                    <p>暂无下载记录</p>
+                </div>
+            </div>
+            <div class="insurance-list-modal-footer" style="justify-content:center;">
+                <button class="insurance-list-btn insurance-list-btn-gray insurance-list-btn-sm" onclick="closeDownloadHistoryModal()">关闭</button>
+            </div>
+        </div>
+
         <!-- 签章审核弹窗 -->
         <div class="insurance-list-modal" id="signatureAuditModal" style="min-width:480px;display:none;">
         <div class="insurance-list-modal-header">
@@ -24018,6 +24043,39 @@ function showPcPortalSelector() {
         function aiStatusText(s){ return s==='normal'?'正常':s==='warning'?'预警':s==='error'?'异常':'未知'; }
         function aiStatusClass(s){ return s==='normal'?'normal':s==='warning'?'warning':'error'; }
         function aiStatusSvg(s){ if(s==='normal') return '<svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 9l-9 9z"/></svg>'; if(s==='warning') return '<svg viewBox="0 0 24 24" fill="currentColor"><path d="M1 21h22L12 2 1 21zm12-3h-2v-2h2v2zm0-4h-2v-4h2v4z"/></svg>'; return '<svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.47 2 2 6.47 2 12s4.47 10 10 10 10-4.47 10-10S17.53 2 12 2zm5 13.59L15.59 17 12 13.41 8.41 17 7 15.59 10.59 12 7 8.41 8.41 7 12 10.59 15.59 7 17 8.41 13.41 12 17 15.59z"/></svg>'; }
+        
+        // AI监测Tooltip显示/隐藏
+        function showAiTooltip(el, text) {
+            var tipBox = el.querySelector('.ai-tip-box');
+            if (!tipBox) return;
+            tipBox.textContent = text;
+            tipBox.style.display = 'block';
+            var rect = el.getBoundingClientRect();
+            var tipRect = tipBox.getBoundingClientRect();
+            var top = rect.top - tipRect.height - 8;
+            var left = rect.left + rect.width / 2 - tipRect.width / 2;
+            if (left < 10) left = 10;
+            if (left + tipRect.width > window.innerWidth - 10) left = window.innerWidth - tipRect.width - 10;
+            if (top < 10) top = rect.bottom + 8;
+            tipBox.style.top = top + 'px';
+            tipBox.style.left = left + 'px';
+        }
+        function hideAiTooltip(el) {
+            var tipBox = el.querySelector('.ai-tip-box');
+            if (tipBox) tipBox.style.display = 'none';
+        }
+        
+        // 点击AI监测打开详情抽屉并切换到AI监测报告tab
+        function openAiMonitorDetail(policyId, status) {
+            viewPolicy(policyId);
+            setTimeout(function() {
+                switchDetailTab('aimonitor');
+                var tabs = document.querySelectorAll('#viewDrawerTabs .insurance-list-tab');
+                tabs.forEach(function(t) {
+                    t.classList.toggle('active', t.getAttribute('data-tab') === 'aimonitor');
+                });
+            }, 100);
+        }
 
         // AI监测报告 Tab 填充
         function fillAiReportTab(item){
@@ -24159,7 +24217,7 @@ function showPcPortalSelector() {
                 // AI监测结果
                 var aiData = getAiMonitor(item.id);
                 var aiTipText = aiData.reasons.length > 0 ? aiData.reasons.join('；') : '该保单符合所有监测规则';
-                var aiStatusHtml = '<span class="ai-monitor-tip"><span class="ai-monitor-badge ' + aiStatusClass(aiData.status) + '">' + aiStatusSvg(aiData.status) + ' ' + aiStatusText(aiData.status) + '</span><div class="ai-tip-box">' + aiTipText + '</div></span>';
+                var aiStatusHtml = '<span class="ai-monitor-tip" onmouseenter="showAiTooltip(this, \'' + aiTipText.replace(/'/g, "\\'") + '\')" onmouseleave="hideAiTooltip(this)"><span class="ai-monitor-badge ' + aiStatusClass(aiData.status) + '" onclick="openAiMonitorDetail(' + item.id + ', \'' + aiData.status + '\')">' + aiStatusSvg(aiData.status) + ' ' + aiStatusText(aiData.status) + '</span><div class="ai-tip-box" style="display:none;">' + aiTipText + '</div></span>';
                 // 保费旁警告图标
                 var premiumWarnHtml = '';
                 if(aiData.status === 'warning' || aiData.status === 'error'){
@@ -24234,7 +24292,6 @@ function showPcPortalSelector() {
                     '<td class="col-area">' + item.area + '</td>' +
                     '<td class="col-status">' + statusTag + '</td>' +
                     '<td class="col-ai-monitor">' + aiStatusHtml + '</td>' +
-                    '<td class="col-policy-status">' + policyStatusTag + '</td>' +
                     '<td class="col-days ' + daysClass + '">' + daysText + daysWarnHtml + '</td>' +
                     '<td class="col-ai" id="colAI' + item.id + '">' + (currentPcPortal !== 'government' && currentPcPortal !== 'enterprise' ? aiSwitch : '-') + '</td>' +
                     '<td class="col-service">' + serviceTag + '</td>' +
@@ -24246,8 +24303,6 @@ function showPcPortalSelector() {
                     '<td class="col-project insurance-list-cell' + (item.projectName !== '-' && needExpand(item.projectName) ? ' expandable' : '') + '" id="colProj' + item.id + '"><span>' + (item.projectName !== '-' ? item.projectName : '-') + '</span>' + (item.projectName !== '-' && needExpand(item.projectName) ? '<div class="cell-tooltip">' + item.projectName + '</div>' : '') + '</td>' +
                     '<td class="col-build-addr insurance-list-cell' + (item.buildAddr !== '-' && needExpand(item.buildAddr) ? ' expandable' : '') + '" id="colBuild' + item.id + '"><span>' + (item.buildAddr !== '-' ? item.buildAddr : '-') + '</span>' + (item.buildAddr !== '-' && needExpand(item.buildAddr) ? '<div class="cell-tooltip">' + item.buildAddr + '</div>' : '') + '</td>' +
                     '<td class="col-license insurance-list-cell' + (item.licenseNo !== '-' && needExpand(item.licenseNo) ? ' expandable' : '') + '" id="colLic' + item.id + '"><span>' + (item.licenseNo !== '-' ? item.licenseNo : '-') + '</span>' + (item.licenseNo !== '-' && needExpand(item.licenseNo) ? '<div class="cell-tooltip">' + item.licenseNo + '</div>' : '') + '</td>' +
-                    '<td class="col-number col-emp-limit">' + item.employeeLimit + '</td>' +
-                    '<td class="col-number col-third-limit">' + item.thirdPartyLimit + '</td>' +
                     '<td class="col-date">' + item.startDate + '</td>' +
                     '<td class="col-date">' + item.endDate + '</td>' +
                     '<td class="col-entry-type">' + item.entryType + '</td>' +
@@ -36282,6 +36337,7 @@ function showPcPortalSelector() {
                 html += '<button class="art-action-btn" onclick="applyArtTemplate(' + item.id + ')">应用</button>';
                 html += '<button class="art-action-btn" onclick="generateArtReport(' + item.id + ')">生成报表</button>';
                 html += '<button class="art-action-btn" onclick="exportArtTemplate(' + item.id + ')">导出</button>';
+                html += '<button class="art-action-btn art-action-btn-history" onclick="showDownloadHistory()">历史下载</button>';
                 if (!item.isShared) {
                     html += '<button class="art-action-btn" onclick="editArtTemplate(' + item.id + ')">编辑配置</button>';
                     html += '<div class="art-more-dropdown"><button class="art-action-btn-text" onclick="toggleArtMoreMenu(this)">更多</button>';
@@ -36434,15 +36490,116 @@ function showPcPortalSelector() {
         function exportArtTemplate(id) {
             const item = artTemplateData.find(function(t) { return t.id === id; });
             if (!item) return;
-            const exportData = JSON.stringify(item, null, 2);
-            const blob = new Blob([exportData], { type: 'application/json;charset=utf-8' });
+            
+            // 生成CSV数据
+            const csvData = generateTemplateCSV(item);
+            const blob = new Blob([csvData], { type: 'text/csv;charset=utf-8' });
             const url = URL.createObjectURL(blob);
             const a = document.createElement('a');
             a.href = url;
-            a.download = item.name + '_template.json';
+            a.download = item.name + '_template.csv';
             a.click();
             URL.revokeObjectURL(url);
-            alert('模板已导出：' + item.name + '.json');
+            
+            // 保存下载记录
+            saveDownloadRecord(item);
+            
+            alert('模板已导出：' + item.name + '.csv');
+        }
+        
+        // 生成模板CSV数据
+        function generateTemplateCSV(item) {
+            let csv = '\uFEFF'; // BOM for UTF-8
+            csv += '模板名称,权限状态,模板摘要,使用次数,最近使用,创建人,更新时间\n';
+            const permText = item.permission === 'private' ? '私有' : 
+                             item.permission === 'shared' ? '指定共享' : '全员公开';
+            csv += '"' + item.name + '","' + permText + '","' + item.summary + '",' + 
+                   item.usageCount + ',"' + item.lastUsed + '","' + item.creator + '","' + item.updateTime + '"\n';
+            
+            // 添加字段详情
+            csv += '\n字段详情:\n';
+            csv += '字段名称\n';
+            const fields = item.summary.replace('包含字段：', '').split(', ');
+            fields.forEach(function(field) {
+                csv += '"' + field + '"\n';
+            });
+            
+            return csv;
+        }
+        
+        // 保存下载记录到localStorage
+        function saveDownloadRecord(item) {
+            let history = JSON.parse(localStorage.getItem('artDownloadHistory') || '[]');
+            const existingIndex = history.findIndex(function(h) { return h.templateId === item.id; });
+            if (existingIndex > -1) {
+                history.splice(existingIndex, 1);
+            }
+            history.unshift({
+                templateId: item.id,
+                templateName: item.name,
+                downloadTime: new Date().toLocaleString('zh-CN'),
+                summary: item.summary
+            });
+            if (history.length > 20) {
+                history = history.slice(0, 20);
+            }
+            localStorage.setItem('artDownloadHistory', JSON.stringify(history));
+        }
+        
+        // 显示历史下载记录弹窗
+        function showDownloadHistory() {
+            const history = JSON.parse(localStorage.getItem('artDownloadHistory') || '[]');
+            const listContainer = document.getElementById('artDownloadHistoryList');
+            const emptyContainer = document.getElementById('artDownloadHistoryEmpty');
+            
+            if (history.length === 0) {
+                listContainer.style.display = 'none';
+                emptyContainer.style.display = 'block';
+            } else {
+                listContainer.style.display = 'block';
+                emptyContainer.style.display = 'none';
+                
+                let html = '<div style="display:flex;flex-direction:column;gap:8px;">';
+                history.forEach(function(record) {
+                    html += '<div style="display:flex;align-items:center;justify-content:space-between;padding:12px 16px;background:#f5f5f5;border-radius:8px;border:1px solid #e8e8e8;">';
+                    html += '<div style="flex:1;">';
+                    html += '<div style="font-weight:500;color:#333;margin-bottom:4px;">' + record.templateName + '</div>';
+                    html += '<div style="font-size:12px;color:#999;">下载时间：' + record.downloadTime + '</div>';
+                    html += '</div>';
+                    html += '<button class="insurance-list-btn insurance-list-btn-primary insurance-list-btn-sm" onclick="reDownloadTemplate(' + record.templateId + ')">再次下载</button>';
+                    html += '</div>';
+                });
+                html += '</div>';
+                listContainer.innerHTML = html;
+            }
+            
+            showModal('artDownloadHistoryModal');
+        }
+        
+        // 再次下载模板
+        function reDownloadTemplate(templateId) {
+            const item = artTemplateData.find(function(t) { return t.id === templateId; });
+            if (!item) {
+                alert('该模板已不存在');
+                return;
+            }
+            
+            const csvData = generateTemplateCSV(item);
+            const blob = new Blob([csvData], { type: 'text/csv;charset=utf-8' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = item.name + '_template.csv';
+            a.click();
+            URL.revokeObjectURL(url);
+            
+            saveDownloadRecord(item);
+            alert('模板已再次下载：' + item.name + '.csv');
+        }
+        
+        // 关闭历史下载弹窗
+        function closeDownloadHistoryModal() {
+            closeModal('artDownloadHistoryModal');
         }
         
         // 编辑模板配置
