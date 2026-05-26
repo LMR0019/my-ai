@@ -22046,6 +22046,53 @@
         </div>
         </div>
 
+        <!-- 服务机构编辑弹窗 -->
+        <div class="insurance-list-modal" id="editServiceOrgModal" style="min-width:800px;display:none;">
+        <div class="insurance-list-modal-header">
+        <span class="insurance-list-modal-title">编辑服务机构</span>
+        <button class="insurance-list-modal-close" onclick="closeModal('editServiceOrgModal')">×</button>
+        </div>
+        <div class="insurance-list-modal-body" style="max-height:70vh;overflow-y:auto;">
+        <input type="hidden" id="editServiceOrgId">
+        <div class="insurance-list-form-section">
+        <div class="insurance-list-form-section-title">基础信息</div>
+        <div class="insurance-list-form-row">
+        <div class="insurance-list-form-group"><label class="insurance-list-form-label"><span class="required">*</span>机构名称</label><input type="text" class="insurance-list-form-input" id="editSOName"></div>
+        <div class="insurance-list-form-group"><label class="insurance-list-form-label"><span class="required">*</span>账号</label><input type="text" class="insurance-list-form-input" id="editSOAccount"></div>
+        </div>
+        <div class="insurance-list-form-row">
+        <div class="insurance-list-form-group"><label class="insurance-list-form-label">地区</label><input type="text" class="insurance-list-form-input" id="editSOArea"></div>
+        <div class="insurance-list-form-group"><label class="insurance-list-form-label">服务人员数</label><input type="number" class="insurance-list-form-input" id="editSOStaffCount"></div>
+        </div>
+        <div class="insurance-list-form-group"><label class="insurance-list-form-label">关联保险机构</label><input type="text" class="insurance-list-form-input" id="editSORelatedInsurance"></div>
+        <div class="insurance-list-form-row">
+        <div class="insurance-list-form-group"><label class="insurance-list-form-label">创建日期</label><input type="text" class="insurance-list-form-input" id="editSOCreateDate"></div>
+        <div class="insurance-list-form-group"><label class="insurance-list-form-label">状态</label><select class="insurance-list-form-select" id="editSOStatus"><option value="启用">启用</option><option value="停用">停用</option></select></div>
+        </div>
+        <div class="insurance-list-form-group"><label class="insurance-list-form-label">实际经营地址</label><input type="text" class="insurance-list-form-input" id="editSOAddress"></div>
+        </div>
+        <div class="insurance-list-form-section">
+        <div class="insurance-list-form-section-title">服务价格表</div>
+        <div style="overflow-x:auto;">
+        <table style="width:100%;border-collapse:collapse;font-size:13px;">
+        <thead><tr style="background:#f5f7fa;">
+        <th style="padding:10px;border:1px solid #e8e8e8;text-align:left;">服务项目名称</th>
+        <th style="padding:10px;border:1px solid #e8e8e8;text-align:center;">小微企业(&lt;50人)</th>
+        <th style="padding:10px;border:1px solid #e8e8e8;text-align:center;">中型企业(50-300人)</th>
+        <th style="padding:10px;border:1px solid #e8e8e8;text-align:center;">大型企业(&gt;300人)</th>
+        </tr></thead>
+        <tbody id="editSOPriceTableBody">
+        </tbody>
+        </table>
+        </div>
+        </div>
+        </div>
+        <div class="insurance-list-modal-footer">
+        <button class="insurance-list-btn insurance-list-btn-gray" onclick="closeModal('editServiceOrgModal')">取消</button>
+        <button class="insurance-list-btn insurance-list-btn-primary" onclick="saveEditServiceOrg()">保存</button>
+        </div>
+        </div>
+
         <!-- 服务机构评价流水弹窗 -->
         <div class="insurance-list-modal" id="serviceOrgEvaluationModal" style="min-width:700px;display:none;">
         <div class="insurance-list-modal-header">
@@ -29372,9 +29419,8 @@ function showPcPortalSelector() {
             });
             html += '</div>';
             html += '</div>';
-            
             html += '</div>';
-            
+
             html += '<div>';
             html += '<div style="font-size:14px;font-weight:600;color:#333;margin-bottom:16px;">多维画像</div>';
             
@@ -36287,11 +36333,11 @@ function showPcPortalSelector() {
         
         /* ====== 服务机构列表 ====== */
         const serviceOrgData = [
-            {id:1, name:'肇庆市安全生产协会', account:'aqsc_zq@001', area:'肇庆', address:'肇庆市端州区星湖大道1号', staffCount:25, createDate:'2023-06-15', relatedInsurance:'中国人民财产保险', status:'启用', overallScore:4.8, companyAvgScore:4.9, companyReviewCount:50, adminAvgScore:4.7, lastAdminReview:'2024-05-20', lastAdminResult:'合格', rectifyRate:96, dimensions:{professionalism:4.9, responseSpeed:4.7, serviceAttitude:4.8}},
-            {id:2, name:'肇庆市应急管理协会', account:'yjgl_zq@001', area:'肇庆', address:'肇庆市端州区天宁北路8号', staffCount:18, createDate:'2023-08-20', relatedInsurance:'中国太平洋财产保险', status:'启用', overallScore:4.6, companyAvgScore:4.5, companyReviewCount:35, adminAvgScore:4.7, lastAdminReview:'2024-04-15', lastAdminResult:'合格', rectifyRate:92, dimensions:{professionalism:4.6, responseSpeed:4.5, serviceAttitude:4.7}},
-            {id:3, name:'肇庆市安全生产技术服务中心', account:'jsfw_zq@001', area:'肇庆', address:'肇庆市鼎湖区桂城街道办', staffCount:12, createDate:'2024-01-10', relatedInsurance:'中国平安财产保险', status:'启用', overallScore:4.9, companyAvgScore:5.0, companyReviewCount:28, adminAvgScore:4.8, lastAdminReview:'2024-05-18', lastAdminResult:'合格', rectifyRate:100, dimensions:{professionalism:5.0, responseSpeed:4.8, serviceAttitude:4.9}},
-            {id:4, name:'四会市安全生产协会', account:'aqsh_sh@001', area:'四会', address:'四会市东城街道工业大道', staffCount:8, createDate:'2024-02-28', relatedInsurance:'中华联合财产保险', status:'启用', overallScore:4.3, companyAvgScore:4.2, companyReviewCount:18, adminAvgScore:4.5, lastAdminReview:'2024-03-20', lastAdminResult:'合格', rectifyRate:85, dimensions:{professionalism:4.3, responseSpeed:4.2, serviceAttitude:4.4}},
-            {id:5, name:'高要区安全生产协会', account:'aqgy_gy@001', area:'高要', address:'高要区南岸街道府前大街', staffCount:6, createDate:'2024-04-12', relatedInsurance:'大地财产保险', status:'启用', overallScore:0, companyAvgScore:0, companyReviewCount:0, adminAvgScore:0, lastAdminReview:'', lastAdminResult:'', rectifyRate:0, dimensions:{professionalism:0, responseSpeed:0, serviceAttitude:0}},
+            {id:1, name:'肇庆市安全生产协会', account:'aqsc_zq@001', area:'肇庆', address:'肇庆市端州区星湖大道1号', staffCount:25, createDate:'2023-06-15', relatedInsurance:'中国人民财产保险', status:'启用', overallScore:4.8, companyAvgScore:4.9, companyReviewCount:50, adminAvgScore:4.7, lastAdminReview:'2024-05-20', lastAdminResult:'合格', rectifyRate:96, dimensions:{professionalism:4.9, responseSpeed:4.7, serviceAttitude:4.8}, servicePrices:[{name:'安全生产宣传教育培训', small:5000, medium:8000, large:12000},{name:'安全风险辨识、评估和安全评价', small:8000, medium:15000, large:25000},{name:'生产安全事故隐患排查', small:6000, medium:10000, large:18000},{name:'安全生产标准化建设', small:10000, medium:18000, large:30000},{name:'生产安全事故应急预案编制与演练', small:7000, medium:12000, large:20000},{name:'安全生产科技推广应用', small:9000, medium:16000, large:28000},{name:'其他有关事故预防工作', small:5000, medium:9000, large:15000}]},
+            {id:2, name:'肇庆市应急管理协会', account:'yjgl_zq@001', area:'肇庆', address:'肇庆市端州区天宁北路8号', staffCount:18, createDate:'2023-08-20', relatedInsurance:'中国太平洋财产保险', status:'启用', overallScore:4.6, companyAvgScore:4.5, companyReviewCount:35, adminAvgScore:4.7, lastAdminReview:'2024-04-15', lastAdminResult:'合格', rectifyRate:92, dimensions:{professionalism:4.6, responseSpeed:4.5, serviceAttitude:4.7}, servicePrices:[{name:'安全生产宣传教育培训', small:4500, medium:7500, large:11000},{name:'安全风险辨识、评估和安全评价', small:7500, medium:14000, large:23000},{name:'生产安全事故隐患排查', small:5500, medium:9500, large:17000},{name:'安全生产标准化建设', small:9500, medium:17000, large:28000},{name:'生产安全事故应急预案编制与演练', small:6500, medium:11500, large:19000},{name:'安全生产科技推广应用', small:8500, medium:15000, large:26000},{name:'其他有关事故预防工作', small:4500, medium:8500, large:14000}]},
+            {id:3, name:'肇庆市安全生产技术服务中心', account:'jsfw_zq@001', area:'肇庆', address:'肇庆市鼎湖区桂城街道办', staffCount:12, createDate:'2024-01-10', relatedInsurance:'中国平安财产保险', status:'启用', overallScore:4.9, companyAvgScore:5.0, companyReviewCount:28, adminAvgScore:4.8, lastAdminReview:'2024-05-18', lastAdminResult:'合格', rectifyRate:100, dimensions:{professionalism:5.0, responseSpeed:4.8, serviceAttitude:4.9}, servicePrices:[{name:'安全生产宣传教育培训', small:5500, medium:8500, large:13000},{name:'安全风险辨识、评估和安全评价', small:8500, medium:16000, large:27000},{name:'生产安全事故隐患排查', small:6500, medium:10500, large:19000},{name:'安全生产标准化建设', small:10500, medium:19000, large:32000},{name:'生产安全事故应急预案编制与演练', small:7500, medium:12500, large:21000},{name:'安全生产科技推广应用', small:9500, medium:17000, large:29000},{name:'其他有关事故预防工作', small:5500, medium:9500, large:16000}]},
+            {id:4, name:'四会市安全生产协会', account:'aqsh_sh@001', area:'四会', address:'四会市东城街道工业大道', staffCount:8, createDate:'2024-02-28', relatedInsurance:'中华联合财产保险', status:'启用', overallScore:4.3, companyAvgScore:4.2, companyReviewCount:18, adminAvgScore:4.5, lastAdminReview:'2024-03-20', lastAdminResult:'合格', rectifyRate:85, dimensions:{professionalism:4.3, responseSpeed:4.2, serviceAttitude:4.4}, servicePrices:[{name:'安全生产宣传教育培训', small:4000, medium:7000, large:10000},{name:'安全风险辨识、评估和安全评价', small:7000, medium:13000, large:21000},{name:'生产安全事故隐患排查', small:5000, medium:9000, large:16000},{name:'安全生产标准化建设', small:9000, medium:16000, large:26000},{name:'生产安全事故应急预案编制与演练', small:6000, medium:11000, large:18000},{name:'安全生产科技推广应用', small:8000, medium:14000, large:24000},{name:'其他有关事故预防工作', small:4000, medium:8000, large:13000}]},
+            {id:5, name:'高要区安全生产协会', account:'aqgy_gy@001', area:'高要', address:'高要区南岸街道府前大街', staffCount:6, createDate:'2024-04-12', relatedInsurance:'大地财产保险', status:'启用', overallScore:0, companyAvgScore:0, companyReviewCount:0, adminAvgScore:0, lastAdminReview:'', lastAdminResult:'', rectifyRate:0, dimensions:{professionalism:0, responseSpeed:0, serviceAttitude:0}, servicePrices:[{name:'安全生产宣传教育培训', small:4200, medium:7200, large:10500},{name:'安全风险辨识、评估和安全评价', small:7200, medium:13500, large:22000},{name:'生产安全事故隐患排查', small:5200, medium:9200, large:16500},{name:'安全生产标准化建设', small:9200, medium:16500, large:27000},{name:'生产安全事故应急预案编制与演练', small:6200, medium:11200, large:18500},{name:'安全生产科技推广应用', small:8200, medium:14500, large:25000},{name:'其他有关事故预防工作', small:4200, medium:8200, large:13500}]},
         ];
         let soPage = 1, soPageSize = 10;
         
@@ -36408,7 +36454,33 @@ function showPcPortalSelector() {
             html += '<div><div style="font-size:12px;color:#999;margin-bottom:2px;">状态</div><div style="font-size:14px;"><span class="insurance-list-tag insurance-list-tag-green">' + item.status + '</span></div></div>';
             html += '</div>';
             html += '</div>';
-            
+
+            html += '<div style="margin-bottom:24px;">';
+            html += '<div style="font-size:15px;font-weight:600;color:#333;margin-bottom:12px;padding-left:10px;border-left:3px solid #1890ff;">机构服务价格表</div>';
+            html += '<div style="overflow-x:auto;">';
+            html += '<table style="width:100%;border-collapse:collapse;font-size:13px;">';
+            html += '<thead><tr style="background:#f5f7fa;">';
+            html += '<th style="padding:10px;border:1px solid #e8e8e8;text-align:left;">服务项目名称</th>';
+            html += '<th style="padding:10px;border:1px solid #e8e8e8;text-align:center;">小微企业(&lt;50人)</th>';
+            html += '<th style="padding:10px;border:1px solid #e8e8e8;text-align:center;">中型企业(50-300人)</th>';
+            html += '<th style="padding:10px;border:1px solid #e8e8e8;text-align:center;">大型企业(&gt;300人)</th>';
+            html += '</tr></thead>';
+            html += '<tbody>';
+            if (item.servicePrices && item.servicePrices.length > 0) {
+                item.servicePrices.forEach(function(sp) {
+                    html += '<tr>';
+                    html += '<td style="padding:10px;border:1px solid #e8e8e8;">' + sp.name + '</td>';
+                    html += '<td style="padding:10px;border:1px solid #e8e8e8;text-align:right;">¥' + sp.small.toLocaleString() + '</td>';
+                    html += '<td style="padding:10px;border:1px solid #e8e8e8;text-align:right;">¥' + sp.medium.toLocaleString() + '</td>';
+                    html += '<td style="padding:10px;border:1px solid #e8e8e8;text-align:right;">¥' + sp.large.toLocaleString() + '</td>';
+                    html += '</tr>';
+                });
+            }
+            html += '</tbody>';
+            html += '</table>';
+            html += '</div>';
+            html += '</div>';
+
             html += '<div>';
             html += '<div style="font-size:15px;font-weight:600;color:#333;margin-bottom:12px;padding-left:10px;border-left:3px solid #1890ff;">评价信息</div>';
             
@@ -36518,7 +36590,80 @@ function showPcPortalSelector() {
                 drawer.classList.remove('show');
             }
         }
-        
+
+        function editSO(id) {
+            var item = serviceOrgData.find(function(d) { return d.id === id; });
+            if (!item) return;
+
+            document.getElementById('editServiceOrgId').value = id;
+            document.getElementById('editSOName').value = item.name;
+            document.getElementById('editSOAccount').value = item.account;
+            document.getElementById('editSOArea').value = item.area;
+            document.getElementById('editSOStaffCount').value = item.staffCount;
+            document.getElementById('editSORelatedInsurance').value = item.relatedInsurance;
+            document.getElementById('editSOCreateDate').value = item.createDate;
+            document.getElementById('editSOStatus').value = item.status;
+            document.getElementById('editSOAddress').value = item.address;
+
+            var priceTableBody = document.getElementById('editSOPriceTableBody');
+            var html = '';
+            var serviceNames = [
+                '安全生产宣传教育培训',
+                '安全风险辨识、评估和安全评价',
+                '生产安全事故隐患排查',
+                '安全生产标准化建设',
+                '生产安全事故应急预案编制与演练',
+                '安全生产科技推广应用',
+                '其他有关事故预防工作'
+            ];
+
+            serviceNames.forEach(function(name, index) {
+                var price = item.servicePrices && item.servicePrices[index];
+                html += '<tr>';
+                html += '<td style="padding:8px;border:1px solid #e8e8e8;"><input type="hidden" class="so-service-name" value="' + name + '">' + name + '</td>';
+                html += '<td style="padding:8px;border:1px solid #e8e8e8;"><input type="number" class="insurance-list-form-input so-small-price" value="' + (price ? price.small : 0) + '"></td>';
+                html += '<td style="padding:8px;border:1px solid #e8e8e8;"><input type="number" class="insurance-list-form-input so-medium-price" value="' + (price ? price.medium : 0) + '"></td>';
+                html += '<td style="padding:8px;border:1px solid #e8e8e8;"><input type="number" class="insurance-list-form-input so-large-price" value="' + (price ? price.large : 0) + '"></td>';
+                html += '</tr>';
+            });
+            priceTableBody.innerHTML = html;
+
+            showModal('editServiceOrgModal');
+        }
+
+        function saveEditServiceOrg() {
+            var id = parseInt(document.getElementById('editServiceOrgId').value);
+            var item = serviceOrgData.find(function(d) { return d.id === id; });
+            if (!item) return;
+
+            item.name = document.getElementById('editSOName').value;
+            item.account = document.getElementById('editSOAccount').value;
+            item.area = document.getElementById('editSOArea').value;
+            item.staffCount = parseInt(document.getElementById('editSOStaffCount').value);
+            item.relatedInsurance = document.getElementById('editSORelatedInsurance').value;
+            item.createDate = document.getElementById('editSOCreateDate').value;
+            item.status = document.getElementById('editSOStatus').value;
+            item.address = document.getElementById('editSOAddress').value;
+
+            var serviceNames = document.getElementsByClassName('so-service-name');
+            var smallPrices = document.getElementsByClassName('so-small-price');
+            var mediumPrices = document.getElementsByClassName('so-medium-price');
+            var largePrices = document.getElementsByClassName('so-large-price');
+
+            item.servicePrices = [];
+            for (var i = 0; i < serviceNames.length; i++) {
+                item.servicePrices.push({
+                    name: serviceNames[i].value,
+                    small: parseInt(smallPrices[i].value),
+                    medium: parseInt(mediumPrices[i].value),
+                    large: parseInt(largePrices[i].value)
+                });
+            }
+
+            renderSOTable();
+            closeModal('editServiceOrgModal');
+        }
+
         function showCompanyEvaluations(orgId) {
             var records = serviceOrgEvaluationRecords[orgId] || [];
             var item = serviceOrgData.find(function(d) { return d.id === orgId; });
