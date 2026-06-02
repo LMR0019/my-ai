@@ -305,6 +305,7 @@
             text-shadow: 0 0 12px rgba(0,224,255,0.5);
             letter-spacing: 2px;
             line-height: 1.2;
+            transition: transform 0.3s;
         }
 
         .metric-label {
@@ -440,6 +441,7 @@
             color: #FFFFFF;
             line-height: 1.2;
             margin-bottom: 8px;
+            transition: transform 0.3s;
         }
 
         .stat-unit {
@@ -537,6 +539,7 @@
             color: var(--accent-cyan);
             text-shadow: 0 0 18px rgba(0,224,255,0.5);
             line-height: 1.1;
+            transition: transform 0.3s;
         }
 
         .overview-value.green {
@@ -683,11 +686,1382 @@
             .metric-value { font-size: 24px; }
             .header-title h1 { font-size: 22px; letter-spacing: 6px; }
         }
+
+        /* ================================================================ */
+        /* ===== 导航胶囊按钮 ===== */
+        /* ================================================================ */
+        .nav-capsules {
+            flex: 0 0 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+            padding: 0;
+        }
+
+        .nav-capsule {
+            background: rgba(10, 25, 55, 0.6);
+            border: 1px solid rgba(0, 224, 255, 0.3);
+            border-radius: 20px;
+            color: var(--text-secondary);
+            padding: 7px 28px;
+            font-size: 13px;
+            font-family: var(--font-cn);
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.35s cubic-bezier(0.23, 1, 0.32, 1);
+            letter-spacing: 2px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .nav-capsule::before {
+            content: '';
+            position: absolute;
+            top: 0; left: -100%; right: 0; bottom: 0;
+            width: 100%;
+            background: linear-gradient(90deg, transparent, rgba(0, 224, 255, 0.15), transparent);
+            transition: left 0.5s;
+        }
+
+        .nav-capsule:hover::before {
+            left: 100%;
+        }
+
+        .nav-capsule:hover {
+            border-color: var(--accent-cyan);
+            color: var(--accent-cyan);
+            box-shadow: 0 0 16px rgba(0, 224, 255, 0.35), 0 0 4px rgba(0, 224, 255, 0.2);
+            text-shadow: 0 0 8px rgba(0, 224, 255, 0.4);
+            transform: translateY(-1px);
+        }
+
+        .nav-capsule:active {
+            transform: translateY(0) scale(0.97);
+            transition-duration: 0.1s;
+        }
+
+        .nav-capsule svg {
+            width: 14px;
+            height: 14px;
+            vertical-align: -2px;
+            margin-right: 6px;
+            stroke: currentColor;
+            fill: none;
+            stroke-width: 1.8;
+        }
+
+        /* ================================================================ */
+        /* ===== 转场遮罩 ===== */
+        /* ================================================================ */
+        .transition-overlay {
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            z-index: 1000;
+            background: var(--bg-primary);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.5s;
+        }
+
+        .transition-overlay.active {
+            opacity: 1;
+            pointer-events: all;
+        }
+
+        .transition-loading {
+            text-align: center;
+        }
+
+        .transition-loading .loading-ring {
+            width: 48px;
+            height: 48px;
+            border: 3px solid rgba(0, 224, 255, 0.15);
+            border-top-color: var(--accent-cyan);
+            border-radius: 50%;
+            margin: 0 auto 16px;
+            animation: spin 0.8s linear infinite;
+        }
+
+        .transition-loading .loading-text {
+            color: var(--accent-cyan);
+            font-size: 14px;
+            letter-spacing: 4px;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        /* ================================================================ */
+        /* ===== 子大屏通用样式 ===== */
+        /* ================================================================ */
+        .sub-screen {
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            z-index: 900;
+            background: var(--bg-primary);
+            display: none;
+            flex-direction: column;
+            opacity: 0;
+            transition: opacity 0.5s;
+        }
+
+        .sub-screen.visible {
+            display: flex;
+            opacity: 1;
+        }
+
+        .sub-screen.fade-in {
+            animation: fadeInScreen 0.6s ease-out forwards;
+        }
+
+        @keyframes fadeInScreen {
+            from { opacity: 0; transform: scale(1.02); }
+            to { opacity: 1; transform: scale(1); }
+        }
+
+        /* 返回按钮 */
+        .back-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            background: rgba(0, 224, 255, 0.1);
+            border: 1px solid rgba(0, 224, 255, 0.4);
+            border-radius: 4px;
+            color: var(--accent-cyan);
+            padding: 8px 18px;
+            font-size: 13px;
+            font-family: var(--font-cn);
+            cursor: pointer;
+            transition: all 0.3s;
+            letter-spacing: 1px;
+        }
+
+        .back-btn:hover {
+            background: rgba(0, 224, 255, 0.2);
+            border-color: var(--accent-cyan);
+            box-shadow: 0 0 12px rgba(0, 224, 255, 0.3);
+            transform: translateX(-2px);
+        }
+
+        .back-btn svg {
+            width: 16px;
+            height: 16px;
+            stroke: var(--accent-cyan);
+            fill: none;
+            stroke-width: 2;
+        }
+
+        /* 子大屏头部 */
+        .sub-header {
+            flex: 0 0 60px;
+            display: flex;
+            align-items: center;
+            padding: 0 20px;
+            gap: 20px;
+            background: linear-gradient(180deg, rgba(10,28,70,0.9) 0%, rgba(5,18,45,0.7) 100%);
+            border-bottom: 1px solid var(--border-glow);
+        }
+
+        .sub-header-title {
+            font-size: 22px;
+            font-weight: 700;
+            color: #FFFFFF;
+            letter-spacing: 4px;
+            flex: 1;
+            text-align: center;
+        }
+
+        /* 子大屏KPI栏 */
+        .sub-kpi-bar {
+            flex: 0 0 72px;
+            display: flex;
+            gap: 1px;
+            background: rgba(0, 224, 255, 0.08);
+            border: 1px solid var(--border-glow);
+            border-radius: var(--radius);
+            margin: 8px 10px;
+            overflow: hidden;
+        }
+
+        .sub-kpi-item {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            background: rgba(10, 25, 55, 0.6);
+            gap: 2px;
+            position: relative;
+        }
+
+        .sub-kpi-value {
+            font-family: var(--font-numbers);
+            font-size: 24px;
+            font-weight: 700;
+            color: var(--accent-cyan);
+            text-shadow: 0 0 12px rgba(0,224,255,0.5);
+        }
+
+        .sub-kpi-value.warning { color: var(--accent-orange); text-shadow: 0 0 12px rgba(255,107,53,0.5); }
+        .sub-kpi-value.danger { color: var(--accent-red); text-shadow: 0 0 12px rgba(255,77,79,0.5); }
+        .sub-kpi-value.success { color: var(--accent-green); text-shadow: 0 0 12px rgba(0,214,143,0.5); }
+
+        .sub-kpi-label {
+            font-size: 11px;
+            color: var(--text-dim);
+        }
+
+        .sub-kpi-sub {
+            font-size: 9px;
+            color: rgba(107,122,144,0.8);
+            text-align: center;
+            line-height: 1.4;
+            max-width: 90%;
+        }
+
+        .sub-kpi-sub .sub-highlight {
+            font-weight: 600;
+        }
+
+        .sub-kpi-sub .sub-red { color: var(--accent-red); }
+        .sub-kpi-sub .sub-green { color: var(--accent-green); }
+        .sub-kpi-sub .sub-yellow { color: var(--accent-yellow); }
+        .sub-kpi-sub .sub-cyan { color: var(--accent-cyan); }
+
+        .sub-kpi-progress-wrap {
+            width: 80%;
+            height: 3px;
+            background: rgba(0,224,255,0.1);
+            border-radius: 2px;
+            overflow: hidden;
+            margin-top: 1px;
+        }
+
+        .sub-kpi-progress-bar {
+            height: 100%;
+            border-radius: 2px;
+            background: linear-gradient(90deg, var(--accent-cyan), var(--accent-green));
+        }
+
+        .sub-kpi-change {
+            font-size: 10px;
+            font-family: var(--font-numbers);
+        }
+        .sub-kpi-change.up { color: var(--accent-green); }
+        .sub-kpi-change.down { color: var(--accent-red); }
+
+        /* 子大屏三栏 */
+        .sub-content {
+            flex: 1;
+            display: flex;
+            gap: 8px;
+            padding: 0 10px 10px;
+            min-height: 0;
+        }
+
+        .sub-col-left, .sub-col-right {
+            flex: 0 0 28%;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            min-height: 0;
+            overflow-y: auto;
+        }
+
+        .sub-col-center {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            min-height: 0;
+        }
+
+        .sub-col-left::-webkit-scrollbar,
+        .sub-col-right::-webkit-scrollbar { width: 3px; }
+        .sub-col-left::-webkit-scrollbar-thumb,
+        .sub-col-right::-webkit-scrollbar-thumb {
+            background: rgba(0,224,255,0.2);
+            border-radius: 3px;
+        }
+
+        /* 子大屏面板 */
+        .sub-panel {
+            background: var(--bg-panel);
+            border: 1px solid var(--border-glow);
+            border-radius: var(--radius);
+            padding: 12px 14px;
+            position: relative;
+            overflow: hidden;
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .sub-panel::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0;
+            width: 14px; height: 14px;
+            border-top: 2px solid var(--accent-cyan);
+            border-left: 2px solid var(--accent-cyan);
+            border-radius: 2px 0 0 0;
+            opacity: 0.6;
+        }
+
+        .sub-panel-title {
+            font-size: 13px;
+            font-weight: 700;
+            color: #FFFFFF;
+            margin-bottom: 10px;
+            padding-left: 4px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .sub-panel-title::before {
+            content: '';
+            display: inline-block;
+            width: 3px; height: 13px;
+            background: var(--accent-cyan);
+            border-radius: 2px;
+            box-shadow: 0 0 6px var(--accent-cyan);
+        }
+
+        /* 滚动列表 */
+        .scroll-list {
+            flex: 1;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .scroll-list-inner {
+            animation: scrollUp 20s linear infinite;
+        }
+
+        .scroll-list:hover .scroll-list-inner {
+            animation-play-state: paused;
+        }
+
+        @keyframes scrollUp {
+            0% { transform: translateY(0); }
+            100% { transform: translateY(-50%); }
+        }
+
+        .scroll-item {
+            display: flex;
+            align-items: center;
+            padding: 8px 10px;
+            border-bottom: 1px solid rgba(0, 224, 255, 0.06);
+            font-size: 12px;
+            color: var(--text-secondary);
+            gap: 12px;
+        }
+
+        .scroll-item:hover {
+            background: rgba(0, 224, 255, 0.05);
+        }
+
+        .scroll-item-time {
+            color: var(--text-dim);
+            font-size: 11px;
+            font-family: var(--font-numbers);
+            white-space: nowrap;
+            flex: 0 0 60px;
+        }
+
+        .scroll-item-content {
+            flex: 1;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        .scroll-item-amount {
+            color: var(--accent-orange);
+            font-family: var(--font-numbers);
+            font-weight: 600;
+            flex: 0 0 80px;
+            text-align: right;
+        }
+
+        /* 漏斗样式 */
+        .funnel-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 4px;
+            padding: 10px 0;
+        }
+
+        .funnel-step {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 36px;
+            border-radius: 4px;
+            color: #FFFFFF;
+            font-size: 12px;
+            font-weight: 600;
+            position: relative;
+            transition: all 0.3s;
+            cursor: default;
+        }
+
+        .funnel-step:hover {
+            transform: scaleX(1.05);
+            box-shadow: 0 0 15px rgba(0, 224, 255, 0.3);
+        }
+
+        .funnel-step .funnel-label {
+            z-index: 2;
+            text-shadow: 0 1px 3px rgba(0,0,0,0.5);
+        }
+
+        .funnel-step .funnel-count {
+            margin-left: 12px;
+            font-family: var(--font-numbers);
+            font-weight: 700;
+            color: var(--accent-cyan);
+            z-index: 2;
+        }
+
+        /* 评分列表 */
+        .score-list {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+
+        .score-row {
+            display: flex;
+            align-items: center;
+            padding: 6px 8px;
+            background: rgba(10, 25, 55, 0.4);
+            border-radius: 4px;
+            gap: 8px;
+            font-size: 12px;
+        }
+
+        .score-rank {
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 11px;
+            font-weight: 700;
+            flex-shrink: 0;
+        }
+
+        .score-rank.gold { background: linear-gradient(135deg, #FFD700, #FFA500); color: #000; }
+        .score-rank.silver { background: linear-gradient(135deg, #C0C0C0, #A0A0A0); color: #000; }
+        .score-rank.bronze { background: linear-gradient(135deg, #CD7F32, #B87333); color: #FFF; }
+        .score-rank.normal { background: rgba(0, 224, 255, 0.15); color: var(--accent-cyan); }
+
+        .score-name { flex: 1; color: var(--text-secondary); display: flex; flex-direction: column; gap: 2px; }
+
+        .score-name-row {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .score-tags {
+            display: flex;
+            gap: 4px;
+        }
+
+        .score-tag {
+            font-size: 8px;
+            padding: 0px 4px;
+            border-radius: 2px;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+        }
+
+        .score-tag-fast {
+            background: rgba(0,214,143,0.15);
+            border: 1px solid rgba(0,214,143,0.3);
+            color: var(--accent-green);
+        }
+
+        .score-tag-slow {
+            background: rgba(255,107,53,0.12);
+            border: 1px solid rgba(255,107,53,0.25);
+            color: var(--accent-orange);
+        }
+
+        .score-tag-high {
+            background: rgba(0,224,255,0.12);
+            border: 1px solid rgba(0,224,255,0.3);
+            color: var(--accent-cyan);
+        }
+
+        /* 雷达图旁的小环形图容器 */
+        .radar-plus-ring {
+            display: flex;
+            gap: 8px;
+            align-items: stretch;
+            flex: 1;
+            min-height: 0;
+        }
+
+        .radar-mini-ring {
+            flex: 0 0 80px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .radar-ring-label {
+            font-size: 9px;
+            color: var(--text-dim);
+            text-align: center;
+        }
+
+        .radar-hot-tag {
+            font-size: 8px;
+            padding: 1px 6px;
+            border-radius: 3px;
+            background: rgba(255,77,79,0.15);
+            border: 1px solid rgba(255,77,79,0.3);
+            color: var(--accent-red);
+            font-weight: 600;
+        }
+
+        .score-bar-wrap {
+            flex: 0 0 80px;
+            height: 8px;
+            background: rgba(0, 224, 255, 0.08);
+            border-radius: 4px;
+            overflow: hidden;
+        }
+
+        .score-bar {
+            height: 100%;
+            border-radius: 4px;
+            transition: width 1s ease-out;
+        }
+
+        .score-val {
+            flex: 0 0 36px;
+            text-align: right;
+            font-family: var(--font-numbers);
+            font-weight: 600;
+            color: var(--accent-cyan);
+        }
+
+        /* ================================================================ */
+        /* ===== 合规风险预警监测 - 底部区域 ===== */
+        /* ================================================================ */
+        .risk-monitor-bar {
+            flex: 0 0 auto;
+            margin: 0 10px 8px;
+            border: 1px solid rgba(255, 77, 79, 0.35);
+            border-radius: var(--radius);
+            background: rgba(15, 5, 5, 0.7);
+            overflow: hidden;
+            position: relative;
+        }
+
+        .risk-monitor-bar::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; right: 0;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, rgba(255,77,79,0.6), transparent);
+        }
+
+        /* 标题行 */
+        .risk-monitor-header {
+            display: flex;
+            align-items: center;
+            padding: 6px 14px;
+            gap: 14px;
+            border-bottom: 1px solid rgba(255, 77, 79, 0.15);
+            background: rgba(255, 30, 30, 0.06);
+        }
+
+        .risk-monitor-title {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 13px;
+            font-weight: 700;
+            color: var(--accent-red);
+            text-shadow: 0 0 8px rgba(255,77,79,0.3);
+            white-space: nowrap;
+        }
+
+        .risk-monitor-title svg {
+            width: 16px; height: 16px;
+            stroke: var(--accent-red);
+            fill: none;
+            stroke-width: 2;
+        }
+
+        .risk-monitor-title .blink-dot {
+            width: 6px; height: 6px;
+            border-radius: 50%;
+            background: var(--accent-red);
+            box-shadow: 0 0 8px var(--accent-red);
+            animation: blinkDot 1.5s ease-in-out infinite;
+        }
+
+        @keyframes blinkDot {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.2; }
+        }
+
+        /* 右侧统计概览 */
+        .risk-stats-row {
+            display: flex;
+            gap: 18px;
+            margin-left: auto;
+        }
+
+        .risk-stat-item {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            font-size: 11px;
+            color: var(--text-dim);
+            white-space: nowrap;
+        }
+
+        .risk-stat-item .rs-val {
+            font-family: var(--font-numbers);
+            font-weight: 700;
+            font-size: 15px;
+        }
+
+        .risk-stat-item .rs-val.red { color: var(--accent-red); text-shadow: 0 0 8px rgba(255,77,79,0.5); }
+        .risk-stat-item .rs-val.orange { color: var(--accent-orange); text-shadow: 0 0 8px rgba(255,107,53,0.4); }
+        .risk-stat-item .rs-val.cyan { color: var(--accent-cyan); }
+
+        .risk-stat-item .rs-label { font-size: 10px; }
+
+        /* 风险类型迷你饼图 */
+        .risk-type-mini {
+            width: 70px; height: 70px;
+            flex-shrink: 0;
+        }
+
+        /* 主体：左表右图 */
+        .risk-monitor-body {
+            display: flex;
+            height: 160px;
+        }
+
+        .risk-table-wrap {
+            flex: 1;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .risk-table-scroll {
+            animation: riskScrollUp 25s linear infinite;
+        }
+
+        .risk-table-wrap:hover .risk-table-scroll {
+            animation-play-state: paused;
+        }
+
+        @keyframes riskScrollUp {
+            0% { transform: translateY(0); }
+            100% { transform: translateY(-50%); }
+        }
+
+        .risk-table {
+            width: 100%;
+            border-collapse: collapse;
+            table-layout: fixed;
+        }
+
+        .risk-table th {
+            position: sticky;
+            top: 0;
+            z-index: 5;
+            background: #1A1A2E;
+            color: #FFFFFF;
+            font-weight: 600;
+            font-size: 11px;
+            padding: 6px 8px;
+            text-align: center;
+            border-bottom: 1px solid rgba(255,77,79,0.3);
+            white-space: nowrap;
+        }
+
+        .risk-table td {
+            padding: 5px 8px;
+            font-size: 11px;
+            color: var(--text-secondary);
+            text-align: center;
+            border-bottom: 1px solid rgba(255,77,79,0.08);
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .risk-table tr:nth-child(even) td {
+            background: rgba(15, 5, 5, 0.4);
+        }
+
+        .risk-table tr:nth-child(odd) td {
+            background: rgba(20, 8, 8, 0.3);
+        }
+
+        .risk-table tr:hover td {
+            background: rgba(255, 50, 50, 0.12);
+        }
+
+        .risk-table tr.risk-row-cursor {
+            cursor: pointer;
+        }
+
+        /* 违规类型高亮 */
+        .risk-type-warn {
+            color: var(--accent-orange) !important;
+            font-weight: 600;
+            text-shadow: 0 0 4px rgba(255,107,53,0.3);
+        }
+
+        .risk-type-danger {
+            color: var(--accent-red) !important;
+            font-weight: 700;
+            text-shadow: 0 0 4px rgba(255,77,79,0.4);
+        }
+
+        /* 状态标签 */
+        .risk-status {
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            padding: 1px 8px;
+            border-radius: 3px;
+            font-size: 10px;
+            font-weight: 600;
+        }
+
+        .risk-status-pending {
+            background: rgba(255,77,79,0.15);
+            border: 1px solid rgba(255,77,79,0.4);
+            color: var(--accent-red);
+        }
+
+        .risk-status-processing {
+            background: rgba(255,184,0,0.12);
+            border: 1px solid rgba(255,184,0,0.35);
+            color: var(--accent-yellow);
+        }
+
+        .risk-status-fixed {
+            background: rgba(0,214,143,0.12);
+            border: 1px solid rgba(0,214,143,0.35);
+            color: var(--accent-green);
+        }
+
+        .risk-status-dot {
+            width: 5px; height: 5px;
+            border-radius: 50%;
+        }
+
+        .risk-status-pending .risk-status-dot { background: var(--accent-red); box-shadow: 0 0 4px var(--accent-red); }
+        .risk-status-processing .risk-status-dot { background: var(--accent-yellow); box-shadow: 0 0 4px var(--accent-yellow); }
+        .risk-status-fixed .risk-status-dot { background: var(--accent-green); box-shadow: 0 0 4px var(--accent-green); }
+
+        /* 新数据闪烁 */
+        .risk-row-new td {
+            animation: newRiskFlash 3s ease-out;
+        }
+
+        @keyframes newRiskFlash {
+            0% { background: rgba(255,77,79,0.35); }
+            15% { background: rgba(255,77,79,0.15); }
+            30% { background: rgba(255,77,79,0.25); }
+            50% { background: rgba(255,77,79,0.08); }
+            100% { background: transparent; }
+        }
+
+        .risk-new-tag {
+            display: inline-block;
+            background: var(--accent-red);
+            color: #FFFFFF;
+            font-size: 9px;
+            font-weight: 700;
+            padding: 0px 5px;
+            border-radius: 2px;
+            margin-left: 4px;
+            animation: newTagPulse 1s ease-in-out 3;
+            letter-spacing: 1px;
+        }
+
+        @keyframes newTagPulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.4; }
+        }
+
+        /* 右侧统计面板 */
+        .risk-side-panel {
+            flex: 0 0 200px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            border-left: 1px solid rgba(255,77,79,0.15);
+            padding: 10px;
+            background: rgba(255, 20, 20, 0.04);
+        }
+
+        .risk-side-nums {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+            width: 100%;
+        }
+
+        .risk-side-num-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 3px 6px;
+            background: rgba(255,77,79,0.06);
+            border-radius: 3px;
+            font-size: 11px;
+        }
+
+        .risk-side-num-row .rsn-label { color: var(--text-dim); }
+        .risk-side-num-row .rsn-val { font-family: var(--font-numbers); font-weight: 700; }
+
+        /* ============================================= */
+        /* ===== 风险详情弹窗 ===== */
+        /* ============================================= */
+        .risk-detail-modal {
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            z-index: 1100;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            background: rgba(0, 0, 0, 0.65);
+            backdrop-filter: blur(4px);
+        }
+
+        .risk-detail-modal.visible {
+            display: flex;
+            animation: modalFadeIn 0.3s ease-out;
+        }
+
+        @keyframes modalFadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        .risk-detail-card {
+            width: 680px;
+            max-width: 90vw;
+            max-height: 80vh;
+            background: linear-gradient(180deg, #0D1225 0%, #080E1A 100%);
+            border: 1px solid rgba(255,77,79,0.4);
+            border-radius: 8px;
+            overflow: hidden;
+            animation: modalSlideIn 0.35s cubic-bezier(0.23, 1, 0.32, 1);
+            box-shadow: 0 0 40px rgba(255,77,79,0.15), 0 20px 60px rgba(0,0,0,0.5);
+        }
+
+        @keyframes modalSlideIn {
+            from { transform: translateY(30px) scale(0.96); opacity: 0; }
+            to { transform: translateY(0) scale(1); opacity: 1; }
+        }
+
+        .risk-detail-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 14px 20px;
+            border-bottom: 1px solid rgba(255,77,79,0.25);
+            background: rgba(255,30,30,0.06);
+        }
+
+        .risk-detail-title {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 15px;
+            font-weight: 700;
+            color: #FFFFFF;
+        }
+
+        .risk-detail-title svg {
+            width: 18px; height: 18px;
+            stroke: var(--accent-red);
+            fill: none;
+            stroke-width: 2;
+        }
+
+        .risk-detail-close {
+            width: 30px; height: 30px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: rgba(255,255,255,0.05);
+            border: 1px solid rgba(255,255,255,0.15);
+            border-radius: 4px;
+            color: var(--text-secondary);
+            cursor: pointer;
+            transition: all 0.2s;
+            font-size: 16px;
+        }
+
+        .risk-detail-close:hover {
+            background: rgba(255,77,79,0.2);
+            border-color: var(--accent-red);
+            color: var(--accent-red);
+        }
+
+        .risk-detail-body {
+            display: flex;
+            padding: 16px 20px;
+            gap: 20px;
+            max-height: 60vh;
+            overflow-y: auto;
+        }
+
+        .risk-detail-left {
+            flex: 0 0 200px;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .risk-detail-right {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .rd-info-block {
+            background: rgba(255,255,255,0.03);
+            border: 1px solid rgba(255,255,255,0.08);
+            border-radius: 4px;
+            padding: 10px 12px;
+        }
+
+        .rd-info-block .rd-label {
+            font-size: 10px;
+            color: var(--text-dim);
+            margin-bottom: 4px;
+        }
+
+        .rd-info-block .rd-value {
+            font-size: 13px;
+            color: #FFFFFF;
+            font-weight: 600;
+        }
+
+        .rd-info-block .rd-value.red { color: var(--accent-red); }
+        .rd-info-block .rd-value.orange { color: var(--accent-orange); }
+
+        .rd-rule-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 10px;
+            padding: 8px 12px;
+            background: rgba(255,77,79,0.06);
+            border: 1px solid rgba(255,77,79,0.15);
+            border-radius: 4px;
+            border-left: 3px solid var(--accent-red);
+        }
+
+        .rd-rule-icon {
+            flex-shrink: 0;
+            width: 20px; height: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: rgba(255,77,79,0.15);
+            border-radius: 50%;
+            color: var(--accent-red);
+            font-size: 11px;
+            font-weight: 700;
+            margin-top: 1px;
+        }
+
+        .rd-rule-content { flex: 1; }
+        .rd-rule-name { font-size: 12px; color: #FFFFFF; font-weight: 600; margin-bottom: 3px; }
+        .rd-rule-detail { font-size: 11px; color: var(--text-secondary); line-height: 1.6; }
+        .rd-rule-detail .rd-actual { color: var(--accent-red); font-weight: 600; }
+        .rd-rule-detail .rd-threshold { color: var(--accent-yellow); font-weight: 600; }
+
+        .rd-actions {
+            display: flex;
+            gap: 8px;
+            margin-top: 6px;
+        }
+
+        .rd-btn {
+            padding: 7px 18px;
+            border-radius: 4px;
+            font-size: 12px;
+            font-family: var(--font-cn);
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            border: 1px solid;
+        }
+
+        .rd-btn-primary {
+            background: rgba(0,224,255,0.12);
+            border-color: rgba(0,224,255,0.4);
+            color: var(--accent-cyan);
+        }
+
+        .rd-btn-primary:hover {
+            background: rgba(0,224,255,0.25);
+            box-shadow: 0 0 12px rgba(0,224,255,0.3);
+        }
+
+        .rd-btn-warn {
+            background: rgba(255,184,0,0.1);
+            border-color: rgba(255,184,0,0.35);
+            color: var(--accent-yellow);
+        }
+
+        .rd-btn-warn:hover {
+            background: rgba(255,184,0,0.2);
+            box-shadow: 0 0 12px rgba(255,184,0,0.3);
+        }
+
+        /* ================================================================ */
+        /* ===== 隐患整改异常监控台（底部） ===== */
+        /* ================================================================ */
+        .hazard-monitor-bar {
+            flex: 0 0 auto;
+            margin: 0 10px 8px;
+            border: 1px solid rgba(255, 77, 79, 0.4);
+            border-radius: var(--radius);
+            background: rgba(20, 5, 5, 0.8);
+            overflow: hidden;
+            position: relative;
+        }
+
+        .hazard-monitor-bar::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; right: 0;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, rgba(255,77,79,0.7), transparent);
+        }
+
+        .hazard-monitor-bar::after {
+            content: '';
+            position: absolute;
+            bottom: 0; left: 0; right: 0;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, rgba(255,77,79,0.4), transparent);
+        }
+
+        .hazard-monitor-header {
+            display: flex;
+            align-items: center;
+            padding: 5px 14px;
+            gap: 14px;
+            border-bottom: 1px solid rgba(255,77,79,0.2);
+            background: rgba(255,30,30,0.08);
+        }
+
+        .hazard-monitor-title {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 13px;
+            font-weight: 700;
+            color: var(--accent-red);
+            text-shadow: 0 0 10px rgba(255,77,79,0.4);
+            white-space: nowrap;
+        }
+
+        .hazard-monitor-title svg {
+            width: 16px; height: 16px;
+            stroke: var(--accent-red);
+            fill: none;
+            stroke-width: 2;
+        }
+
+        .hazard-monitor-title .blink-dot {
+            width: 6px; height: 6px;
+            border-radius: 50%;
+            background: var(--accent-red);
+            box-shadow: 0 0 8px var(--accent-red);
+            animation: blinkDot 1.5s ease-in-out infinite;
+        }
+
+        .hazard-stats-row {
+            display: flex;
+            gap: 16px;
+            margin-left: auto;
+        }
+
+        .hazard-stat-item {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            font-size: 10px;
+            color: var(--text-dim);
+            white-space: nowrap;
+        }
+
+        .hazard-stat-item .hs-val {
+            font-family: var(--font-numbers);
+            font-weight: 700;
+            font-size: 14px;
+        }
+
+        .hazard-stat-item .hs-val.red { color: var(--accent-red); text-shadow: 0 0 8px rgba(255,77,79,0.5); }
+        .hazard-stat-item .hs-val.orange { color: var(--accent-orange); text-shadow: 0 0 8px rgba(255,107,53,0.4); }
+        .hazard-stat-item .hs-val.yellow { color: var(--accent-yellow); }
+
+        .hazard-monitor-body {
+            display: flex;
+            height: 180px;
+        }
+
+        .hazard-table-wrap {
+            flex: 1;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .hazard-table-scroll {
+            animation: riskScrollUp 30s linear infinite;
+        }
+
+        .hazard-table-wrap:hover .hazard-table-scroll {
+            animation-play-state: paused;
+        }
+
+        .hazard-table {
+            width: 100%;
+            border-collapse: collapse;
+            table-layout: fixed;
+        }
+
+        .hazard-table th {
+            position: sticky;
+            top: 0;
+            z-index: 5;
+            background: #1A1220;
+            color: #FFFFFF;
+            font-weight: 600;
+            font-size: 11px;
+            padding: 5px 8px;
+            text-align: center;
+            border-bottom: 1px solid rgba(255,77,79,0.35);
+            white-space: nowrap;
+        }
+
+        .hazard-table td {
+            padding: 4px 8px;
+            font-size: 11px;
+            color: var(--text-secondary);
+            text-align: center;
+            border-bottom: 1px solid rgba(255,77,79,0.06);
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .hazard-table tr:nth-child(even) td {
+            background: rgba(20, 5, 5, 0.35);
+        }
+
+        .hazard-table tr:nth-child(odd) td {
+            background: rgba(25, 8, 8, 0.25);
+        }
+
+        .hazard-table tr:hover td {
+            background: rgba(255, 50, 50, 0.15);
+        }
+
+        .hazard-table tr.hazard-row-cursor {
+            cursor: pointer;
+        }
+
+        /* 风险等级标签 */
+        .hazard-level {
+            display: inline-block;
+            padding: 1px 8px;
+            border-radius: 3px;
+            font-size: 10px;
+            font-weight: 700;
+        }
+
+        .hazard-level-major {
+            background: rgba(255,77,79,0.2);
+            border: 1px solid rgba(255,77,79,0.5);
+            color: var(--accent-red);
+        }
+
+        .hazard-level-minor {
+            background: rgba(255,184,0,0.12);
+            border: 1px solid rgba(255,184,0,0.35);
+            color: var(--accent-yellow);
+        }
+
+        /* 整改期限 - 逾期红色 */
+        .hazard-deadline-overdue {
+            color: var(--accent-red) !important;
+            font-weight: 700;
+            text-shadow: 0 0 4px rgba(255,77,79,0.3);
+        }
+
+        .hazard-deadline-overdue .overdue-days {
+            font-size: 9px;
+            opacity: 0.8;
+            margin-left: 2px;
+        }
+
+        /* 状态胶囊 */
+        .hazard-status-capsule {
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            padding: 1px 8px;
+            border-radius: 10px;
+            font-size: 10px;
+            font-weight: 600;
+        }
+
+        .hazard-status-overdue {
+            background: rgba(255,77,79,0.18);
+            border: 1px solid rgba(255,77,79,0.45);
+            color: var(--accent-red);
+        }
+
+        .hazard-status-progress {
+            background: rgba(0,224,255,0.12);
+            border: 1px solid rgba(0,224,255,0.35);
+            color: var(--accent-cyan);
+        }
+
+        .hazard-status-rejected {
+            background: rgba(255,107,53,0.15);
+            border: 1px solid rgba(255,107,53,0.4);
+            color: var(--accent-orange);
+        }
+
+        /* 操作按钮 */
+        .hazard-action-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 2px;
+            padding: 1px 6px;
+            border-radius: 3px;
+            font-size: 9px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            border: 1px solid;
+        }
+
+        .hazard-action-supervise {
+            background: rgba(255,77,79,0.1);
+            border-color: rgba(255,77,79,0.3);
+            color: var(--accent-red);
+        }
+
+        .hazard-action-supervise:hover {
+            background: rgba(255,77,79,0.25);
+            box-shadow: 0 0 6px rgba(255,77,79,0.3);
+        }
+
+        .hazard-action-view {
+            background: rgba(0,224,255,0.08);
+            border-color: rgba(0,224,255,0.25);
+            color: var(--accent-cyan);
+        }
+
+        .hazard-action-view:hover {
+            background: rgba(0,224,255,0.2);
+            box-shadow: 0 0 6px rgba(0,224,255,0.3);
+        }
+
+        .hazard-actions-cell {
+            display: flex;
+            gap: 4px;
+            justify-content: center;
+            opacity: 0;
+            transition: opacity 0.25s;
+        }
+
+        .hazard-table tr:hover .hazard-actions-cell {
+            opacity: 1;
+        }
+
+        /* 悬浮玻璃卡片 */
+        .map-glass-card {
+            position: absolute;
+            background: rgba(5, 15, 40, 0.85);
+            backdrop-filter: blur(8px);
+            border: 1px solid rgba(0, 224, 255, 0.25);
+            border-radius: 6px;
+            padding: 8px 12px;
+            z-index: 10;
+            pointer-events: none;
+            animation: glassFloat 4s ease-in-out infinite;
+        }
+
+        .map-glass-card.glass-danger {
+            border-color: rgba(255, 77, 79, 0.4);
+        }
+
+        .map-glass-card.glass-success {
+            border-color: rgba(0, 214, 143, 0.4);
+        }
+
+        .map-glass-card:nth-child(2) {
+            animation-delay: -1.5s;
+        }
+
+        .map-glass-card:nth-child(3) {
+            animation-delay: -3s;
+        }
+
+        @keyframes glassFloat {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-6px); }
+        }
+
+        .glass-card-label {
+            font-size: 9px;
+            color: var(--text-dim);
+            margin-bottom: 2px;
+        }
+
+        .glass-card-text {
+            font-size: 11px;
+            color: #FFFFFF;
+            font-weight: 600;
+        }
+
+        .glass-card-text.red { color: var(--accent-red); }
+        .glass-card-text.green { color: var(--accent-green); }
     </style>
 </head>
 <body>
 
-<div class="dashboard">
+<!-- ===== 主界面 ===== -->
+<div class="dashboard" id="mainDashboard">
     <!-- ==================== 顶部标题区 ==================== -->
     <div class="header">
         <div class="header-left">
@@ -722,9 +2096,25 @@
         </div>
     </div>
 
+    <!-- ==================== 导航胶囊按钮 ==================== -->
+    <div class="nav-capsules">
+        <button class="nav-capsule" onclick="openSubScreen('screenPolicy')">
+            <svg viewBox="0 0 24 24"><path d="M3 3h18v18H3z M3 9h18 M3 15h18 M9 3v18 M15 3v18" stroke-linecap="round"/></svg>
+            保单业务全景
+        </button>
+        <button class="nav-capsule" onclick="openSubScreen('screenPrevention')">
+            <svg viewBox="0 0 24 24"><path d="M12 2v4 M12 18v4 M4.93 4.93l2.83 2.83 M16.24 16.24l2.83 2.83 M2 12h4 M18 12h4 M4.93 19.07l2.83-2.83 M16.24 7.76l2.83-2.83" stroke-linecap="round"/></svg>
+            预防服务监测
+        </button>
+        <button class="nav-capsule" onclick="openSubScreen('screenClaim')">
+            <svg viewBox="0 0 24 24"><path d="M12 2L2 7l10 5 10-5-10-5z M2 17l10 5 10-5 M2 12l10 5 10-5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            理赔风控分析
+        </button>
+    </div>
+
     <!-- ==================== 三栏内容区 ==================== -->
     <div class="content">
-        <!-- ===== 左侧栏 ===== -->
+        <!-- ===== 左侧栏 - 保费与保单概况 ===== -->
         <div class="col-left">
 
             <!-- 关键指标卡片 -->
@@ -762,7 +2152,7 @@
                 <div class="chart-box" id="chartTrend" style="height:200px;"></div>
             </div>
 
-            <!-- 排名统计卡片（Tab切换） -->
+            <!-- 排名统计卡片 -->
             <div class="panel" style="flex:1;">
                 <div class="panel-title">
                     <span>保险机构排名统计</span>
@@ -773,30 +2163,21 @@
                     </div>
                 </div>
                 <div class="rank-content">
-                    <!-- 表一：承保保费排名 -->
                     <div class="rank-tab active" id="tabPremium">
                         <table class="rank-table">
-                            <thead>
-                                <tr><th>保险机构</th><th>承保企业数</th><th>实收保费(万元)</th><th>市场占比</th></tr>
-                            </thead>
+                            <thead><tr><th>保险机构</th><th>承保企业数</th><th>实收保费(万元)</th><th>市场占比</th></tr></thead>
                             <tbody id="tblPremium"></tbody>
                         </table>
                     </div>
-                    <!-- 表二：服务开展排名 -->
                     <div class="rank-tab" id="tabService">
                         <table class="rank-table">
-                            <thead>
-                                <tr><th>保险机构</th><th>承保企业数</th><th>开展服务次数</th><th>开展率</th></tr>
-                            </thead>
+                            <thead><tr><th>保险机构</th><th>承保企业数</th><th>开展服务次数</th><th>开展率</th></tr></thead>
                             <tbody id="tblService"></tbody>
                         </table>
                     </div>
-                    <!-- 表三：AI监测风险保单排名 -->
                     <div class="rank-tab" id="tabRisk">
                         <table class="rank-table">
-                            <thead>
-                                <tr><th>保险机构</th><th>风险保单数</th><th>平均合规评分</th><th>风险占比(%)</th></tr>
-                            </thead>
+                            <thead><tr><th>保险机构</th><th>风险保单数</th><th>平均合规评分</th><th>风险占比(%)</th></tr></thead>
                             <tbody id="tblRisk"></tbody>
                         </table>
                     </div>
@@ -828,7 +2209,7 @@
 
         </div>
 
-        <!-- ===== 中间栏 ===== -->
+        <!-- ===== 中间栏 - 安责险概况 & 预防服务 ===== -->
         <div class="col-center">
 
             <!-- 核心数字概览 -->
@@ -841,30 +2222,22 @@
                     <div class="overview-item">
                         <div class="overview-value">2,847</div>
                         <div class="overview-label">应投保企业数</div>
-                        <div class="overview-dots">
-                            <span class="dot-cyan"></span><span class="dot-cyan"></span><span class="dot-cyan"></span>
-                        </div>
+                        <div class="overview-dots"><span class="dot-cyan"></span><span class="dot-cyan"></span><span class="dot-cyan"></span></div>
                     </div>
                     <div class="overview-item">
                         <div class="overview-value green">2,563</div>
                         <div class="overview-label">已承保企业数</div>
-                        <div class="overview-dots">
-                            <span class="dot-green"></span><span class="dot-green"></span><span class="dot-green"></span>
-                        </div>
+                        <div class="overview-dots"><span class="dot-green"></span><span class="dot-green"></span><span class="dot-green"></span></div>
                     </div>
                     <div class="overview-item">
                         <div class="overview-value blue">2,710</div>
                         <div class="overview-label">应配投保数</div>
-                        <div class="overview-dots">
-                            <span class="dot-blue"></span><span class="dot-blue"></span><span class="dot-blue"></span>
-                        </div>
+                        <div class="overview-dots"><span class="dot-blue"></span><span class="dot-blue"></span><span class="dot-blue"></span></div>
                     </div>
                     <div class="overview-item">
                         <div class="overview-value" style="font-size:44px;">90.88<span style="font-size:20px;">%</span></div>
                         <div class="overview-label">应配投保率</div>
-                        <div class="overview-dots">
-                            <span class="dot-cyan"></span><span class="dot-green"></span><span class="dot-blue"></span>
-                        </div>
+                        <div class="overview-dots"><span class="dot-cyan"></span><span class="dot-green"></span><span class="dot-blue"></span></div>
                     </div>
                 </div>
             </div>
@@ -889,18 +2262,9 @@
                         <div class="chart-box" id="chartProgress" style="height:180px;"></div>
                     </div>
                     <div class="progress-right">
-                        <div class="stat-num-card">
-                            <div class="sn-value">186</div>
-                            <div class="sn-label">本月开展次数</div>
-                        </div>
-                        <div class="stat-num-card">
-                            <div class="sn-value">52</div>
-                            <div class="sn-label">本月开展企业数</div>
-                        </div>
-                        <div class="stat-num-card">
-                            <div class="sn-value">1,204</div>
-                            <div class="sn-label">累计开展次数</div>
-                        </div>
+                        <div class="stat-num-card"><div class="sn-value">186</div><div class="sn-label">本月开展次数</div></div>
+                        <div class="stat-num-card"><div class="sn-value">52</div><div class="sn-label">本月开展企业数</div></div>
+                        <div class="stat-num-card"><div class="sn-value">1,204</div><div class="sn-label">累计开展次数</div></div>
                     </div>
                 </div>
             </div>
@@ -933,7 +2297,7 @@
             </div>
 
             <!-- 列表统计 -->
-            <div class="panel"style="flex:0.8;">
+            <div class="panel" style="flex:0.8;">
                 <div class="panel-title">
                     <span>地区预防服务开展情况</span>
                     <div class="tab-btns">
@@ -1001,492 +2365,1046 @@
     </div>
 </div>
 
+<!-- ===== 转场遮罩 ===== -->
+<div class="transition-overlay" id="transitionOverlay">
+    <div class="transition-loading">
+        <div class="loading-ring"></div>
+        <div class="loading-text">加载中</div>
+    </div>
+</div>
+
+<!-- ================================================================ -->
+<!-- ===== 子大屏1：保单业务全景 ===== -->
+<!-- ================================================================ -->
+<div class="sub-screen" id="screenPolicy">
+    <div class="sub-header">
+        <button class="back-btn" onclick="closeSubScreen('screenPolicy')">
+            <svg viewBox="0 0 24 24"><path d="M19 12H5M12 19l-7-7 7-7" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            返回总览
+        </button>
+        <div class="sub-header-title">保单业务全景大屏</div>
+        <div style="width:120px;"></div>
+    </div>
+
+    <!-- KPI栏 -->
+    <div class="sub-kpi-bar">
+        <div class="sub-kpi-item">
+            <div class="sub-kpi-value">1,314.5</div>
+            <div class="sub-kpi-label">总保费收入(万元)</div>
+            <div class="sub-kpi-change up">&#9650; 12.3%</div>
+        </div>
+        <div class="sub-kpi-item">
+            <div class="sub-kpi-value">2,563</div>
+            <div class="sub-kpi-label">累计服务企业数</div>
+            <div class="sub-kpi-change up">&#9650; 覆盖率 90.88%</div>
+        </div>
+        <div class="sub-kpi-item">
+            <div class="sub-kpi-value">5,128</div>
+            <div class="sub-kpi-label">平均单均保费(元)</div>
+            <div class="sub-kpi-change up">&#9650; 5.6%</div>
+        </div>
+        <div class="sub-kpi-item">
+            <div class="sub-kpi-value success">+12</div>
+            <div class="sub-kpi-label">本月新增保单</div>
+            <div class="sub-kpi-change up">&#9650; 较上月+3</div>
+        </div>
+    </div>
+
+    <div class="sub-content">
+        <!-- 左侧：市场与行业画像 -->
+        <div class="sub-col-left">
+            <div class="sub-panel">
+                <div class="sub-panel-title">行业渗透率排行</div>
+                <div class="chart-box" id="subChartIndustry" style="flex:1;"></div>
+            </div>
+            <div class="sub-panel">
+                <div class="sub-panel-title">企业规模分布</div>
+                <div class="chart-box" id="subChartScale" style="flex:1;"></div>
+            </div>
+        </div>
+
+        <!-- 中间：业务热力地图 -->
+        <div class="sub-col-center">
+            <div class="sub-panel" style="flex:1;">
+                <div class="sub-panel-title">保费密度分布热力图</div>
+                <div class="chart-box" id="subChartHeatMap" style="flex:1;"></div>
+            </div>
+        </div>
+
+        <!-- 右侧：渠道与机构效能 -->
+        <div class="sub-col-right">
+            <div class="sub-panel">
+                <div class="sub-panel-title">保险公司贡献度</div>
+                <div class="chart-box" id="subChartContrib" style="flex:1;"></div>
+            </div>
+            <div class="sub-panel">
+                <div class="sub-panel-title">保单增长趋势</div>
+                <div class="chart-box" id="subChartGrowth" style="flex:1;"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 合规风险预警监测 -->
+    <div class="risk-monitor-bar">
+        <div class="risk-monitor-header">
+            <div class="risk-monitor-title">
+                <svg viewBox="0 0 24 24"><path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z M12 9v4 M12 17h.01" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                合规风险预警监测
+                <span class="blink-dot"></span>
+            </div>
+            <div class="risk-stats-row">
+                <div class="risk-stat-item">
+                    <span class="rs-label">今日监测</span>
+                    <span class="rs-val cyan">1,204</span>
+                    <span class="rs-label">单</span>
+                </div>
+                <div class="risk-stat-item">
+                    <span class="rs-label">发现异常</span>
+                    <span class="rs-val red">52</span>
+                    <span class="rs-label">单</span>
+                </div>
+                <div class="risk-stat-item">
+                    <span class="rs-label">异常率</span>
+                    <span class="rs-val orange">4.3%</span>
+                </div>
+                <div class="risk-stat-item">
+                    <span class="rs-label">待处理</span>
+                    <span class="rs-val red">12</span>
+                </div>
+            </div>
+        </div>
+        <div class="risk-monitor-body">
+            <div class="risk-table-wrap">
+                <div class="risk-table-scroll" id="riskTableScroll"></div>
+            </div>
+            <div class="risk-side-panel">
+                <div class="chart-box risk-type-mini" id="subChartRiskType"></div>
+                <div class="risk-side-nums">
+                    <div class="risk-side-num-row">
+                        <span class="rsn-label">保额不足</span>
+                        <span class="rsn-val" style="color:var(--accent-red);">60%</span>
+                    </div>
+                    <div class="risk-side-num-row">
+                        <span class="rsn-label">地域不符</span>
+                        <span class="rsn-val" style="color:var(--accent-orange);">20%</span>
+                    </div>
+                    <div class="risk-side-num-row">
+                        <span class="rsn-label">其他违规</span>
+                        <span class="rsn-val" style="color:var(--accent-yellow);">20%</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- ================================================================ -->
+<!-- ===== 子大屏2：预防服务监测 ===== -->
+<!-- ================================================================ -->
+<div class="sub-screen" id="screenPrevention">
+    <div class="sub-header">
+        <button class="back-btn" onclick="closeSubScreen('screenPrevention')">
+            <svg viewBox="0 0 24 24"><path d="M19 12H5M12 19l-7-7 7-7" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            返回总览
+        </button>
+        <div class="sub-header-title">预防服务监测大屏</div>
+        <div style="width:120px;"></div>
+    </div>
+
+    <div class="sub-kpi-bar">
+        <div class="sub-kpi-item">
+            <div class="sub-kpi-value danger">1,247</div>
+            <div class="sub-kpi-label">累计排查隐患数</div>
+            <div class="sub-kpi-sub">重大 <span class="sub-highlight sub-red">42</span> 项 | 一般 <span class="sub-highlight sub-yellow">1,205</span> 项</div>
+        </div>
+        <div class="sub-kpi-item">
+            <div class="sub-kpi-value success">1,204</div>
+            <div class="sub-kpi-label">已完成服务项目数</div>
+            <div class="sub-kpi-progress-wrap"><div class="sub-kpi-progress-bar" style="width:78.6%;"></div></div>
+            <div class="sub-kpi-sub">年度目标完成率 <span class="sub-highlight sub-cyan">78.6%</span></div>
+        </div>
+        <div class="sub-kpi-item">
+            <div class="sub-kpi-value">198.6</div>
+            <div class="sub-kpi-label">投入预防资金(万元)</div>
+            <div class="sub-kpi-sub">&#9650; 15.2% | 平均服务成本 <span class="sub-highlight sub-cyan">1,650</span>元/次</div>
+        </div>
+        <div class="sub-kpi-item">
+            <div class="sub-kpi-value success">86.5%</div>
+            <div class="sub-kpi-label">整改完成率</div>
+            <div class="sub-kpi-sub">较上月 &#9650; <span class="sub-highlight sub-green">3.2%</span> | 待整改 <span class="sub-highlight sub-red">168</span>家</div>
+        </div>
+    </div>
+
+    <div class="sub-content">
+        <div class="sub-col-left">
+            <div class="sub-panel">
+                <div class="sub-panel-title" style="display:flex;align-items:center;justify-content:space-between;">服务项目类型分布 <span class="radar-hot-tag">本月热点：隐患排查</span></div>
+                <div class="radar-plus-ring">
+                    <div class="chart-box" id="subChartRadar" style="flex:1;"></div>
+                    <div class="radar-mini-ring">
+                        <div class="chart-box" id="subChartRadarMini" style="flex:1;"></div>
+                        <div class="radar-ring-label">教育 vs 排查占比</div>
+                    </div>
+                </div>
+            </div>
+            <div class="sub-panel">
+                <div class="sub-panel-title">第三方服务机构评分</div>
+                <div class="score-list" id="agencyScoreList"></div>
+            </div>
+        </div>
+
+        <div class="sub-col-center">
+            <div class="sub-panel" style="flex:1;position:relative;">
+                <div class="sub-panel-title">隐患治理地图</div>
+                <div class="chart-box" id="subChartHazardMap" style="flex:1;"></div>
+                <!-- 悬浮玻璃卡片 -->
+                <div class="map-glass-card glass-danger" style="top:15%;left:12%;">
+                    <div class="glass-card-label">今日最新隐患</div>
+                    <div class="glass-card-text red">惠城XX化工厂电路老化</div>
+                </div>
+                <div class="map-glass-card glass-success" style="top:55%;right:8%;">
+                    <div class="glass-card-label">刚刚完成整改</div>
+                    <div class="glass-card-text green">博罗XX矿业粉尘治理</div>
+                </div>
+                <div class="map-glass-card glass-danger" style="bottom:18%;left:30%;">
+                    <div class="glass-card-label">逾期预警</div>
+                    <div class="glass-card-text red">惠阳XX仓储消防通道堵塞</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="sub-col-right">
+            <div class="sub-panel">
+                <div class="sub-panel-title">隐患整改闭环率</div>
+                <div class="chart-box" id="subChartGauge" style="flex:1;"></div>
+            </div>
+            <div class="sub-panel">
+                <div class="sub-panel-title">事故下降趋势</div>
+                <div class="chart-box" id="subChartAccident" style="flex:1;"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 隐患整改异常监控台 -->
+    <div class="hazard-monitor-bar">
+        <div class="hazard-monitor-header">
+            <div class="hazard-monitor-title">
+                <svg viewBox="0 0 24 24"><path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z M12 9v4 M12 17h.01" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                重点隐患督办 / 整改滞后预警
+                <span class="blink-dot"></span>
+            </div>
+            <div class="hazard-stats-row">
+                <div class="hazard-stat-item">
+                    <span>逾期未改</span>
+                    <span class="hs-val red">23</span>
+                    <span>家</span>
+                </div>
+                <div class="hazard-stat-item">
+                    <span>重大隐患</span>
+                    <span class="hs-val red">8</span>
+                    <span>项</span>
+                </div>
+                <div class="hazard-stat-item">
+                    <span>整改中</span>
+                    <span class="hs-val orange">45</span>
+                    <span>家</span>
+                </div>
+                <div class="hazard-stat-item">
+                    <span>驳回重改</span>
+                    <span class="hs-val yellow">6</span>
+                    <span>家</span>
+                </div>
+            </div>
+        </div>
+        <div class="hazard-monitor-body">
+            <div class="hazard-table-wrap">
+                <div class="hazard-table-scroll" id="hazardTableScroll"></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- ================================================================ -->
+<!-- ===== 子大屏3：理赔风控分析 ===== -->
+<!-- ================================================================ -->
+<div class="sub-screen" id="screenClaim">
+    <div class="sub-header">
+        <button class="back-btn" onclick="closeSubScreen('screenClaim')">
+            <svg viewBox="0 0 24 24"><path d="M19 12H5M12 19l-7-7 7-7" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            返回总览
+        </button>
+        <div class="sub-header-title">理赔风控分析大屏</div>
+        <div style="width:120px;"></div>
+    </div>
+
+    <div class="sub-kpi-bar">
+        <div class="sub-kpi-item">
+            <div class="sub-kpi-value warning">0.00</div>
+            <div class="sub-kpi-label">累计赔付金额(万元)</div>
+            <div class="sub-kpi-change">同比持平</div>
+        </div>
+        <div class="sub-kpi-item">
+            <div class="sub-kpi-value">0.00%</div>
+            <div class="sub-kpi-label">综合赔付率</div>
+            <div class="sub-kpi-change success">&#9660; 低于警戒线</div>
+        </div>
+        <div class="sub-kpi-item">
+            <div class="sub-kpi-value">0</div>
+            <div class="sub-kpi-label">平均结案周期(天)</div>
+            <div class="sub-kpi-change">--</div>
+        </div>
+        <div class="sub-kpi-item">
+            <div class="sub-kpi-value success">0</div>
+            <div class="sub-kpi-label">拒赔/争议案件数</div>
+            <div class="sub-kpi-change success">良好</div>
+        </div>
+    </div>
+
+    <div class="sub-content">
+        <div class="sub-col-left">
+            <div class="sub-panel">
+                <div class="sub-panel-title">赔款支出构成</div>
+                <div class="chart-box" id="subChartClaimPie" style="flex:1;"></div>
+            </div>
+            <div class="sub-panel">
+                <div class="sub-panel-title">出险原因分析</div>
+                <div class="chart-box" id="subChartCause" style="flex:1;"></div>
+            </div>
+        </div>
+
+        <div class="sub-col-center">
+            <div class="sub-panel" style="flex:0 0 auto;">
+                <div class="sub-panel-title">案件处理状态漏斗</div>
+                <div class="funnel-container" id="claimFunnel"></div>
+            </div>
+            <div class="sub-panel" style="flex:1;">
+                <div class="sub-panel-title">典型案例滚动</div>
+                <div class="scroll-list" id="claimScrollList"></div>
+            </div>
+        </div>
+
+        <div class="sub-col-right">
+            <div class="sub-panel">
+                <div class="sub-panel-title">各公司赔付率对比</div>
+                <div class="chart-box" id="subChartCompRate" style="flex:1;"></div>
+            </div>
+            <div class="sub-panel">
+                <div class="sub-panel-title">亿元保费赔付额</div>
+                <div class="chart-box" id="subChartUnitClaim" style="flex:1;"></div>
+            </div>
+        </div>
+    </div>
+</div>
+
 <script>
 // =============================================
-// 惠州各区县简化GeoJSON（用于地图注册）
+// 惠州各区县简化GeoJSON
 // =============================================
 var huizhouGeo = {
     "type": "FeatureCollection",
     "features": [
-        {
-            "type": "Feature",
-            "properties": {"name": "龙门县", "cp": [114.13, 23.73], "投保率": 78.5, "服务率": 82.3},
-            "geometry": {"type": "Polygon", "coordinates": [[[113.88,23.88],[114.28,23.88],[114.38,23.68],[114.33,23.53],[114.08,23.48],[113.83,23.60],[113.78,23.78],[113.88,23.88]]]}
-        },
-        {
-            "type": "Feature",
-            "properties": {"name": "博罗县", "cp": [114.28, 23.17], "投保率": 85.2, "服务率": 76.8},
-            "geometry": {"type": "Polygon", "coordinates": [[[113.88,23.42],[114.48,23.42],[114.58,23.27],[114.53,23.02],[114.28,22.92],[114.03,22.97],[113.88,23.10],[113.83,23.27],[113.88,23.42]]]}
-        },
-        {
-            "type": "Feature",
-            "properties": {"name": "惠城区", "cp": [114.41, 23.08], "投保率": 92.1, "服务率": 88.5},
-            "geometry": {"type": "Polygon", "coordinates": [[[114.18,23.28],[114.63,23.28],[114.73,23.13],[114.68,22.88],[114.33,22.88],[114.08,23.03],[114.08,23.18],[114.18,23.28]]]}
-        },
-        {
-            "type": "Feature",
-            "properties": {"name": "惠东县", "cp": [114.72, 22.98], "投保率": 81.3, "服务率": 72.6},
-            "geometry": {"type": "Polygon", "coordinates": [[[114.43,23.20],[115.03,23.20],[115.13,23.00],[115.03,22.78],[114.58,22.73],[114.28,22.83],[114.33,23.05],[114.43,23.20]]]}
-        },
-        {
-            "type": "Feature",
-            "properties": {"name": "惠阳区", "cp": [114.46, 22.79], "投保率": 88.7, "服务率": 84.2},
-            "geometry": {"type": "Polygon", "coordinates": [[[114.23,22.98],[114.68,22.98],[114.78,22.83],[114.73,22.63],[114.43,22.58],[114.18,22.68],[114.13,22.83],[114.23,22.98]]]}
-        }
+        {"type": "Feature", "properties": {"name": "龙门县", "cp": [114.13, 23.73], "投保率": 78.5, "服务率": 82.3}, "geometry": {"type": "Polygon", "coordinates": [[[113.88,23.88],[114.28,23.88],[114.38,23.68],[114.33,23.53],[114.08,23.48],[113.83,23.60],[113.78,23.78],[113.88,23.88]]]}},
+        {"type": "Feature", "properties": {"name": "博罗县", "cp": [114.28, 23.17], "投保率": 85.2, "服务率": 76.8}, "geometry": {"type": "Polygon", "coordinates": [[[113.88,23.42],[114.38,23.42],[114.48,23.27],[114.43,23.02],[114.18,22.97],[113.98,23.07],[113.88,23.22],[113.88,23.42]]]}},
+        {"type": "Feature", "properties": {"name": "惠城区", "cp": [114.41, 23.08], "投保率": 92.1, "服务率": 88.5}, "geometry": {"type": "Polygon", "coordinates": [[[114.18,23.28],[114.58,23.28],[114.68,23.13],[114.63,22.98],[114.33,22.98],[114.13,23.08],[114.08,23.18],[114.18,23.28]]]}},
+        {"type": "Feature", "properties": {"name": "仲恺区", "cp": [114.30, 23.02], "投保率": 86.8, "服务率": 80.3}, "geometry": {"type": "Polygon", "coordinates": [[[113.98,23.07],[114.33,23.07],[114.38,22.97],[114.33,22.88],[114.03,22.88],[113.98,22.97],[113.98,23.07]]]}},
+        {"type": "Feature", "properties": {"name": "惠东县", "cp": [114.72, 22.98], "投保率": 81.3, "服务率": 72.6}, "geometry": {"type": "Polygon", "coordinates": [[[114.43,23.20],[115.03,23.20],[115.13,23.00],[115.03,22.78],[114.58,22.73],[114.28,22.83],[114.33,23.05],[114.43,23.20]]]}},
+        {"type": "Feature", "properties": {"name": "惠阳区", "cp": [114.46, 22.79], "投保率": 88.7, "服务率": 84.2}, "geometry": {"type": "Polygon", "coordinates": [[[114.23,22.98],[114.68,22.98],[114.78,22.83],[114.73,22.63],[114.43,22.58],[114.18,22.68],[114.13,22.83],[114.23,22.98]]]}},
+        {"type": "Feature", "properties": {"name": "大亚湾区", "cp": [114.52, 22.55], "投保率": 95.2, "服务率": 90.1}, "geometry": {"type": "Polygon", "coordinates": [[[114.38,22.68],[114.68,22.68],[114.73,22.48],[114.63,22.38],[114.43,22.38],[114.33,22.53],[114.38,22.68]]]}}
     ]
 };
 
 // =============================================
-// 通用ECharts深色主题配置
+// 1. 主界面图表初始化
 // =============================================
-var darkTheme = {
-    textStyle: { color: '#AABBCC' },
-    backgroundColor: 'transparent'
-};
 
-function getCommonOpts() {
-    return {
-        grid: { top: 10, right: 20, bottom: 24, left: 50, containLabel: false },
-        textStyle: { color: '#AABBCC', fontSize: 11, fontFamily: 'Microsoft YaHei, sans-serif' },
-    };
-}
-
-// =============================================
-// 1. 保费规模趋势折线图
-// =============================================
+// 1.1 保费规模趋势
 (function() {
     var dom = document.getElementById('chartTrend');
     var chart = echarts.init(dom);
     var xData = ['08-23','08-24','08-25','08-26','08-27','08-28','08-29','08-30','08-31','09-01'];
     var yData = [0.30, 0.35, 0.42, 0.38, 0.55, 0.50, 0.68, 0.72, 0.85, 0.98];
-
     var option = {
         grid: { top: 10, right: 20, bottom: 28, left: 52 },
-        xAxis: {
-            type: 'category',
-            data: xData,
-            axisLine: { lineStyle: { color: 'rgba(0,224,255,0.3)' } },
-            axisTick: { show: false },
-            axisLabel: { color: '#6B7A90', fontSize: 11 },
-            splitLine: { show: false }
-        },
-        yAxis: {
-            type: 'value',
-            min: 0,
-            max: 1.0,
-            interval: 0.2,
-            axisLine: { show: false },
-            axisTick: { show: false },
-            axisLabel: { color: '#6B7A90', fontSize: 11 },
-            splitLine: { lineStyle: { color: 'rgba(0,224,255,0.08)', type: 'dashed' } }
-        },
-        series: [{
-            type: 'line',
-            data: yData,
-            smooth: true,
-            symbol: 'circle',
-            symbolSize: 8,
-            lineStyle: {
-                width: 2.5,
-                color: new echarts.graphic.LinearGradient(0,0,1,0,[
-                    {offset:0, color:'#00B4D8'},{offset:1, color:'#00E0FF'}
-                ]),
-                shadowBlur: 10,
-                shadowColor: 'rgba(0,224,255,0.6)'
-            },
-            itemStyle: {
-                color: '#00E0FF',
-                borderColor: '#FFFFFF',
-                borderWidth: 2,
-                shadowBlur: 8,
-                shadowColor: 'rgba(0,224,255,0.8)'
-            },
-            areaStyle: {
-                color: new echarts.graphic.LinearGradient(0,0,0,1,[
-                    {offset:0, color:'rgba(0,224,255,0.25)'},
-                    {offset:1, color:'rgba(0,224,255,0.01)'}
-                ])
-            },
-            animationDuration: 1500,
-            animationEasing: 'cubicOut'
-        }]
+        xAxis: { type: 'category', data: xData, axisLine: { lineStyle: { color: 'rgba(0,224,255,0.3)' } }, axisTick: { show: false }, axisLabel: { color: '#6B7A90', fontSize: 11 }, splitLine: { show: false } },
+        yAxis: { type: 'value', min: 0, max: 1.0, interval: 0.2, axisLine: { show: false }, axisTick: { show: false }, axisLabel: { color: '#6B7A90', fontSize: 11 }, splitLine: { lineStyle: { color: 'rgba(0,224,255,0.08)', type: 'dashed' } } },
+        series: [{ type: 'line', data: yData, smooth: true, symbol: 'circle', symbolSize: 8, lineStyle: { width: 2.5, color: new echarts.graphic.LinearGradient(0,0,1,0,[{offset:0, color:'#00B4D8'},{offset:1, color:'#00E0FF'}]), shadowBlur: 10, shadowColor: 'rgba(0,224,255,0.6)' }, itemStyle: { color: '#00E0FF', borderColor: '#FFFFFF', borderWidth: 2, shadowBlur: 8, shadowColor: 'rgba(0,224,255,0.8)' }, areaStyle: { color: new echarts.graphic.LinearGradient(0,0,0,1,[{offset:0, color:'rgba(0,224,255,0.25)'},{offset:1, color:'rgba(0,224,255,0.01)'}]) }, animationDuration: 1500, animationEasing: 'cubicOut' }]
     };
     chart.setOption(option);
     window.addEventListener('resize', function() { chart.resize(); });
 })();
 
-// =============================================
-// 2. 地图可视化
-// =============================================
+// 1.2 地图
 (function() {
     var dom = document.getElementById('chartMap');
     var chart = echarts.init(dom);
-
-    // 注册惠州地图
     echarts.registerMap('huizhou', huizhouGeo);
-
     var option = {
-        tooltip: {
-            trigger: 'item',
-            backgroundColor: 'rgba(5,18,45,0.92)',
-            borderColor: 'rgba(0,224,255,0.5)',
-            textStyle: { color: '#FFFFFF', fontSize: 12 },
-            formatter: function(p) {
-                if (p.seriesType === 'map') {
-                    return '<b>' + p.name + '</b><br/>' +
-                           '投保率：<span style="color:#00E0FF;font-weight:bold;">' + (p.data ? p.data.toubao : '--') + '%</span><br/>' +
-                           '服务开展率：<span style="color:#00D68F;font-weight:bold;">' + (p.data ? p.data.fuwu : '--') + '%</span>';
-                }
-                return p.name;
-            }
-        },
-        geo: {
-            map: 'huizhou',
-            roam: false,
-            zoom: 1.15,
-            center: [114.38, 23.15],
-            itemStyle: {
-                areaColor: '#0A1937',
-                borderColor: 'rgba(0,224,255,0.5)',
-                borderWidth: 1.5,
-                shadowBlur: 0
-            },
-            emphasis: {
-                disabled: true
-            },
-            label: { show: false }
-        },
-        series: [{
-            type: 'map',
-            map: 'huizhou',
-            geoIndex: 0,
-            roam: false,
-            data: [
-                {name: '惠城区', value: 92.1, toubao: 92.1, fuwu: 88.5},
-                {name: '惠阳区', value: 88.7, toubao: 88.7, fuwu: 84.2},
-                {name: '博罗县', value: 85.2, toubao: 85.2, fuwu: 76.8},
-                {name: '惠东县', value: 81.3, toubao: 81.3, fuwu: 72.6},
-                {name: '龙门县', value: 78.5, toubao: 78.5, fuwu: 82.3}
-            ],
-            itemStyle: {
-                borderColor: 'rgba(0,224,255,0.6)',
-                borderWidth: 1.5
-            },
-            emphasis: {
-                itemStyle: {
-                    areaColor: 'rgba(0,224,255,0.15)',
-                    borderColor: '#00E0FF',
-                    borderWidth: 2,
-                    shadowBlur: 15,
-                    shadowColor: 'rgba(0,224,255,0.5)'
-                },
-                label: {
-                    show: true,
-                    color: '#FFFFFF',
-                    fontSize: 13,
-                    fontWeight: 'bold',
-                    textShadowBlur: 8,
-                    textShadowColor: 'rgba(0,224,255,0.8)'
-                }
-            },
-            label: {
-                show: true,
-                color: '#AABBCC',
-                fontSize: 11,
-                position: 'inside'
-            }
-        }, {
-            // 散点标记
-            type: 'effectScatter',
-            coordinateSystem: 'geo',
-            data: [
-                {name: '惠城区', value: [114.41, 23.10, 92]},
-                {name: '惠阳区', value: [114.46, 22.79, 88]},
-                {name: '博罗县', value: [114.28, 23.18, 85]},
-                {name: '惠东县', value: [114.72, 22.98, 81]},
-                {name: '龙门县', value: [114.13, 23.73, 78]}
-            ],
-            symbolSize: function(val) { return val[2] / 8 + 6; },
-            showEffectOn: 'render',
-            rippleEffect: {
-                brushType: 'stroke',
-                scale: 3,
-                period: 4,
-                color: 'rgba(0,224,255,0.3)'
-            },
-            itemStyle: {
-                color: '#00E0FF',
-                shadowBlur: 10,
-                shadowColor: 'rgba(0,224,255,0.7)'
-            },
-            label: {
-                show: true,
-                formatter: function(p) { return p.name + '\n投保率 ' + p.value[2] + '%'; },
-                position: 'right',
-                color: '#FFFFFF',
-                fontSize: 11,
-                lineHeight: 16,
-                distance: 8,
-                backgroundColor: 'rgba(5,18,45,0.85)',
-                borderColor: 'rgba(0,224,255,0.5)',
-                borderWidth: 1,
-                borderRadius: 4,
-                padding: [4, 8]
-            },
-            zlevel: 1
-        }]
+        tooltip: { trigger: 'item', backgroundColor: 'rgba(5,18,45,0.92)', borderColor: 'rgba(0,224,255,0.5)', textStyle: { color: '#FFFFFF', fontSize: 12 }, formatter: function(p) { if (p.seriesType === 'map') { return '<b>' + p.name + '</b><br/>投保率：<span style="color:#00E0FF;font-weight:bold;">' + (p.data ? p.data.toubao : '--') + '%</span><br/>服务开展率：<span style="color:#00D68F;font-weight:bold;">' + (p.data ? p.data.fuwu : '--') + '%</span>'; } return p.name; } },
+        geo: { map: 'huizhou', roam: false, zoom: 1.15, center: [114.38, 23.15], itemStyle: { areaColor: '#0A1937', borderColor: 'rgba(0,224,255,0.5)', borderWidth: 1.5, shadowBlur: 0 }, emphasis: { disabled: true }, label: { show: false } },
+        series: [{ type: 'map', map: 'huizhou', geoIndex: 0, roam: false, data: [{name:'惠城区',value:92.1,toubao:92.1,fuwu:88.5},{name:'惠阳区',value:88.7,toubao:88.7,fuwu:84.2},{name:'博罗县',value:85.2,toubao:85.2,fuwu:76.8},{name:'惠东县',value:81.3,toubao:81.3,fuwu:72.6},{name:'龙门县',value:78.5,toubao:78.5,fuwu:82.3}], itemStyle: { borderColor: 'rgba(0,224,255,0.6)', borderWidth: 1.5 }, emphasis: { itemStyle: { areaColor: 'rgba(0,224,255,0.15)', borderColor: '#00E0FF', borderWidth: 2, shadowBlur: 15, shadowColor: 'rgba(0,224,255,0.5)' }, label: { show: true, color: '#FFFFFF', fontSize: 13, fontWeight: 'bold', textShadowBlur: 8, textShadowColor: 'rgba(0,224,255,0.8)' } }, label: { show: true, color: '#AABBCC', fontSize: 11, position: 'inside' } }, { type: 'effectScatter', coordinateSystem: 'geo', data: [{name:'惠城区',value:[114.41,23.10,92]},{name:'惠阳区',value:[114.46,22.79,88]},{name:'博罗县',value:[114.28,23.18,85]},{name:'惠东县',value:[114.72,22.98,81]},{name:'龙门县',value:[114.13,23.73,78]}], symbolSize: function(val) { return val[2] / 8 + 6; }, showEffectOn: 'render', rippleEffect: { brushType: 'stroke', scale: 3, period: 4, color: 'rgba(0,224,255,0.3)' }, itemStyle: { color: '#00E0FF', shadowBlur: 10, shadowColor: 'rgba(0,224,255,0.7)' }, label: { show: true, formatter: function(p) { return p.name + '\n投保率 ' + p.value[2] + '%'; }, position: 'right', color: '#FFFFFF', fontSize: 11, lineHeight: 16, distance: 8, backgroundColor: 'rgba(5,18,45,0.85)', borderColor: 'rgba(0,224,255,0.5)', borderWidth: 1, borderRadius: 4, padding: [4, 8] }, zlevel: 1 }]
     };
-
     chart.setOption(option);
     window.addEventListener('resize', function() { chart.resize(); });
 })();
 
-// =============================================
-// 3. 事故预防服务进度统计 - 横向柱状图
-// =============================================
+// 1.3 服务进度柱状图
 (function() {
     var dom = document.getElementById('chartProgress');
     var chart = echarts.init(dom);
-
     var categories = ['其他有关事故预防工作', '安全生产宣传教育', '安全风险辨识评估', '生产安全事故隐患排查', '安全生产标准化建设', '应急预案编制与演练'];
     var values = [86, 72, 58, 45, 32, 18];
-
-    var option = {
-        grid: { top: 5, right: 40, bottom: 5, left: 10, containLabel: true },
-        xAxis: {
-            type: 'value',
-            axisLine: { show: false },
-            axisTick: { show: false },
-            axisLabel: { color: '#6B7A90', fontSize: 10 },
-            splitLine: { lineStyle: { color: 'rgba(0,224,255,0.06)', type: 'dashed' } }
-        },
-        yAxis: {
-            type: 'category',
-            data: categories,
-            axisLine: { lineStyle: { color: 'rgba(0,224,255,0.2)' } },
-            axisTick: { show: false },
-            axisLabel: { color: '#AABBCC', fontSize: 11 },
-            inverse: true
-        },
-        series: [{
-            type: 'bar',
-            data: values,
-            barWidth: 14,
-            itemStyle: {
-                borderRadius: [0, 4, 4, 0],
-                color: new echarts.graphic.LinearGradient(0,0,1,0,[
-                    {offset:0, color:'#005584'},{offset:0.5, color:'#0099CC'},{offset:1, color:'#00E0FF'}
-                ])
-            },
-            label: {
-                show: true,
-                position: 'right',
-                color: '#00E0FF',
-                fontSize: 11,
-                fontWeight: 'bold',
-                formatter: '{c} 次'
-            },
-            emphasis: {
-                itemStyle: {
-                    shadowBlur: 10,
-                    shadowColor: 'rgba(0,224,255,0.5)'
-                }
-            }
-        }]
-    };
-
+    var option = { grid: { top: 5, right: 40, bottom: 5, left: 10, containLabel: true }, xAxis: { type: 'value', axisLine: { show: false }, axisTick: { show: false }, axisLabel: { color: '#6B7A90', fontSize: 10 }, splitLine: { lineStyle: { color: 'rgba(0,224,255,0.06)', type: 'dashed' } } }, yAxis: { type: 'category', data: categories, axisLine: { lineStyle: { color: 'rgba(0,224,255,0.2)' } }, axisTick: { show: false }, axisLabel: { color: '#AABBCC', fontSize: 11 }, inverse: true }, series: [{ type: 'bar', data: values, barWidth: 14, itemStyle: { borderRadius: [0, 4, 4, 0], color: new echarts.graphic.LinearGradient(0,0,1,0,[{offset:0, color:'#005584'},{offset:0.5, color:'#0099CC'},{offset:1, color:'#00E0FF'}]) }, label: { show: true, position: 'right', color: '#00E0FF', fontSize: 11, fontWeight: 'bold', formatter: '{c} 次' }, emphasis: { itemStyle: { shadowBlur: 10, shadowColor: 'rgba(0,224,255,0.5)' } } }] };
     chart.setOption(option);
     window.addEventListener('resize', function() { chart.resize(); });
 })();
 
-// =============================================
-// 4. 隐患排查统计 - 环形饼图
-// =============================================
+// 1.4 隐患排查环形图
 (function() {
     var dom = document.getElementById('chartPie');
     var chart = echarts.init(dom);
-
-    var option = {
-        tooltip: {
-            trigger: 'item',
-            backgroundColor: 'rgba(5,18,45,0.92)',
-            borderColor: 'rgba(0,224,255,0.5)',
-            textStyle: { color: '#FFFFFF', fontSize: 12 },
-            formatter: '{b}: {c} 项 ({d}%)'
-        },
-        legend: { show: false },
-        series: [{
-            type: 'pie',
-            radius: ['55%', '78%'],
-            center: ['50%', '52%'],
-            roseType: false,
-            itemStyle: {
-                borderColor: 'rgba(3,11,31,1)',
-                borderWidth: 3,
-                borderRadius: 3
-            },
-            label: {
-                show: true,
-                position: 'outside',
-                color: '#AABBCC',
-                fontSize: 11,
-                formatter: '{b}\n{d}%'
-            },
-            labelLine: {
-                lineStyle: { color: 'rgba(0,224,255,0.3)' },
-                length: 18,
-                length2: 30
-            },
-            emphasis: {
-                scaleSize: 8,
-                label: { fontSize: 14, fontWeight: 'bold', color: '#FFFFFF' }
-            },
-            data: [
-                {value: 2, name: '重大隐患', itemStyle: {color: '#FF4D4F', shadowBlur: 10, shadowColor: 'rgba(255,77,79,0.4)'}},
-                {value: 1, name: '较大隐患', itemStyle: {color: '#FFB800', shadowBlur: 10, shadowColor: 'rgba(255,184,0,0.4)'}},
-                {value: 2, name: '一般隐患', itemStyle: {color: '#1890FF', shadowBlur: 10, shadowColor: 'rgba(24,144,255,0.4)'}},
-                {value: 1, name: '低风险',    itemStyle: {color: '#00D68F', shadowBlur: 10, shadowColor: 'rgba(0,214,143,0.4)'}}
-            ]
-        }, {
-            // 中心文字
-            type: 'pie',
-            radius: ['0%', '48%'],
-            center: ['50%', '52%'],
-            silent: true,
-            label: { show: false },
-            data: [{value: 1, itemStyle: {color: 'transparent'}}],
-            z: 1
-        }],
-        graphic: [{
-            type: 'text',
-            left: 'center',
-            top: '46%',
-            style: {
-                text: '6',
-                textAlign: 'center',
-                fill: '#FFFFFF',
-                fontSize: 28,
-                fontWeight: 'bold',
-                fontFamily: 'Segoe UI, Arial, sans-serif',
-                textShadowBlur: 12,
-                textShadowColor: 'rgba(0,224,255,0.6)'
-            }
-        }, {
-            type: 'text',
-            left: 'center',
-            top: '55%',
-            style: {
-                text: '隐患总数',
-                textAlign: 'center',
-                fill: '#6B7A90',
-                fontSize: 12
-            }
-        }]
-    };
-
+    var option = { tooltip: { trigger: 'item', backgroundColor: 'rgba(5,18,45,0.92)', borderColor: 'rgba(0,224,255,0.5)', textStyle: { color: '#FFFFFF', fontSize: 12 }, formatter: '{b}: {c} 项 ({d}%)' }, legend: { show: false }, series: [{ type: 'pie', radius: ['55%', '78%'], center: ['50%', '52%'], roseType: false, itemStyle: { borderColor: 'rgba(3,11,31,1)', borderWidth: 3, borderRadius: 3 }, label: { show: true, position: 'outside', color: '#AABBCC', fontSize: 11, formatter: '{b}\n{d}%' }, labelLine: { lineStyle: { color: 'rgba(0,224,255,0.3)' }, length: 18, length2: 30 }, emphasis: { scaleSize: 8, label: { fontSize: 14, fontWeight: 'bold', color: '#FFFFFF' } }, data: [{value:2,name:'重大隐患',itemStyle:{color:'#FF4D4F',shadowBlur:10,shadowColor:'rgba(255,77,79,0.4)'}},{value:1,name:'较大隐患',itemStyle:{color:'#FFB800',shadowBlur:10,shadowColor:'rgba(255,184,0,0.4)'}},{value:2,name:'一般隐患',itemStyle:{color:'#1890FF',shadowBlur:10,shadowColor:'rgba(24,144,255,0.4)'}},{value:1,name:'低风险',itemStyle:{color:'#00D68F',shadowBlur:10,shadowColor:'rgba(0,214,143,0.4)'}}] }, { type: 'pie', radius: ['0%', '48%'], center: ['50%', '52%'], silent: true, label: { show: false }, data: [{value:1,itemStyle:{color:'transparent'}}], z: 1 }], graphic: [{ type: 'text', left: 'center', top: '46%', style: { text: '6', textAlign: 'center', fill: '#FFFFFF', fontSize: 28, fontWeight: 'bold', fontFamily: 'Segoe UI, Arial, sans-serif', textShadowBlur: 12, textShadowColor: 'rgba(0,224,255,0.6)' } }, { type: 'text', left: 'center', top: '55%', style: { text: '隐患总数', textAlign: 'center', fill: '#6B7A90', fontSize: 12 } }] };
     chart.setOption(option);
     window.addEventListener('resize', function() { chart.resize(); });
 })();
 
-// =============================================
-// 5. 填充三列表格数据
-// =============================================
+// 1.5 填充表格数据
 (function() {
-    // 表一：承保保费排名
     var tblPremium = document.getElementById('tblPremium');
-    var data1 = [
-        {org:'都邦保险惠州中支', count:156, premium:286.50, share:'21.8%'},
-        {org:'PICC',            count:142, premium:254.30, share:'19.3%'},
-        {org:'中国太平洋',       count:128, premium:218.60, share:'16.6%'},
-        {org:'平安财险',         count:115, premium:192.40, share:'14.6%'},
-        {org:'中国人寿财险',     count:98,  premium:165.20, share:'12.6%'}
-    ];
-    data1.forEach(function(r) {
-        var tr = '<tr><td>' + r.org + '</td><td>' + r.count + '</td><td>' + r.premium.toFixed(2) + '</td><td>' + r.share + '</td></tr>';
-        tblPremium.innerHTML += tr;
-    });
-
-    // 表二：服务开展排名
+    [{org:'都邦保险惠州中支',count:156,premium:286.50,share:'21.8%'},{org:'PICC',count:142,premium:254.30,share:'19.3%'},{org:'中国太平洋',count:128,premium:218.60,share:'16.6%'},{org:'平安财险',count:115,premium:192.40,share:'14.6%'},{org:'中国人寿财险',count:98,premium:165.20,share:'12.6%'}].forEach(function(r){tblPremium.innerHTML+='<tr><td>'+r.org+'</td><td>'+r.count+'</td><td>'+r.premium.toFixed(2)+'</td><td>'+r.share+'</td></tr>';});
     var tblService = document.getElementById('tblService');
-    var data2 = [
-        {org:'中国太平洋',       count:128, times:86, rate:'67.2%'},
-        {org:'都邦保险惠州中支', count:156, times:78, rate:'50.0%'},
-        {org:'PICC',            count:142, times:65, rate:'45.8%'},
-        {org:'中国人寿财险',     count:98,  times:42, rate:'42.9%'},
-        {org:'平安财险',         count:115, times:38, rate:'33.0%'}
-    ];
-    data2.forEach(function(r) {
-        var tr = '<tr><td>' + r.org + '</td><td>' + r.count + '</td><td>' + r.times + '</td><td>' + r.rate + '</td></tr>';
-        tblService.innerHTML += tr;
-    });
-
-    // 表三：AI监测风险保单排名
+    [{org:'中国太平洋',count:128,times:86,rate:'67.2%'},{org:'都邦保险惠州中支',count:156,times:78,rate:'50.0%'},{org:'PICC',count:142,times:65,rate:'45.8%'},{org:'中国人寿财险',count:98,times:42,rate:'42.9%'},{org:'平安财险',count:115,times:38,rate:'33.0%'}].forEach(function(r){tblService.innerHTML+='<tr><td>'+r.org+'</td><td>'+r.count+'</td><td>'+r.times+'</td><td>'+r.rate+'</td></tr>';});
     var tblRisk = document.getElementById('tblRisk');
-    var data3 = [
-        {org:'平安财险',     riskCount:18, score:72.5, riskRate:'25.7%', cls:'risk-high'},
-        {org:'人保财险',     riskCount:14, score:76.8, riskRate:'20.0%', cls:'risk-high'},
-        {org:'中国人寿财险', riskCount:10, score:81.2, riskRate:'14.3%', cls:'risk-mid'},
-        {org:'中国太平洋',   riskCount:6,  score:85.6, riskRate:'8.6%',  cls:''},
-        {org:'都邦保险',     riskCount:3,  score:90.2, riskRate:'4.3%',  cls:''}
-    ];
-    data3.forEach(function(r) {
-        var tr = '<tr><td>' + r.org + '</td><td>' + r.riskCount + '</td><td>' + r.score + '</td><td class="' + r.cls + '">' + r.riskRate + '</td></tr>';
-        tblRisk.innerHTML += tr;
-    });
+    [{org:'平安财险',riskCount:18,score:72.5,riskRate:'25.7%',cls:'risk-high'},{org:'人保财险',riskCount:14,score:76.8,riskRate:'20.0%',cls:'risk-high'},{org:'中国人寿财险',riskCount:10,score:81.2,riskRate:'14.3%',cls:'risk-mid'},{org:'中国太平洋',riskCount:6,score:85.6,riskRate:'8.6%',cls:''},{org:'都邦保险',riskCount:3,score:90.2,riskRate:'4.3%',cls:''}].forEach(function(r){tblRisk.innerHTML+='<tr><td>'+r.org+'</td><td>'+r.riskCount+'</td><td>'+r.score+'</td><td class="'+r.cls+'">'+r.riskRate+'</td></tr>';});
 })();
 
-// =============================================
-// 6. 交互事件绑定
-// =============================================
+// 1.6 主界面交互事件
+document.getElementById('trendTabs').addEventListener('click', function(e) { if (e.target.classList.contains('tab-btn')) { this.querySelectorAll('.tab-btn').forEach(function(b){b.classList.remove('active');}); e.target.classList.add('active'); } });
+document.getElementById('rankTabs').addEventListener('click', function(e) { if (e.target.classList.contains('tab-btn')) { var tabId = e.target.getAttribute('data-tab'); this.querySelectorAll('.tab-btn').forEach(function(b){b.classList.remove('active');}); document.querySelectorAll('.rank-tab').forEach(function(t){t.classList.remove('active');}); e.target.classList.add('active'); document.getElementById('tab' + tabId.charAt(0).toUpperCase() + tabId.slice(1)).classList.add('active'); } });
+document.querySelectorAll('.col-right .tab-btns').forEach(function(c){c.addEventListener('click',function(e){if(e.target.classList.contains('tab-btn')){c.querySelectorAll('.tab-btn').forEach(function(b){b.classList.remove('active');});e.target.classList.add('active');}});});
+document.getElementById('yearSelect').addEventListener('change', function() { console.log('切换年度数据至：' + this.value + '年'); });
 
-// 趋势图时间粒度切换
-document.getElementById('trendTabs').addEventListener('click', function(e) {
-    if (e.target.classList.contains('tab-btn')) {
-        var btns = this.querySelectorAll('.tab-btn');
-        btns.forEach(function(b) { b.classList.remove('active'); });
-        e.target.classList.add('active');
+// =============================================
+// 2. Esc返回
+// =============================================
+document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape') {
+        // 先关闭弹窗
+        closeRiskDetail();
+        var screens = document.querySelectorAll('.sub-screen.visible');
+        screens.forEach(function(s) { closeSubScreen(s.id); });
     }
 });
 
-// 排名统计Tab切换
-document.getElementById('rankTabs').addEventListener('click', function(e) {
-    if (e.target.classList.contains('tab-btn')) {
-        var tabId = e.target.getAttribute('data-tab');
-        var btns = this.querySelectorAll('.tab-btn');
-        var tabs = document.querySelectorAll('.rank-tab');
-        
-        btns.forEach(function(b) { b.classList.remove('active'); });
-        tabs.forEach(function(t) { t.classList.remove('active'); });
-        
-        e.target.classList.add('active');
-        document.getElementById('tab' + tabId.charAt(0).toUpperCase() + tabId.slice(1)).classList.add('active');
-    }
-});
+// =============================================
+// 3. 子大屏切换逻辑
+// =============================================
+var overlay = document.getElementById('transitionOverlay');
 
-// 右侧栏 地区/行业 切换
-document.querySelectorAll('.col-right .tab-btns').forEach(function(container) {
-    container.addEventListener('click', function(e) {
-        if (e.target.classList.contains('tab-btn')) {
-            var btns = container.querySelectorAll('.tab-btn');
-            btns.forEach(function(b) { b.classList.remove('active'); });
-            e.target.classList.add('active');
-        }
+function openSubScreen(screenId) {
+    overlay.classList.add('active');
+    setTimeout(function() {
+        document.getElementById('mainDashboard').style.display = 'none';
+        var screen = document.getElementById(screenId);
+        screen.classList.add('visible');
+        screen.classList.add('fade-in');
+        overlay.classList.remove('active');
+        // 初始化子大屏图表
+        setTimeout(function() { initSubScreenCharts(screenId); }, 200);
+    }, 500);
+}
+
+function closeSubScreen(screenId) {
+    overlay.classList.add('active');
+    setTimeout(function() {
+        var screen = document.getElementById(screenId);
+        screen.classList.remove('visible');
+        screen.classList.remove('fade-in');
+        document.getElementById('mainDashboard').style.display = 'flex';
+        overlay.classList.remove('active');
+    }, 500);
+}
+
+// =============================================
+// 4. 子大屏图表（延迟初始化）
+// =============================================
+var subChartsInit = {};
+
+function initSubScreenCharts(screenId) {
+    if (subChartsInit[screenId]) return;
+    subChartsInit[screenId] = true;
+
+    if (screenId === 'screenPolicy') initPolicyScreen();
+    if (screenId === 'screenPrevention') initPreventionScreen();
+    if (screenId === 'screenClaim') initClaimScreen();
+}
+
+// =============================================
+// 4A. 保单业务全景大屏
+// =============================================
+function initPolicyScreen() {
+    // 行业渗透率排行 - 横向柱状图
+    var c1 = echarts.init(document.getElementById('subChartIndustry'));
+    c1.setOption({
+        grid: { top: 5, right: 50, bottom: 5, left: 10, containLabel: true },
+        xAxis: { type: 'value', max: 100, axisLine: { show: false }, axisTick: { show: false }, axisLabel: { color: '#6B7A90', fontSize: 10, formatter: '{value}%' }, splitLine: { lineStyle: { color: 'rgba(0,224,255,0.06)', type: 'dashed' } } },
+        yAxis: { type: 'category', data: ['烟花爆竹', '危险化学品', '金属冶炼', '矿山开采', '建筑施工', '交通运输', '机械制造', '化工'], axisLine: { lineStyle: { color: 'rgba(0,224,255,0.2)' } }, axisTick: { show: false }, axisLabel: { color: '#AABBCC', fontSize: 11 }, inverse: true },
+        series: [{ type: 'bar', data: [98, 95, 91, 88, 86, 82, 78, 72], barWidth: 16, itemStyle: { borderRadius: [0, 4, 4, 0], color: function(p) { var colors = ['#FF4D4F','#FF6B35','#FFB800','#00E0FF','#1E90FF','#00D68F','#A78BFA','#6B7A90']; return new echarts.graphic.LinearGradient(0,0,1,0,[{offset:0,color:colors[p.dataIndex]+'33'},{offset:1,color:colors[p.dataIndex]}]); } }, label: { show: true, position: 'right', color: '#00E0FF', fontSize: 11, fontWeight: 'bold', formatter: '{c}%' } }]
     });
-});
 
-// 年份选择器
-document.getElementById('yearSelect').addEventListener('change', function() {
-    console.log('切换年度数据至：' + this.value + '年');
-    // TODO: 联动数据刷新
-});
+    // 企业规模分布 - 漏斗图
+    var c2 = echarts.init(document.getElementById('subChartScale'));
+    c2.setOption({
+        tooltip: { trigger: 'item', formatter: '{b}: {c}家 ({d}%)' },
+        series: [{ type: 'funnel', left: '10%', top: 10, bottom: 10, width: '80%', sort: 'descending', gap: 4, label: { show: true, position: 'inside', color: '#FFFFFF', fontSize: 12, fontWeight: 'bold' }, labelLine: { show: false }, itemStyle: { borderColor: 'rgba(0,224,255,0.3)', borderWidth: 1 }, emphasis: { label: { fontSize: 14 } }, data: [{value: 1520, name: '微型企业', itemStyle: {color: new echarts.graphic.LinearGradient(0,0,1,0,[{offset:0,color:'#0A4A7A'},{offset:1,color:'#0099CC'}])}}, {value: 680, name: '小型企业', itemStyle: {color: new echarts.graphic.LinearGradient(0,0,1,0,[{offset:0,color:'#0A5A5A'},{offset:1,color:'#00B894'}])}}, {value: 260, name: '中型企业', itemStyle: {color: new echarts.graphic.LinearGradient(0,0,1,0,[{offset:0,color:'#5A3A0A'},{offset:1,color:'#FFB800'}])}}, {value: 103, name: '大型企业', itemStyle: {color: new echarts.graphic.LinearGradient(0,0,1,0,[{offset:0,color:'#5A0A0A'},{offset:1,color:'#FF4D4F'}])}}] }]
+    });
+
+    // 保费密度热力地图
+    var c3 = echarts.init(document.getElementById('subChartHeatMap'));
+    echarts.registerMap('huizhouHeat', huizhouGeo);
+    var mapData = [{name:'惠城区',value:286.5},{name:'惠阳区',value:218.3},{name:'博罗县',value:192.4},{name:'惠东县',value:156.8},{name:'龙门县',value:89.2}];
+    c3.setOption({
+        tooltip: { trigger: 'item', backgroundColor: 'rgba(5,18,45,0.92)', borderColor: 'rgba(0,224,255,0.5)', textStyle: { color: '#FFFFFF', fontSize: 12 }, formatter: function(p) { return '<b>' + p.name + '</b><br/>保费密度：<span style="color:#00E0FF;font-weight:bold;">' + (p.value||0) + ' 万元</span>'; } },
+        visualMap: { min: 50, max: 300, left: 20, bottom: 20, text: ['高', '低'], textStyle: { color: '#AABBCC', fontSize: 11 }, inRange: { color: ['#0A1937', '#004466', '#007799', '#00AACC', '#00E0FF'] }, show: true },
+        geo: { map: 'huizhouHeat', roam: false, zoom: 1.2, center: [114.38, 23.15], itemStyle: { areaColor: '#0A1937', borderColor: 'rgba(0,224,255,0.5)', borderWidth: 1.5 }, label: { show: false } },
+        series: [{ type: 'map', map: 'huizhouHeat', geoIndex: 0, data: mapData, label: { show: true, color: '#FFFFFF', fontSize: 12, fontWeight: 'bold', position: 'inside', formatter: '{b}\n{c}万' }, emphasis: { label: { fontSize: 14 }, itemStyle: { shadowBlur: 15, shadowColor: 'rgba(0,224,255,0.5)' } } }]
+    });
+
+    // 保险公司贡献度 - 堆叠柱状图
+    var c4 = echarts.init(document.getElementById('subChartContrib'));
+    var months = ['1月','2月','3月','4月','5月','6月'];
+    c4.setOption({
+        tooltip: { trigger: 'axis', backgroundColor: 'rgba(5,18,45,0.92)', borderColor: 'rgba(0,224,255,0.5)', textStyle: { color: '#FFFFFF', fontSize: 12 } },
+        legend: { data: ['都邦保险','PICC','太平洋','平安','人寿财险'], top: 0, textStyle: { color: '#AABBCC', fontSize: 10 }, itemWidth: 12, itemHeight: 8 },
+        grid: { top: 30, right: 10, bottom: 24, left: 45 },
+        xAxis: { type: 'category', data: months, axisLine: { lineStyle: { color: 'rgba(0,224,255,0.3)' } }, axisTick: { show: false }, axisLabel: { color: '#6B7A90', fontSize: 11 } },
+        yAxis: { type: 'value', axisLine: { show: false }, axisTick: { show: false }, axisLabel: { color: '#6B7A90', fontSize: 10 }, splitLine: { lineStyle: { color: 'rgba(0,224,255,0.06)', type: 'dashed' } } },
+        series: [
+            {name:'都邦保险',type:'bar',stack:'total',data:[42,38,45,50,48,52],itemStyle:{color:'#00E0FF'}},
+            {name:'PICC',type:'bar',stack:'total',data:[38,35,40,42,44,46],itemStyle:{color:'#1E90FF'}},
+            {name:'太平洋',type:'bar',stack:'total',data:[32,28,35,38,36,40],itemStyle:{color:'#00D68F'}},
+            {name:'平安',type:'bar',stack:'total',data:[28,25,30,32,30,34],itemStyle:{color:'#FFB800'}},
+            {name:'人寿财险',type:'bar',stack:'total',data:[22,20,24,26,28,30],itemStyle:{color:'#FF6B35'}}
+        ]
+    });
+
+    // 保单增长趋势 - 双轴图
+    var c5 = echarts.init(document.getElementById('subChartGrowth'));
+    c5.setOption({
+        tooltip: { trigger: 'axis', backgroundColor: 'rgba(5,18,45,0.92)', borderColor: 'rgba(0,224,255,0.5)', textStyle: { color: '#FFFFFF', fontSize: 12 } },
+        legend: { data: ['保单数量', '保费收入'], top: 0, textStyle: { color: '#AABBCC', fontSize: 10 }, itemWidth: 12, itemHeight: 8 },
+        grid: { top: 30, right: 50, bottom: 24, left: 45 },
+        xAxis: { type: 'category', data: months, axisLine: { lineStyle: { color: 'rgba(0,224,255,0.3)' } }, axisTick: { show: false }, axisLabel: { color: '#6B7A90', fontSize: 11 } },
+        yAxis: [
+            { type: 'value', name: '数量', nameTextStyle: { color: '#6B7A90', fontSize: 10 }, axisLine: { show: false }, axisTick: { show: false }, axisLabel: { color: '#6B7A90', fontSize: 10 }, splitLine: { lineStyle: { color: 'rgba(0,224,255,0.06)', type: 'dashed' } } },
+            { type: 'value', name: '万元', nameTextStyle: { color: '#6B7A90', fontSize: 10 }, axisLine: { show: false }, axisTick: { show: false }, axisLabel: { color: '#6B7A90', fontSize: 10 }, splitLine: { show: false } }
+        ],
+        series: [
+            { name: '保单数量', type: 'bar', data: [380, 420, 460, 510, 530, 580], barWidth: 18, itemStyle: { borderRadius: [4,4,0,0], color: new echarts.graphic.LinearGradient(0,0,0,1,[{offset:0,color:'rgba(0,224,255,0.6)'},{offset:1,color:'rgba(0,224,255,0.15)'}]) } },
+            { name: '保费收入', type: 'line', yAxisIndex: 1, data: [180, 205, 228, 256, 275, 310], smooth: true, symbol: 'circle', symbolSize: 8, lineStyle: { width: 2.5, color: '#FFB800' }, itemStyle: { color: '#FFB800', borderColor: '#FFFFFF', borderWidth: 2 } }
+        ]
+    });
+
+    // 风险类型迷你饼图
+    var c6 = echarts.init(document.getElementById('subChartRiskType'));
+    c6.setOption({
+        tooltip: { trigger: 'item', backgroundColor: 'rgba(5,18,45,0.92)', borderColor: 'rgba(255,77,79,0.5)', textStyle: { color: '#FFFFFF', fontSize: 11 }, formatter: '{b}: {c}% ({d}%)' },
+        series: [{
+            type: 'pie', radius: ['40%', '72%'], center: ['50%', '50%'],
+            itemStyle: { borderColor: 'rgba(15,5,5,1)', borderWidth: 2, borderRadius: 2 },
+            label: { show: false },
+            emphasis: { label: { show: true, color: '#FFFFFF', fontSize: 11, formatter: '{b}\n{d}%' } },
+            data: [
+                {value: 60, name: '保额不足', itemStyle: {color: '#FF4D4F'}},
+                {value: 20, name: '地域不符', itemStyle: {color: '#FFB800'}},
+                {value: 20, name: '其他', itemStyle: {color: '#FF6B35'}}
+            ]
+        }, {
+            type: 'pie', radius: ['0%', '33%'], center: ['50%', '50%'], silent: true,
+            label: { show: false }, data: [{value: 1, itemStyle: {color: 'transparent'}}], z: 1
+        }],
+        graphic: [{ type: 'text', left: 'center', top: '44%', style: { text: '52', textAlign: 'center', fill: '#FFFFFF', fontSize: 16, fontWeight: 'bold', fontFamily: 'Segoe UI', textShadowBlur: 8, textShadowColor: 'rgba(255,77,79,0.6)' } }]
+    });
+
+    window.addEventListener('resize', function() { c1.resize(); c2.resize(); c3.resize(); c4.resize(); c5.resize(); c6.resize(); });
+}
 
 // =============================================
-// 全局resize
+// 4A-2. 合规风险预警监测数据
 // =============================================
-window.addEventListener('resize', function() {
-    // ECharts 实例已在各自闭包中绑定 resize
-});
+(function() {
+    var riskData = [
+        {time:'14:32', company:'肇庆XX建材厂', org:'人保财险', industry:'安责险 / 建筑', limit:'第三者: 30万', type:'施工地址超出惠州辖区', severity:'danger', status:'pending', isNew:true},
+        {time:'14:28', company:'博罗XX电子厂', org:'平安产险', industry:'安责险 / 电子制造', limit:'死亡伤残: 50万', type:'第三者责任险额度偏低', severity:'warn', status:'processing', isNew:false},
+        {time:'14:15', company:'惠阳XX矿业公司', org:'太平洋', industry:'安责险 / 矿山', limit:'死亡伤残: 80万', type:'从业人员保额低于110万', severity:'danger', status:'pending', isNew:false},
+        {time:'13:58', company:'惠城XX化工有限公司', org:'都邦保险', industry:'安责险 / 化工', limit:'医疗: 5万', type:'从业人员保额不足', severity:'danger', status:'pending', isNew:false},
+        {time:'13:42', company:'龙门XX木材加工', org:'人寿财险', industry:'安责险 / 木材加工', limit:'死亡伤残: 60万', type:'保额低于行业最低标准', severity:'warn', status:'fixed', isNew:false},
+        {time:'13:30', company:'大亚湾XX仓储物流', org:'平安产险', industry:'安责险 / 仓储', limit:'财产: 20万', type:'投保企业信息与工商不符', severity:'warn', status:'processing', isNew:false},
+        {time:'13:18', company:'仲恺XX五金制品', org:'人保财险', industry:'安责险 / 五金', limit:'死亡伤残: 45万', type:'从业人员保额低于110万', severity:'danger', status:'pending', isNew:false},
+        {time:'12:55', company:'惠东XX水产养殖', org:'太平洋', industry:'安责险 / 养殖', limit:'综合: 10万', type:'投保地域与实际经营地不符', severity:'warn', status:'fixed', isNew:false},
+        {time:'12:40', company:'博罗XX陶瓷工艺', org:'都邦保险', industry:'安责险 / 陶瓷', limit:'死亡伤残: 70万', type:'保单期限与合同不一致', severity:'warn', status:'processing', isNew:false},
+        {time:'12:22', company:'惠城XX纺织制造', org:'人寿财险', industry:'安责险 / 纺织', limit:'死亡伤残: 55万', type:'从业人员保额低于110万', severity:'danger', status:'pending', isNew:false},
+        {time:'11:58', company:'惠阳XX食品加工', org:'平安产险', industry:'安责险 / 食品', limit:'医疗: 3万', type:'第三者责任险额度偏低', severity:'warn', status:'fixed', isNew:false},
+        {time:'11:35', company:'龙门XX旅游开发', org:'人保财险', industry:'安责险 / 旅游', limit:'财产: 15万', type:'保额低于行业最低标准', severity:'warn', status:'processing', isNew:false}
+    ];
+
+    // 构建表格HTML（两份用于无缝滚动）
+    function buildRiskTableHTML(data) {
+        var html = '<table class="risk-table"><thead><tr>';
+        html += '<th style="width:55px;">时间</th><th style="width:18%;">企业名称</th><th style="width:12%;">所属机构</th><th style="width:14%;">行业/险种</th><th style="width:14%;">保额/限额</th><th style="width:22%;">违规类型</th><th style="width:70px;">状态</th>';
+        html += '</tr></thead><tbody>';
+        data.forEach(function(r) {
+            var typeCls = r.severity === 'danger' ? 'risk-type-danger' : 'risk-type-warn';
+            var statusCls = r.status === 'pending' ? 'risk-status-pending' : r.status === 'processing' ? 'risk-status-processing' : 'risk-status-fixed';
+            var statusText = r.status === 'pending' ? '未整改' : r.status === 'processing' ? '处理中' : '已整改';
+            var newTag = r.isNew ? '<span class="risk-new-tag">NEW</span>' : '';
+            var rowCls = r.isNew ? ' risk-row-new' : '';
+            html += '<tr class="risk-row-cursor' + rowCls + '" onclick="showRiskDetail(this)" data-company="' + r.company + '" data-org="' + r.org + '" data-industry="' + r.industry + '" data-limit="' + r.limit + '" data-type="' + r.type + '" data-severity="' + r.severity + '">';
+            html += '<td style="color:var(--text-dim);font-family:var(--font-numbers);">' + r.time + '</td>';
+            html += '<td style="color:#FFFFFF;font-weight:600;">' + r.company + newTag + '</td>';
+            html += '<td>' + r.org + '</td>';
+            html += '<td>' + r.industry + '</td>';
+            html += '<td style="font-family:var(--font-numbers);color:var(--accent-yellow);">' + r.limit + '</td>';
+            html += '<td class="' + typeCls + '">' + r.type + '</td>';
+            html += '<td><span class="risk-status ' + statusCls + '"><span class="risk-status-dot"></span>' + statusText + '</span></td>';
+            html += '</tr>';
+        });
+        html += '</tbody></table>';
+        return html;
+    }
+
+    document.getElementById('riskTableScroll').innerHTML = buildRiskTableHTML(riskData) + buildRiskTableHTML(riskData);
+})();
+
+// 风险详情弹窗
+function showRiskDetail(row) {
+    var company = row.getAttribute('data-company');
+    var org = row.getAttribute('data-org');
+    var industry = row.getAttribute('data-industry');
+    var limit = row.getAttribute('data-limit');
+    var type = row.getAttribute('data-type');
+    var severity = row.getAttribute('data-severity');
+
+    var modal = document.getElementById('riskDetailModal');
+    document.getElementById('rdCompany').textContent = company;
+    document.getElementById('rdOrg').textContent = org;
+    document.getElementById('rdIndustry').textContent = industry;
+    document.getElementById('rdLimit').textContent = limit;
+    document.getElementById('rdLimit').className = 'rd-value ' + (severity === 'danger' ? 'red' : 'orange');
+
+    // 规则详情
+    var ruleHtml = '';
+    if (type.indexOf('从业人员保额') >= 0) {
+        ruleHtml += '<div class="rd-rule-item"><div class="rd-rule-icon">!</div><div class="rd-rule-content"><div class="rd-rule-name">从业人员死亡伤残保额不足</div><div class="rd-rule-detail">实际保额：<span class="rd-actual">' + limit + '</span><br/>规则阈值：<span class="rd-threshold">不低于 110万元/人</span><br/>差额：<span class="rd-actual">约 ' + Math.round(110 - parseInt(limit.replace(/[^0-9]/g,'')||50)) + ' 万元</span></div></div>';
+    } else if (type.indexOf('第三者') >= 0) {
+        ruleHtml += '<div class="rd-rule-item"><div class="rd-rule-icon">!</div><div class="rd-rule-content"><div class="rd-rule-name">第三者责任险额度偏低</div><div class="rd-rule-detail">实际保额：<span class="rd-actual">' + limit + '</span><br/>规则阈值：<span class="rd-threshold">不低于 50万元</span><br/>建议提高第三者责任限额以覆盖潜在赔偿</div></div>';
+    } else if (type.indexOf('地域') >= 0 || type.indexOf('地址') >= 0) {
+        ruleHtml += '<div class="rd-rule-item"><div class="rd-rule-icon">!</div><div class="rd-rule-content"><div class="rd-rule-name">' + type + '</div><div class="rd-rule-detail">投保信息中的经营地址/投保地域与实际工商登记信息不符，存在合规风险。需核实企业实际经营地并更新保单信息。</div></div>';
+    } else {
+        ruleHtml += '<div class="rd-rule-item"><div class="rd-rule-icon">!</div><div class="rd-rule-content"><div class="rd-rule-name">' + type + '</div><div class="rd-rule-detail">当前保额：<span class="rd-actual">' + limit + '</span><br/>不满足行业最低承保标准，建议及时调整保额配置。</div></div>';
+    }
+
+    document.getElementById('rdRules').innerHTML = ruleHtml;
+    modal.classList.add('visible');
+}
+
+function closeRiskDetail() {
+    document.getElementById('riskDetailModal').classList.remove('visible');
+}
+
+// =============================================
+// 4B. 预防服务监测大屏
+// =============================================
+function initPreventionScreen() {
+    // 1. 服务项目类型分布 - 雷达图（增强：增加本月实际线）
+    var c1 = echarts.init(document.getElementById('subChartRadar'));
+    c1.setOption({
+        tooltip: { backgroundColor: 'rgba(5,18,45,0.92)', borderColor: 'rgba(0,224,255,0.5)', textStyle: { color: '#FFFFFF' } },
+        radar: {
+            indicator: [
+                {name:'教育培训',max:100},{name:'应急演练',max:100},{name:'风险评估',max:100},
+                {name:'隐患排查',max:100},{name:'标准化建设',max:100},{name:'应急预案编制',max:100}
+            ],
+            shape: 'polygon',
+            splitNumber: 4,
+            radius: '65%',
+            center: ['45%', '50%'],
+            axisName: { color: '#AABBCC', fontSize: 10 },
+            splitLine: { lineStyle: { color: 'rgba(0,224,255,0.15)' } },
+            splitArea: { show: true, areaStyle: { color: ['rgba(0,224,255,0.02)', 'rgba(0,224,255,0.05)'] } },
+            axisLine: { lineStyle: { color: 'rgba(0,224,255,0.2)' } }
+        },
+        series: [{
+            type: 'radar',
+            data: [
+                { value: [88, 72, 65, 92, 52, 38], name: '完成比例(%)', areaStyle: { color: 'rgba(0,224,255,0.2)' }, lineStyle: { color: '#00E0FF', width: 2 }, itemStyle: { color: '#00E0FF' } },
+                { value: [95, 85, 80, 92, 70, 55], name: '目标比例(%)', areaStyle: { color: 'rgba(0,214,143,0.08)' }, lineStyle: { color: '#00D68F', width: 1.5, type: 'dashed' }, itemStyle: { color: '#00D68F' } },
+                { value: [82, 68, 58, 96, 48, 32], name: '本月实际(%)', areaStyle: { color: 'rgba(255,184,0,0.08)' }, lineStyle: { color: '#FFB800', width: 1.2 }, itemStyle: { color: '#FFB800' } }
+            ]
+        }],
+        legend: { data: ['完成比例(%)', '目标比例(%)', '本月实际(%)'], bottom: 0, textStyle: { color: '#AABBCC', fontSize: 9 }, itemWidth: 12, itemHeight: 6 }
+    });
+
+    // 雷达旁小环形图：教育 vs 排查占比
+    var c1b = echarts.init(document.getElementById('subChartRadarMini'));
+    c1b.setOption({
+        tooltip: { trigger: 'item', backgroundColor: 'rgba(5,18,45,0.92)', borderColor: 'rgba(0,224,255,0.5)', textStyle: { color: '#FFFFFF', fontSize: 11 }, formatter: '{b}: {d}%' },
+        series: [{
+            type: 'pie', radius: ['50%', '80%'], center: ['50%', '45%'],
+            itemStyle: { borderColor: 'rgba(10,25,55,1)', borderWidth: 2, borderRadius: 2 },
+            label: { show: false },
+            emphasis: { label: { show: true, color: '#FFFFFF', fontSize: 10, formatter: '{b}\n{d}%' } },
+            data: [
+                { value: 38, name: '教育培训', itemStyle: { color: '#00E0FF' } },
+                { value: 35, name: '隐患排查', itemStyle: { color: '#FFB800' } },
+                { value: 15, name: '应急演练', itemStyle: { color: '#00D68F' } },
+                { value: 12, name: '其他', itemStyle: { color: '#6366F1' } }
+            ]
+        }]
+    });
+
+    // 2. 第三方机构评分（增强：增加响应速度、隐患发现率标签）
+    var agencies = [
+        {name:'中安检测技术', score: 95.2, cls:'gold', speed:'响应快', finding:'发现率92%'},
+        {name:'惠州安泰安全', score: 91.8, cls:'silver', speed:'响应快', finding:'发现率88%'},
+        {name:'广东省安协', score: 88.5, cls:'bronze', speed:'响应一般', finding:'发现率85%'},
+        {name:'华信安全评价', score: 85.3, cls:'normal', speed:'响应快', finding:'发现率82%'},
+        {name:'鼎安安全顾问', score: 82.1, cls:'normal', speed:'响应慢', finding:'发现率78%'},
+        {name:'恒泰检测检验', score: 78.6, cls:'normal', speed:'响应慢', finding:'发现率75%'}
+    ];
+    var listHtml = '';
+    agencies.forEach(function(a, i) {
+        var barColor = a.cls === 'gold' ? 'linear-gradient(90deg,#FFD700,#FFA500)' : a.cls === 'silver' ? 'linear-gradient(90deg,#C0C0C0,#909090)' : a.cls === 'bronze' ? 'linear-gradient(90deg,#CD7F32,#B87333)' : 'linear-gradient(90deg,#005584,#00E0FF)';
+        var speedCls = a.speed === '响应快' ? 'score-tag-fast' : 'score-tag-slow';
+        var findingCls = 'score-tag-high';
+        listHtml += '<div class="score-row"><div class="score-rank ' + a.cls + '">' + (i + 1) + '</div><div class="score-name"><div class="score-name-row">' + a.name + '</div><div class="score-tags"><span class="score-tag ' + speedCls + '">' + a.speed + '</span><span class="score-tag ' + findingCls + '">' + a.finding + '</span></div></div><div class="score-bar-wrap"><div class="score-bar" style="width:' + a.score + '%;background:' + barColor + ';"></div></div><div class="score-val">' + a.score + '</div></div>';
+    });
+    document.getElementById('agencyScoreList').innerHTML = listHtml;
+
+    // 3. 隐患治理地图（增强：热力图层+更多飞线+涟漪点）
+    var c2 = echarts.init(document.getElementById('subChartHazardMap'));
+    echarts.registerMap('huizhouHazard', huizhouGeo);
+    var hazardData = [
+        {name:'惠城区',value:18,toubao:92.1,fuwu:88.5},
+        {name:'惠阳区',value:12,toubao:88.7,fuwu:84.2},
+        {name:'博罗县',value:9,toubao:85.2,fuwu:76.8},
+        {name:'惠东县',value:7,toubao:81.3,fuwu:72.6},
+        {name:'龙门县',value:5,toubao:78.5,fuwu:82.3},
+        {name:'大亚湾区',value:15,toubao:95.2,fuwu:90.1},
+        {name:'仲恺区',value:11,toubao:86.8,fuwu:80.3}
+    ];
+    // 各区中心坐标（用于飞线）
+    var districtCoords = {
+        '惠城区': [114.38, 23.08], '惠阳区': [114.46, 22.79], '博罗县': [114.28, 23.18],
+        '惠东县': [114.72, 22.98], '龙门县': [114.25, 23.73], '大亚湾区': [114.52, 22.55], '仲恺区': [114.30, 23.02]
+    };
+    var centerCoord = [114.38, 23.15];
+    var flyLines = [];
+    var scatterData = [];
+    Object.keys(districtCoords).forEach(function(name) {
+        var coord = districtCoords[name];
+        // 从中心向各区辐射飞线
+        flyLines.push({ coords: [centerCoord, coord] });
+        // 涟漪点
+        var val = 0;
+        hazardData.forEach(function(h) { if (h.name === name) val = h.value; });
+        scatterData.push({
+            name: val >= 15 ? '重大隐患' : val >= 8 ? '较大隐患' : '一般隐患',
+            value: coord.concat([val])
+        });
+    });
+    c2.setOption({
+        tooltip: { trigger: 'item', backgroundColor: 'rgba(5,18,45,0.92)', borderColor: 'rgba(0,224,255,0.5)', textStyle: { color: '#FFFFFF', fontSize: 12 }, formatter: function(p) { if (p.seriesType === 'map') { return '<b>' + p.name + '</b><br/>隐患数：<span style="color:#FF4D4F;font-weight:bold;">' + (p.data ? p.data.value : 0) + '</span><br/>整改完成率：<span style="color:#00D68F;font-weight:bold;">' + (p.data ? Math.round(p.data.fuwu) : 0) + '%</span>'; } return p.name; } },
+        visualMap: {
+            min: 0, max: 20, left: 10, bottom: 10,
+            text: ['高', '低'], textStyle: { color: '#6B7A90', fontSize: 9 },
+            inRange: { color: ['#0A1937', '#1A1040', '#2A1050', '#4A1060', '#6A1080'] },
+            show: true,
+            seriesIndex: 0,
+            itemWidth: 8, itemHeight: 60
+        },
+        geo: { map: 'huizhouHazard', roam: false, zoom: 1.15, center: [114.38, 23.15], itemStyle: { areaColor: '#0A1937', borderColor: 'rgba(0,224,255,0.5)', borderWidth: 1.5 }, emphasis: { disabled: true }, label: { show: false } },
+        series: [
+            { type: 'map', map: 'huizhouHazard', geoIndex: 0, data: hazardData, itemStyle: { borderColor: 'rgba(0,224,255,0.6)', borderWidth: 1.5 }, emphasis: { itemStyle: { areaColor: 'rgba(0,224,255,0.15)' }, label: { show: true, color: '#FFFFFF', fontSize: 12, fontWeight: 'bold' } }, label: { show: true, color: '#AABBCC', fontSize: 10, position: 'inside' } },
+            { type: 'effectScatter', coordinateSystem: 'geo', data: scatterData, symbolSize: function(val) { return Math.max(8, val[2] * 1.5); }, showEffectOn: 'render', rippleEffect: { brushType: 'stroke', scale: 3.5, period: 3, color: function(params) { return params.data.name === '重大隐患' ? 'rgba(255,77,79,0.5)' : 'rgba(255,184,0,0.4)'; } }, itemStyle: { color: function(params) { return params.data.name === '重大隐患' ? '#FF4D4F' : params.data.name === '较大隐患' ? '#FFB800' : '#FF6B35'; }, shadowBlur: 10, shadowColor: 'rgba(255,77,79,0.6)' }, zlevel: 2, label: { show: true, formatter: function(p) { return p.data.name; }, position: 'top', color: '#FF4D4F', fontSize: 9 } },
+            { type: 'lines', coordinateSystem: 'geo', polyline: false, data: flyLines, lineStyle: { color: '#00E0FF', width: 1, curveness: 0.3, opacity: 0.35 }, effect: { show: true, period: 5, trailLength: 0.2, symbol: 'circle', symbolSize: 4, color: '#00E0FF' }, zlevel: 3 }
+        ]
+    });
+
+    // 4. 隐患整改闭环率 - 仪表盘（增强：显示刻度+超期未改文字）
+    var c3 = echarts.init(document.getElementById('subChartGauge'));
+    c3.setOption({
+        series: [{
+            type: 'gauge',
+            radius: '88%',
+            center: ['50%', '55%'],
+            startAngle: 220,
+            endAngle: -40,
+            min: 0,
+            max: 100,
+            splitNumber: 10,
+            itemStyle: { color: new echarts.graphic.LinearGradient(0,0,1,0,[{offset:0,color:'#FF4D4F'},{offset:0.5,color:'#FFB800'},{offset:1,color:'#00D68F'}]) },
+            progress: { show: true, width: 12, roundCap: true },
+            pointer: { show: false },
+            axisLine: { lineStyle: { width: 12, color: [[1, 'rgba(0,224,255,0.08)']] } },
+            axisTick: { show: true, distance: -14, length: 4, lineStyle: { color: 'rgba(0,224,255,0.2)', width: 1 } },
+            splitLine: { show: true, distance: -16, length: 8, lineStyle: { color: 'rgba(0,224,255,0.25)', width: 1.5 } },
+            axisLabel: { show: true, distance: -6, fontSize: 8, color: 'rgba(107,122,144,0.6)', formatter: function(v) { return v % 20 === 0 ? v : ''; } },
+            title: { offsetCenter: [0, '68%'], fontSize: 11, color: '#6B7A90' },
+            detail: {
+                valueAnimation: true,
+                fontSize: 30,
+                fontWeight: 'bold',
+                offsetCenter: [0, '28%'],
+                formatter: '{value}%',
+                color: '#00D68F',
+                textShadowBlur: 10,
+                textShadowColor: 'rgba(0,214,143,0.5)',
+                rich: {}
+            },
+            data: [{ value: 86.5, name: '整改完成率' }]
+        }],
+        graphic: [
+            { type: 'text', left: 'center', top: '78%', style: { text: '超期未改 23 家', textAlign: 'center', fill: '#FF4D4F', fontSize: 11, fontWeight: 'bold', textShadowBlur: 6, textShadowColor: 'rgba(255,77,79,0.4)' } }
+        ]
+    });
+
+    // 5. 事故下降趋势（增强：面积图+预测虚线）
+    var c4 = echarts.init(document.getElementById('subChartAccident'));
+    var accidentX = ['2023 Q1','Q2','Q3','Q4','2024 Q1','Q2','Q3','Q4','2025 Q1','Q2','Q3','Q4'];
+    var accidentActual = [28, 25, 22, 20, 18, 16, 14, 12, 10, 8, null, null];
+    var accidentPredict = [null, null, null, null, null, null, null, null, null, 8, 6.5, 5];
+    c4.setOption({
+        tooltip: { trigger: 'axis', backgroundColor: 'rgba(5,18,45,0.92)', borderColor: 'rgba(0,224,255,0.5)', textStyle: { color: '#FFFFFF', fontSize: 12 } },
+        legend: { data: ['实际事故数', '趋势预测'], bottom: 0, textStyle: { color: '#AABBCC', fontSize: 9 }, itemWidth: 12, itemHeight: 6 },
+        grid: { top: 20, right: 15, bottom: 30, left: 42 },
+        xAxis: { type: 'category', data: accidentX, axisLine: { lineStyle: { color: 'rgba(0,224,255,0.3)' } }, axisTick: { show: false }, axisLabel: { color: '#6B7A90', fontSize: 9, rotate: 20 } },
+        yAxis: { type: 'value', name: '事故数', nameTextStyle: { color: '#6B7A90', fontSize: 9 }, axisLine: { show: false }, axisTick: { show: false }, axisLabel: { color: '#6B7A90', fontSize: 9 }, splitLine: { lineStyle: { color: 'rgba(0,224,255,0.06)', type: 'dashed' } } },
+        series: [
+            {
+                name: '实际事故数', type: 'line',
+                data: accidentActual, smooth: true, symbol: 'circle', symbolSize: 6,
+                lineStyle: { width: 2.5, color: new echarts.graphic.LinearGradient(0,0,1,0,[{offset:0,color:'#FF4D4F'},{offset:0.5,color:'#FFB800'},{offset:1,color:'#00D68F'}]) },
+                itemStyle: { color: '#00D68F', borderColor: '#FFFFFF', borderWidth: 1.5 },
+                areaStyle: { color: new echarts.graphic.LinearGradient(0,0,0,1,[{offset:0,color:'rgba(0,214,143,0.3)'},{offset:1,color:'rgba(0,214,143,0.01)'}]) },
+                markLine: { silent: true, lineStyle: { color: 'rgba(0,224,255,0.25)', type: 'dashed', width: 1 }, label: { color: '#6B7A90', fontSize: 9, position: 'insideEndTop' }, data: [{ yAxis: 15, name: '预防启动基线' }] }
+            },
+            {
+                name: '趋势预测', type: 'line',
+                data: accidentPredict, smooth: true, symbol: 'diamond', symbolSize: 5,
+                lineStyle: { width: 2, color: '#6366F1', type: 'dashed' },
+                itemStyle: { color: '#6366F1', borderColor: 'rgba(99,102,241,0.5)', borderWidth: 1 },
+                areaStyle: { color: new echarts.graphic.LinearGradient(0,0,0,1,[{offset:0,color:'rgba(99,102,241,0.15)'},{offset:1,color:'rgba(99,102,241,0.01)'}]) }
+            }
+        ]
+    });
+
+    // 6. 底部隐患整改异常监控台数据
+    (function() {
+        var hazardList = [
+            {company:'四会市化工有限公司', desc:'车间配电箱未接地，线路裸露', level:'major', deadline:'2025-10-20', overdue:3, status:'overdue', agency:'中安检测技术', isNew:true},
+            {company:'惠阳XX电子制造厂', desc:'消防通道堆放杂物，疏散指示标志缺失', level:'major', deadline:'2025-10-18', overdue:5, status:'overdue', agency:'惠州安泰安全', isNew:false},
+            {company:'博罗XX木材加工厂', desc:'粉尘浓度超标，通风设施损坏', level:'minor', deadline:'2025-10-22', overdue:1, status:'overdue', agency:'华信安全评价', isNew:false},
+            {company:'龙门XX矿业公司', desc:'矿井排水系统故障，涌水量异常', level:'major', deadline:'2025-10-25', overdue:-2, status:'progress', agency:'广东省安协', isNew:false},
+            {company:'大亚湾XX仓储物流', desc:'危化品仓库温控系统报警', level:'major', deadline:'2025-10-15', overdue:8, status:'rejected', agency:'鼎安安全顾问', isNew:false},
+            {company:'惠城XX纺织制造', desc:'织机车间噪音超标，防护设备缺失', level:'minor', deadline:'2025-10-23', overdue:0, status:'progress', agency:'恒泰检测检验', isNew:false},
+            {company:'仲恺XX五金制品', desc:'冲压设备安全防护罩脱落', level:'major', deadline:'2025-10-12', overdue:11, status:'overdue', agency:'中安检测技术', isNew:false},
+            {company:'惠东XX水产养殖', desc:'氨气泄漏报警器未定期检测', level:'minor', deadline:'2025-10-26', overdue:-1, status:'progress', agency:'惠州安泰安全', isNew:false},
+            {company:'博罗XX陶瓷工艺', desc:'窑炉温度监控系统故障', level:'minor', deadline:'2025-10-19', overdue:4, status:'rejected', agency:'华信安全评价', isNew:false},
+            {company:'惠阳XX食品加工', desc:'锅炉压力表超期未检', level:'major', deadline:'2025-10-21', overdue:2, status:'overdue', agency:'广东省安协', isNew:false},
+            {company:'龙门XX旅游开发', desc:'高空游乐设施安全带老化', level:'major', deadline:'2025-10-14', overdue:9, status:'overdue', agency:'鼎安安全顾问', isNew:false},
+            {company:'惠城XX建筑施工', desc:'脚手架连接件松动，未按方案搭设', level:'major', deadline:'2025-10-16', overdue:7, status:'rejected', agency:'恒泰检测检验', isNew:false},
+            {company:'大亚湾XX化工仓储', desc:'应急喷淋系统水压不足', level:'minor', deadline:'2025-10-24', overdue:-1, status:'progress', agency:'中安检测技术', isNew:false},
+            {company:'仲恺XX电子科技', desc:'防静电地板接地电阻超标', level:'minor', deadline:'2025-10-28', overdue:-5, status:'progress', agency:'惠州安泰安全', isNew:false}
+        ];
+
+        function buildHazardTableHTML(data) {
+            var html = '<table class="hazard-table"><thead><tr>';
+            html += '<th style="width:5%;">序</th><th style="width:14%;">企业名称</th><th style="width:22%;">隐患描述</th><th style="width:6%;">风险等级</th><th style="width:13%;">整改期限</th><th style="width:9%;">当前状态</th><th style="width:12%;">责任机构</th><th style="width:12%;">操作</th>';
+            html += '</tr></thead><tbody>';
+            data.forEach(function(r, i) {
+                var levelCls = r.level === 'major' ? 'hazard-level-major' : 'hazard-level-minor';
+                var levelText = r.level === 'major' ? '重大' : '一般';
+                var deadlineCls = r.overdue > 0 ? 'hazard-deadline-overdue' : '';
+                var deadlineOverdue = r.overdue > 0 ? '<span class="overdue-days">(逾期' + r.overdue + '天)</span>' : '';
+                var statusCls = r.status === 'overdue' ? 'hazard-status-overdue' : r.status === 'progress' ? 'hazard-status-progress' : 'hazard-status-rejected';
+                var statusText = r.status === 'overdue' ? '逾期未改' : r.status === 'progress' ? '整改中' : '驳回重改';
+                var newTag = r.isNew ? '<span class="risk-new-tag">NEW</span>' : '';
+                var rowCls = r.isNew ? ' risk-row-new' : '';
+                html += '<tr class="hazard-row-cursor' + rowCls + '">';
+                html += '<td style="color:var(--text-dim);font-family:var(--font-numbers);">' + (i + 1) + '</td>';
+                html += '<td style="color:#FFFFFF;font-weight:600;">' + r.company + newTag + '</td>';
+                html += '<td title="' + r.desc + '">' + r.desc + '</td>';
+                html += '<td><span class="hazard-level ' + levelCls + '">' + levelText + '</span></td>';
+                html += '<td class="' + deadlineCls + '">' + r.deadline + deadlineOverdue + '</td>';
+                html += '<td><span class="hazard-status-capsule ' + statusCls + '">' + statusText + '</span></td>';
+                html += '<td>' + r.agency + '</td>';
+                html += '<td><div class="hazard-actions-cell"><span class="hazard-action-btn hazard-action-supervise">督办</span><span class="hazard-action-btn hazard-action-view">详情</span></div></td>';
+                html += '</tr>';
+            });
+            html += '</tbody></table>';
+            return html;
+        }
+
+        document.getElementById('hazardTableScroll').innerHTML = buildHazardTableHTML(hazardList) + buildHazardTableHTML(hazardList);
+    })();
+
+    window.addEventListener('resize', function() { c1.resize(); c1b.resize(); c2.resize(); c3.resize(); c4.resize(); });
+}
+
+// =============================================
+// 4C. 理赔风控分析大屏
+// =============================================
+function initClaimScreen() {
+    // 赔款支出构成 - 环形图
+    var c1 = echarts.init(document.getElementById('subChartClaimPie'));
+    c1.setOption({
+        tooltip: { trigger: 'item', backgroundColor: 'rgba(5,18,45,0.92)', borderColor: 'rgba(0,224,255,0.5)', textStyle: { color: '#FFFFFF', fontSize: 12 }, formatter: '{b}: {c}万元 ({d}%)' },
+        legend: { bottom: 0, textStyle: { color: '#AABBCC', fontSize: 10 }, itemWidth: 10, itemHeight: 10 },
+        series: [{
+            type: 'pie', radius: ['45%', '72%'], center: ['50%', '45%'],
+            itemStyle: { borderColor: 'rgba(3,11,31,1)', borderWidth: 3, borderRadius: 3 },
+            label: { show: true, position: 'outside', color: '#AABBCC', fontSize: 11, formatter: '{b}\n{d}%' },
+            labelLine: { lineStyle: { color: 'rgba(0,224,255,0.3)' }, length: 12, length2: 20 },
+            data: [
+                {value: 45.2, name: '死亡伤残', itemStyle: {color: '#FF4D4F'}},
+                {value: 32.8, name: '医疗费用', itemStyle: {color: '#FFB800'}},
+                {value: 18.5, name: '财产损失', itemStyle: {color: '#1E90FF'}},
+                {value: 8.6, name: '其他赔偿', itemStyle: {color: '#00D68F'}}
+            ]
+        }, {
+            type: 'pie', radius: ['0%', '38%'], center: ['50%', '45%'], silent: true,
+            label: { show: false }, data: [{value: 1, itemStyle: {color: 'transparent'}}], z: 1
+        }],
+        graphic: [{ type: 'text', left: 'center', top: '40%', style: { text: '105.1', textAlign: 'center', fill: '#FFFFFF', fontSize: 24, fontWeight: 'bold', fontFamily: 'Segoe UI', textShadowBlur: 10, textShadowColor: 'rgba(0,224,255,0.6)' } }, { type: 'text', left: 'center', top: '49%', style: { text: '赔付总额(万元)', textAlign: 'center', fill: '#6B7A90', fontSize: 11 } }]
+    });
+
+    // 出险原因分析 - 帕累托图
+    var c2 = echarts.init(document.getElementById('subChartCause'));
+    var causes = ['高处坠落','物体打击','机械伤害','触电','火灾爆炸','坍塌','中毒窒息','其他'];
+    var causeVals = [32, 24, 18, 12, 8, 4, 2, 2];
+    var cumulative = []; var sum = 0; causeVals.forEach(function(v) { sum += v; cumulative.push(Math.round(sum / causeVals.reduce(function(a,b){return a+b;},0) * 100)); });
+    c2.setOption({
+        tooltip: { trigger: 'axis', backgroundColor: 'rgba(5,18,45,0.92)', borderColor: 'rgba(0,224,255,0.5)', textStyle: { color: '#FFFFFF', fontSize: 12 } },
+        legend: { data: ['事故次数', '累计占比'], top: 0, textStyle: { color: '#AABBCC', fontSize: 10 }, itemWidth: 12, itemHeight: 8 },
+        grid: { top: 30, right: 45, bottom: 24, left: 10, containLabel: true },
+        xAxis: { type: 'category', data: causes, axisLine: { lineStyle: { color: 'rgba(0,224,255,0.3)' } }, axisTick: { show: false }, axisLabel: { color: '#6B7A90', fontSize: 10, rotate: 20 } },
+        yAxis: [
+            { type: 'value', axisLine: { show: false }, axisTick: { show: false }, axisLabel: { color: '#6B7A90', fontSize: 10 }, splitLine: { lineStyle: { color: 'rgba(0,224,255,0.06)', type: 'dashed' } } },
+            { type: 'value', max: 100, axisLine: { show: false }, axisTick: { show: false }, axisLabel: { color: '#6B7A90', fontSize: 10, formatter: '{value}%' }, splitLine: { show: false } }
+        ],
+        series: [
+            { name: '事故次数', type: 'bar', data: causeVals, barWidth: 16, itemStyle: { borderRadius: [4,4,0,0], color: function(p) { return p.dataIndex < 3 ? '#FF4D4F' : p.dataIndex < 5 ? '#FFB800' : '#1E90FF'; } }, label: { show: true, position: 'top', color: '#AABBCC', fontSize: 10 } },
+            { name: '累计占比', type: 'line', yAxisIndex: 1, data: cumulative, smooth: true, symbol: 'circle', symbolSize: 6, lineStyle: { width: 2, color: '#00E0FF' }, itemStyle: { color: '#00E0FF' }, label: { show: true, position: 'top', color: '#00E0FF', fontSize: 10, formatter: '{c}%' } }
+        ]
+    });
+
+    // 案件处理状态漏斗
+    var funnelSteps = [
+        {label: '报案', count: 156, color: '#00E0FF'},
+        {label: '立案', count: 142, color: '#1E90FF'},
+        {label: '查勘', count: 128, color: '#00D68F'},
+        {label: '定损', count: 96, color: '#FFB800'},
+        {label: '核赔', count: 82, color: '#FF6B35'},
+        {label: '支付', count: 76, color: '#00D68F'}
+    ];
+    var funnelHtml = '';
+    var maxCount = funnelSteps[0].count;
+    funnelSteps.forEach(function(s) {
+        var widthPct = Math.max(30, (s.count / maxCount) * 100);
+        funnelHtml += '<div class="funnel-step" style="width:' + widthPct + '%;background:' + s.color + '22;border:1px solid ' + s.color + '55;"><span class="funnel-label">' + s.label + '</span><span class="funnel-count">' + s.count + '</span></div>';
+    });
+    document.getElementById('claimFunnel').innerHTML = funnelHtml;
+
+    // 典型案例滚动列表
+    var cases = [
+        {time: '2026-06-01', content: '博罗县某化工企业火灾事故报案', amount: '预估 52.3万'},
+        {time: '2026-05-28', content: '惠城区某建筑工地高处坠落', amount: '预估 38.6万'},
+        {time: '2026-05-22', content: '惠阳区某矿山企业设备伤害', amount: '预估 25.1万'},
+        {time: '2026-05-15', content: '龙门县某工厂触电事故', amount: '预估 12.8万'},
+        {time: '2026-05-08', content: '大亚湾区仓储火灾案', amount: '预估 68.5万'},
+        {time: '2026-04-30', content: '仲恺区机械伤害事故', amount: '预估 15.2万'},
+        {time: '2026-04-22', content: '惠东县物体打击致死案', amount: '预估 45.0万'},
+        {time: '2026-04-15', content: '惠城区坍塌事故', amount: '预估 32.4万'}
+    ];
+    var listHtml = '';
+    cases.forEach(function(c) {
+        listHtml += '<div class="scroll-item"><span class="scroll-item-time">' + c.time + '</span><span class="scroll-item-content">' + c.content + '</span><span class="scroll-item-amount">' + c.amount + '</span></div>';
+    });
+    // 复制一份用于无缝滚动
+    document.getElementById('claimScrollList').innerHTML = '<div class="scroll-list-inner">' + listHtml + listHtml + '</div>';
+
+    // 各公司赔付率对比
+    var c3 = echarts.init(document.getElementById('subChartCompRate'));
+    c3.setOption({
+        tooltip: { trigger: 'axis', backgroundColor: 'rgba(5,18,45,0.92)', borderColor: 'rgba(0,224,255,0.5)', textStyle: { color: '#FFFFFF', fontSize: 12 }, formatter: '{b}: {c}%' },
+        grid: { top: 5, right: 50, bottom: 5, left: 10, containLabel: true },
+        xAxis: { type: 'value', max: 100, axisLine: { show: false }, axisTick: { show: false }, axisLabel: { color: '#6B7A90', fontSize: 10, formatter: '{value}%' }, splitLine: { lineStyle: { color: 'rgba(0,224,255,0.06)', type: 'dashed' } } },
+        yAxis: { type: 'category', data: ['平安财险','人保财险','中国人寿','都邦保险','太平洋'], axisLine: { lineStyle: { color: 'rgba(0,224,255,0.2)' } }, axisTick: { show: false }, axisLabel: { color: '#AABBCC', fontSize: 11 } },
+        series: [{
+            type: 'bar', data: [68, 55, 48, 42, 38], barWidth: 16,
+            itemStyle: { borderRadius: [0, 4, 4, 0], color: function(p) { return p.value > 60 ? '#FF4D4F' : p.value > 45 ? '#FFB800' : '#00D68F'; } },
+            label: { show: true, position: 'right', color: '#00E0FF', fontSize: 11, fontWeight: 'bold', formatter: '{c}%' },
+            markLine: { silent: true, lineStyle: { color: '#FF4D4F', type: 'dashed', width: 1.5 }, label: { color: '#FF4D4F', fontSize: 10, formatter: '警戒线 70%' }, data: [{ xAxis: 70 }] }
+        }]
+    });
+
+    // 亿元保费赔付额
+    var c4 = echarts.init(document.getElementById('subChartUnitClaim'));
+    c4.setOption({
+        tooltip: { trigger: 'axis', backgroundColor: 'rgba(5,18,45,0.92)', borderColor: 'rgba(0,224,255,0.5)', textStyle: { color: '#FFFFFF', fontSize: 12 } },
+        grid: { top: 15, right: 50, bottom: 24, left: 45 },
+        xAxis: { type: 'category', data: ['平安','人保','人寿','都邦','太平洋'], axisLine: { lineStyle: { color: 'rgba(0,224,255,0.3)' } }, axisTick: { show: false }, axisLabel: { color: '#6B7A90', fontSize: 11 } },
+        yAxis: { type: 'value', name: '万元/亿元保费', nameTextStyle: { color: '#6B7A90', fontSize: 10 }, axisLine: { show: false }, axisTick: { show: false }, axisLabel: { color: '#6B7A90', fontSize: 10 }, splitLine: { lineStyle: { color: 'rgba(0,224,255,0.06)', type: 'dashed' } } },
+        series: [{
+            type: 'bar', data: [3850, 2680, 2100, 1860, 1520], barWidth: 28,
+            itemStyle: { borderRadius: [4, 4, 0, 0], color: new echarts.graphic.LinearGradient(0,0,0,1,[{offset:0,color:'#00E0FF'},{offset:1,color:'rgba(0,224,255,0.15)'}]) },
+            label: { show: true, position: 'top', color: '#00E0FF', fontSize: 11, fontWeight: 'bold' }
+        }]
+    });
+
+    window.addEventListener('resize', function() { c1.resize(); c2.resize(); c3.resize(); c4.resize(); });
+}
 </script>
+
+<!-- ===== 风险详情弹窗 ===== -->
+<div class="risk-detail-modal" id="riskDetailModal" onclick="if(event.target===this)closeRiskDetail()">
+    <div class="risk-detail-card">
+        <div class="risk-detail-header">
+            <div class="risk-detail-title">
+                <svg viewBox="0 0 24 24"><path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z M12 9v4 M12 17h.01" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                AI 监测报告 - 异常保单详情
+            </div>
+            <div class="risk-detail-close" onclick="closeRiskDetail()">&#10005;</div>
+        </div>
+        <div class="risk-detail-body">
+            <div class="risk-detail-left">
+                <div class="rd-info-block">
+                    <div class="rd-label">企业名称</div>
+                    <div class="rd-value" id="rdCompany">--</div>
+                </div>
+                <div class="rd-info-block">
+                    <div class="rd-label">所属机构</div>
+                    <div class="rd-value" id="rdOrg">--</div>
+                </div>
+                <div class="rd-info-block">
+                    <div class="rd-label">险种 / 行业</div>
+                    <div class="rd-value" id="rdIndustry">--</div>
+                </div>
+                <div class="rd-info-block">
+                    <div class="rd-label">当前保额</div>
+                    <div class="rd-value" id="rdLimit">--</div>
+                </div>
+                <div class="rd-actions">
+                    <button class="rd-btn rd-btn-primary">通知企业</button>
+                    <button class="rd-btn rd-btn-warn">整改建议</button>
+                </div>
+            </div>
+            <div class="risk-detail-right">
+                <div style="font-size:13px;font-weight:700;color:#FFFFFF;margin-bottom:4px;">不通过规则详情</div>
+                <div id="rdRules"></div>
+            </div>
+        </div>
+    </div>
+</div>
 
 </body>
 </html>
