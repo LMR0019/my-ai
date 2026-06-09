@@ -11945,6 +11945,20 @@
         .role-switch input:checked + .role-switch-slider { background: #1890ff; }
         .role-switch input:checked + .role-switch-slider::after { transform: translateX(22px); }
         .role-switch-label { font-size: 13px; color: #333; }
+        .role-form-radio-group { display: flex; align-items: center; }
+        .role-radio-label {
+            display: flex;
+            align-items: center;
+            cursor: pointer;
+        }
+        .role-radio-label input[type="radio"] {
+            width: 16px;
+            height: 16px;
+            margin: 0;
+            cursor: pointer;
+            accent-color: #1890ff;
+        }
+        .role-radio-text { font-size: 13px; color: #333; margin-left: 6px; }
         /* 权限配置区 */
         .role-perm-section {
             margin-top: 20px;
@@ -47336,6 +47350,21 @@ function showPcPortalSelector() {
                                 <span class="role-switch-slider"></span>
                             </label>
                             <span class="role-switch-label" id="roleFormStatusLabel">启用中</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="role-form-row">
+                    <div class="role-form-item">
+                        <label class="role-form-label">是否设置为端口默认角色</label>
+                        <div class="role-form-radio-group" style="margin-top:8px;">
+                            <label class="role-radio-label">
+                                <input type="radio" name="roleFormIsDefault" id="roleFormIsDefaultNo" value="0" checked="">
+                                <span class="role-radio-text">否</span>
+                            </label>
+                            <label class="role-radio-label" style="margin-left:16px;">
+                                <input type="radio" name="roleFormIsDefault" id="roleFormIsDefaultYes" value="1">
+                                <span class="role-radio-text">是</span>
+                            </label>
                         </div>
                     </div>
                 </div>
