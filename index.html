@@ -10323,7 +10323,6 @@
             background: #fff;
             border-radius: 8px;
             border: 1px solid #e8e8e8;
-            overflow: hidden;
         }
         .pss-overview-card-header {
             background: #f5f6f8;
@@ -16238,7 +16237,7 @@
                                 <div class="pc-sidebar-submenu-item" onclick="selectSubmenu(this)">预防服务汇总统计</div>
                                 <div class="pc-sidebar-submenu-item" onclick="window.open('ydp.html','_blank')" style="display:flex;align-items:center;gap:4px;">实时监控大屏<svg viewBox="0 0 24 24" style="width:11px;height:11px;flex-shrink:0;opacity:0.55;margin-left:2px;" fill="currentColor"><path d="M19 19H5V5h7V3H5c-1.11 0-2 .9-2 2v14c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2v-7h-2v7zM14 3v2h3.59l-9.83 9.83 1.41 1.41L19 6.41V10h2V3h-7z"></path></svg></div>
                                 <div class="pc-sidebar-submenu-item" onclick="selectSubmenu(this)">AI报表模板中心</div>
-                                <div class="pc-sidebar-submenu-item" onclick="selectSubmenu(this)">业务员业绩统计</div>
+                                <div class="pc-sidebar-submenu-item" onclick="selectSubmenu(this)" style="display:none;">业务员业绩统计</div>
                             </div>
                             <div class="pc-sidebar-menu-item" data-menu="insurance" onclick="toggleSubmenu(this)">
                                 <span class="pc-sidebar-menu-icon"><svg viewBox="0 0 24 24"><path d="M14 2H6c-1.1 0-1.99.9-1.99 2L4 20c0 1.1.89 2 1.99 2H18c1.1 0 2-.9 2-2V8l-6-6zm2 16H8v-2h8v2zm0-4H8v-2h8v2zm-3-5V3.5L18.5 9H13z"></path></svg></span>
@@ -16512,7 +16511,7 @@
                                 <div class="pc-sidebar-submenu-item" onclick="selectSubmenu(this)">预防服务汇总统计</div>
                                 <div class="pc-sidebar-submenu-item" onclick="window.open('ydp.html','_blank')" style="display:flex;align-items:center;gap:4px;">实时监控大屏<svg viewBox="0 0 24 24" style="width:11px;height:11px;flex-shrink:0;opacity:0.55;margin-left:2px;" fill="currentColor"><path d="M19 19H5V5h7V3H5c-1.11 0-2 .9-2 2v14c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2v-7h-2v7zM14 3v2h3.59l-9.83 9.83 1.41 1.41L19 6.41V10h2V3h-7z"></path></svg></div>
                                 <div class="pc-sidebar-submenu-item" onclick="selectSubmenu(this)">AI报表模板中心</div>
-                                <div class="pc-sidebar-submenu-item" onclick="selectSubmenu(this)">业务员业绩统计</div>
+                                <div class="pc-sidebar-submenu-item" onclick="selectSubmenu(this)" style="display:none;">业务员业绩统计</div>
                             </div>
                             <div class="pc-sidebar-menu-item" data-menu="insurance" onclick="toggleSubmenu(this)">
                                 <span class="pc-sidebar-menu-icon"><svg viewBox="0 0 24 24"><path d="M14 2H6c-1.1 0-1.99.9-1.99 2L4 20c0 1.1.89 2 1.99 2H18c1.1 0 2-.9 2-2V8l-6-6zm2 16H8v-2h8v2zm0-4H8v-2h8v2zm-3-5V3.5L18.5 9H13z"></path></svg></span>
@@ -23004,7 +23003,14 @@
                         <div class="pss-kpi-item">
                             <div class="pss-kpi-icon"><svg viewBox="0 0 24 24"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"></path></svg></div>
                             <div class="pss-kpi-info">
-                                <div class="pss-kpi-label">投保企业总数</div>
+                                <span class="cds-tooltip-wrapper">
+                                    <span class="pss-kpi-label">投保企业总数</span>
+                                    <span class="cds-tooltip-icon">?</span>
+                                    <span class="cds-tooltip-content">
+                                        <span class="cds-tooltip-title">投保企业总数</span>
+                                        <span class="cds-tooltip-text">统计周期内，保单状态为"生效中"的企业去重数量。</span>
+                                    </span>
+                                </span>
                                 <div class="pss-kpi-value">588家</div>
                                 <div class="pss-kpi-underline"></div>
                             </div>
@@ -23012,7 +23018,15 @@
                         <div class="pss-kpi-item">
                             <div class="pss-kpi-icon"><svg viewBox="0 0 24 24"><path d="M11.8 10.9c-2.27-.59-3-1.2-3-2.15 0-1.09 1.01-1.85 2.7-1.85 1.78 0 2.44.85 2.5 2.1h2.21c-.07-1.72-1.12-3.3-3.21-3.81V3h-3v2.16c-1.94.42-3.5 1.68-3.5 3.61 0 2.31 1.91 3.46 4.7 4.13 2.5.6 3 1.48 3 2.41 0 .69-.49 1.79-2.7 1.79-2.06 0-2.87-.92-2.98-2.1h-2.2c.12 2.19 1.76 3.42 3.68 3.83V21h3v-2.15c1.95-.37 3.5-1.5 3.5-3.55 0-2.84-2.43-3.81-4.7-4.4z"></path></svg></div>
                             <div class="pss-kpi-info">
-                                <div class="pss-kpi-label">投保企业总保费</div>
+                                <span class="cds-tooltip-wrapper">
+                                    <span class="pss-kpi-label">投保企业总保费</span>
+                                    <span class="cds-tooltip-icon">?</span>
+                                    <span class="cds-tooltip-content">
+                                        <span class="cds-tooltip-title">投保企业总保费</span>
+                                        <span class="cds-tooltip-text">所有生效保单的实收保费总和。</span>
+                                        <span class="cds-tooltip-note">（单位：万元）</span>
+                                    </span>
+                                </span>
                                 <div class="pss-kpi-value">714.80万元</div>
                                 <div class="pss-kpi-underline"></div>
                             </div>
@@ -23020,7 +23034,16 @@
                         <div class="pss-kpi-item">
                             <div class="pss-kpi-icon"><svg viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"></path></svg></div>
                             <div class="pss-kpi-info">
-                                <div class="pss-kpi-label">已投保企业服务开展次数</div>
+                                <span class="cds-tooltip-wrapper">
+                                    <span class="pss-kpi-label">已投保企业服务开展次数</span>
+                                    <span class="cds-tooltip-icon">?</span>
+                                    <span class="cds-tooltip-content">
+                                        <span class="cds-tooltip-title">已投保企业服务开展次数</span>
+                                        <span class="cds-tooltip-text">分子：接受过至少一次服务的家数</span>
+                                        <span class="cds-tooltip-text">分母：累计开展服务的总场次</span>
+                                        <span class="cds-tooltip-note">（注：一家企业可能接受多次服务）</span>
+                                    </span>
+                                </span>
                                 <div class="pss-kpi-value">119家 / 133次</div>
                                 <div class="pss-kpi-underline"></div>
                             </div>
@@ -23028,7 +23051,15 @@
                         <div class="pss-kpi-item">
                             <div class="pss-kpi-icon"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10" fill="none" stroke="#fff" stroke-width="2"></circle><path d="M12 6v6l4 2" fill="none" stroke="#fff" stroke-width="2"></path></svg></div>
                             <div class="pss-kpi-info">
-                                <div class="pss-kpi-label">服务开展率</div>
+                                <span class="cds-tooltip-wrapper">
+                                    <span class="pss-kpi-label">服务开展率</span>
+                                    <span class="cds-tooltip-icon">?</span>
+                                    <span class="cds-tooltip-content">
+                                        <span class="cds-tooltip-title">服务开展率</span>
+                                        <span class="cds-tooltip-formula">公式：(已开展服务企业数 ÷ 投保企业总数) × 100%</span>
+                                        <span class="cds-tooltip-text">反映保险机构是否启动了预防服务工作。</span>
+                                    </span>
+                                </span>
                                 <div class="pss-kpi-value">20.24%</div>
                                 <div class="pss-kpi-underline"></div>
                             </div>
@@ -23041,9 +23072,39 @@
                         <div class="pss-overview-card">
                             <div class="pss-overview-card-header">开展服务统计</div>
                             <div class="pss-overview-card-body">
-                                <div class="pss-ov-row"><span class="pss-ov-label">开展服务企业数</span><span class="pss-ov-value">119 家</span></div>
-                                <div class="pss-ov-row"><span class="pss-ov-label">开展服务次数</span><span class="pss-ov-value">134 次</span></div>
-                                <div class="pss-ov-row"><span class="pss-ov-label">开展率</span><span class="pss-ov-value">20.24 %</span></div>
+                                <div class="pss-ov-row">
+                                    <span class="cds-tooltip-wrapper">
+                                        <span class="pss-ov-label">开展服务企业数</span>
+                                        <span class="cds-tooltip-icon">?</span>
+                                        <span class="cds-tooltip-content">
+                                            <span class="cds-tooltip-title">开展服务企业数</span>
+                                            <span class="cds-tooltip-text">统计周期内，启动过服务项目（如开始排查、开始培训）的企业数量。</span>
+                                        </span>
+                                    </span>
+                                    <span class="pss-ov-value">119 家</span>
+                                </div>
+                                <div class="pss-ov-row">
+                                    <span class="cds-tooltip-wrapper">
+                                        <span class="pss-ov-label">开展服务次数</span>
+                                        <span class="cds-tooltip-icon">?</span>
+                                        <span class="cds-tooltip-content">
+                                            <span class="cds-tooltip-title">开展服务次数</span>
+                                            <span class="cds-tooltip-text">累计启动的服务项目总次数（同一企业多次服务累加）。</span>
+                                        </span>
+                                    </span>
+                                    <span class="pss-ov-value">134 次</span>
+                                </div>
+                                <div class="pss-ov-row">
+                                    <span class="cds-tooltip-wrapper">
+                                        <span class="pss-ov-label">开展率</span>
+                                        <span class="cds-tooltip-icon">?</span>
+                                        <span class="cds-tooltip-content">
+                                            <span class="cds-tooltip-title">开展率</span>
+                                            <span class="cds-tooltip-formula">公式：(开展服务企业数 ÷ 投保企业总数) × 100%</span>
+                                        </span>
+                                    </span>
+                                    <span class="pss-ov-value">20.24 %</span>
+                                </div>
                                 <div class="pss-progress-bar"><div class="pss-progress-fill" style="width:20.24%;"></div></div>
                                 <div class="pss-progress-text">20.24%</div>
                             </div>
@@ -23052,9 +23113,40 @@
                         <div class="pss-overview-card">
                             <div class="pss-overview-card-header">完成服务统计</div>
                             <div class="pss-overview-card-body">
-                                <div class="pss-ov-row"><span class="pss-ov-label">完成服务企业数</span><span class="pss-ov-value">119 家</span></div>
-                                <div class="pss-ov-row"><span class="pss-ov-label">完成服务开展数</span><span class="pss-ov-value">133 次</span></div>
-                                <div class="pss-ov-row"><span class="pss-ov-label">完成服务率</span><span class="pss-ov-value">100.00 %</span></div>
+                                <div class="pss-ov-row">
+                                    <span class="cds-tooltip-wrapper">
+                                        <span class="pss-ov-label">完成服务企业数</span>
+                                        <span class="cds-tooltip-icon">?</span>
+                                        <span class="cds-tooltip-content">
+                                            <span class="cds-tooltip-title">完成服务企业数</span>
+                                            <span class="cds-tooltip-text">统计周期内，服务项目流程已闭环（如提交报告并验收通过）的企业数量。</span>
+                                        </span>
+                                    </span>
+                                    <span class="pss-ov-value">119 家</span>
+                                </div>
+                                <div class="pss-ov-row">
+                                    <span class="cds-tooltip-wrapper">
+                                        <span class="pss-ov-label">完成服务开展数</span>
+                                        <span class="cds-tooltip-icon">?</span>
+                                        <span class="cds-tooltip-content">
+                                            <span class="cds-tooltip-title">完成服务开展数</span>
+                                            <span class="cds-tooltip-text">累计已完成并归档的服务项目总次数。</span>
+                                        </span>
+                                    </span>
+                                    <span class="pss-ov-value">133 次</span>
+                                </div>
+                                <div class="pss-ov-row">
+                                    <span class="cds-tooltip-wrapper">
+                                        <span class="pss-ov-label">完成服务率</span>
+                                        <span class="cds-tooltip-icon">?</span>
+                                        <span class="cds-tooltip-content">
+                                            <span class="cds-tooltip-title">完成服务率</span>
+                                            <span class="cds-tooltip-formula">公式：(完成服务次数 ÷ 开展服务次数) × 100%</span>
+                                            <span class="cds-tooltip-text">反映服务的履约进度。</span>
+                                        </span>
+                                    </span>
+                                    <span class="pss-ov-value">100.00 %</span>
+                                </div>
                                 <div class="pss-progress-bar"><div class="pss-progress-fill" style="width:100%;"></div></div>
                                 <div class="pss-progress-text">100.00%</div>
                             </div>
@@ -23063,9 +23155,40 @@
                         <div class="pss-overview-card">
                             <div class="pss-overview-card-header">服务支持统计</div>
                             <div class="pss-overview-card-body">
-                                <div class="pss-ov-row"><span class="pss-ov-label">服务专家数</span><span class="pss-ov-value">135 人次</span></div>
-                                <div class="pss-ov-row"><span class="pss-ov-label">服务机构数</span><span class="pss-ov-value">3 家</span></div>
-                                <div class="pss-ov-row"><span class="pss-ov-label">服务评价率</span><span class="pss-ov-value zero">0.00 %</span></div>
+                                <div class="pss-ov-row">
+                                    <span class="cds-tooltip-wrapper">
+                                        <span class="pss-ov-label">服务专家数</span>
+                                        <span class="cds-tooltip-icon">?</span>
+                                        <span class="cds-tooltip-content">
+                                            <span class="cds-tooltip-title">服务专家数</span>
+                                            <span class="cds-tooltip-text">参与事故预防服务的第三方专家或技术人员去重人次。</span>
+                                        </span>
+                                    </span>
+                                    <span class="pss-ov-value">135 人次</span>
+                                </div>
+                                <div class="pss-ov-row">
+                                    <span class="cds-tooltip-wrapper">
+                                        <span class="pss-ov-label">服务机构数</span>
+                                        <span class="cds-tooltip-icon">?</span>
+                                        <span class="cds-tooltip-content">
+                                            <span class="cds-tooltip-title">服务机构数</span>
+                                            <span class="cds-tooltip-text">提供技术支持的第三方技术服务机构数量。</span>
+                                        </span>
+                                    </span>
+                                    <span class="pss-ov-value">3 家</span>
+                                </div>
+                                <div class="pss-ov-row">
+                                    <span class="cds-tooltip-wrapper">
+                                        <span class="pss-ov-label">服务评价率</span>
+                                        <span class="cds-tooltip-icon">?</span>
+                                        <span class="cds-tooltip-content">
+                                            <span class="cds-tooltip-title">服务评价率</span>
+                                            <span class="cds-tooltip-formula">公式：(已评价服务单数 ÷ 应评价服务单数) × 100%</span>
+                                            <span class="cds-tooltip-text">反映企业对服务质量的反馈情况。</span>
+                                        </span>
+                                    </span>
+                                    <span class="pss-ov-value zero">0.00 %</span>
+                                </div>
                                 <div class="pss-progress-bar"><div class="pss-progress-fill" style="width:0%;"></div></div>
                                 <div class="pss-progress-text">0.00%</div>
                             </div>
@@ -23074,11 +23197,52 @@
                         <div class="pss-overview-card">
                             <div class="pss-overview-card-header">服务费用统计</div>
                             <div class="pss-overview-card-body">
-                                <div class="pss-ov-row"><span class="pss-ov-label">约定服务费用总额</span><span class="pss-ov-value">102.49 万元</span></div>
-                                <div class="pss-ov-row"><span class="pss-ov-label">约定服务费用占比</span><span class="pss-ov-value">14.34 %</span></div>
-                                <div class="pss-ov-row"><span class="pss-ov-label">计划服务费用总额</span><span class="pss-ov-value">3.98 万元</span></div>
+                                <div class="pss-ov-row">
+                                    <span class="cds-tooltip-wrapper">
+                                        <span class="pss-ov-label">约定服务费用总额</span>
+                                        <span class="cds-tooltip-icon">?</span>
+                                        <span class="cds-tooltip-content">
+                                            <span class="cds-tooltip-title">约定服务费用总额</span>
+                                            <span class="cds-tooltip-text">根据保险合同或协议，保险公司承诺提取用于事故预防服务的资金总额。</span>
+                                        </span>
+                                    </span>
+                                    <span class="pss-ov-value">102.49 万元</span>
+                                </div>
+                                <div class="pss-ov-row">
+                                    <span class="cds-tooltip-wrapper">
+                                        <span class="pss-ov-label">约定服务费用占比</span>
+                                        <span class="cds-tooltip-icon">?</span>
+                                        <span class="cds-tooltip-content">
+                                            <span class="cds-tooltip-title">约定服务费用占比</span>
+                                            <span class="cds-tooltip-formula">公式：(约定服务费 ÷ 总保费) × 100%</span>
+                                            <span class="cds-tooltip-text">通常安责险规定该比例不低于保费的一定比例（如10%-15%）。</span>
+                                        </span>
+                                    </span>
+                                    <span class="pss-ov-value">14.34 %</span>
+                                </div>
+                                <div class="pss-ov-row">
+                                    <span class="cds-tooltip-wrapper">
+                                        <span class="pss-ov-label">计划服务费用总额</span>
+                                        <span class="cds-tooltip-icon">?</span>
+                                        <span class="cds-tooltip-content">
+                                            <span class="cds-tooltip-title">计划服务费用总额</span>
+                                            <span class="cds-tooltip-text">保险公司年度或季度规划中，预计投入的服务资金预算。</span>
+                                        </span>
+                                    </span>
+                                    <span class="pss-ov-value">3.98 万元</span>
+                                </div>
                                 <div class="pss-ov-row"><span class="pss-ov-label">计划服务费用占比</span><span class="pss-ov-value">0.56 %</span></div>
-                                <div class="pss-ov-row"><span class="pss-ov-label">服务完成费用总额</span><span class="pss-ov-value zero">-</span></div>
+                                <div class="pss-ov-row">
+                                    <span class="cds-tooltip-wrapper">
+                                        <span class="pss-ov-label">服务完成费用总额</span>
+                                        <span class="cds-tooltip-icon">?</span>
+                                        <span class="cds-tooltip-content">
+                                            <span class="cds-tooltip-title">服务完成费用总额</span>
+                                            <span class="cds-tooltip-text">实际上已经支付或结算完成的服务费用金额。</span>
+                                        </span>
+                                    </span>
+                                    <span class="pss-ov-value zero">-</span>
+                                </div>
                                 <div class="pss-ov-row"><span class="pss-ov-label">服务完成费用占比</span><span class="pss-ov-value zero">-</span></div>
                             </div>
                         </div>
@@ -23106,18 +23270,127 @@
                                 <thead>
                                     <tr>
                                         <th>行业</th>
-                                        <th>总保费(元)</th>
-                                        <th>约定费用金额(元)</th>
-                                        <th>开展服务金额</th>
-                                        <th>安全生产教育培训(元)</th>
-                                        <th>安全风险辨识、评估和安全评价(元)</th>
-                                        <th>安全生产事故隐患排查(元)</th>
-                                        <th>安全生产标准化建设(元)</th>
-                                        <th>生产安全事故应急预案编制和演练(元)</th>
-                                        <th>安全生产科技推广应用(元)</th>
-                                        <th>安全生产其他有关事故预防工作(元)</th>
-                                        <th>已完成服务金额(元)</th>
-                                        <th>服务费用执行率(%)</th>
+                                        <th>
+                                            <span class="cds-tooltip-wrapper">
+                                                总保费(元)
+                                                <span class="cds-tooltip-icon">?</span>
+                                                <span class="cds-tooltip-content">
+                                                    <span class="cds-tooltip-title">总保费(元)</span>
+                                                    <span class="cds-tooltip-text">该行业分类下，所有生效保单的保费总和。</span>
+                                                </span>
+                                            </span>
+                                        </th>
+                                        <th>
+                                            <span class="cds-tooltip-wrapper">
+                                                约定费用金额(元)
+                                                <span class="cds-tooltip-icon">?</span>
+                                                <span class="cds-tooltip-content">
+                                                    <span class="cds-tooltip-title">约定费用金额(元)</span>
+                                                    <span class="cds-tooltip-text">该行业下，按合同约定应提取的事故预防服务费总额。</span>
+                                                </span>
+                                            </span>
+                                        </th>
+                                        <th>
+                                            <span class="cds-tooltip-wrapper">
+                                                开展服务金额
+                                                <span class="cds-tooltip-icon">?</span>
+                                                <span class="cds-tooltip-content">
+                                                    <span class="cds-tooltip-title">开展服务金额</span>
+                                                    <span class="cds-tooltip-text">该行业下，已立项或正在执行中的服务项目涉及的费用。</span>
+                                                </span>
+                                            </span>
+                                        </th>
+                                        <th>
+                                            <span class="cds-tooltip-wrapper">
+                                                安全生产教育培训(元)
+                                                <span class="cds-tooltip-icon">?</span>
+                                                <span class="cds-tooltip-content">
+                                                    <span class="cds-tooltip-title">安全生产教育培训</span>
+                                                    <span class="cds-tooltip-text">包含主要负责人、安管人员培训及全员安全教育的费用支出。</span>
+                                                </span>
+                                            </span>
+                                        </th>
+                                        <th>
+                                            <span class="cds-tooltip-wrapper">
+                                                安全风险辨识、评估和安全评价(元)
+                                                <span class="cds-tooltip-icon">?</span>
+                                                <span class="cds-tooltip-content">
+                                                    <span class="cds-tooltip-title">安全风险辨识、评估和安全评价</span>
+                                                    <span class="cds-tooltip-text">包含双重预防机制建设、风险分级管控及隐患排查治理体系建设的费用。</span>
+                                                </span>
+                                            </span>
+                                        </th>
+                                        <th>
+                                            <span class="cds-tooltip-wrapper">
+                                                安全生产事故隐患排查(元)
+                                                <span class="cds-tooltip-icon">?</span>
+                                                <span class="cds-tooltip-content">
+                                                    <span class="cds-tooltip-title">安全生产事故隐患排查</span>
+                                                    <span class="cds-tooltip-text">包含企业安全隐患排查、整改及复查验收的费用。</span>
+                                                </span>
+                                            </span>
+                                        </th>
+                                        <th>
+                                            <span class="cds-tooltip-wrapper">
+                                                安全生产标准化建设(元)
+                                                <span class="cds-tooltip-icon">?</span>
+                                                <span class="cds-tooltip-content">
+                                                    <span class="cds-tooltip-title">安全生产标准化建设</span>
+                                                    <span class="cds-tooltip-text">企业申请安全生产标准化评审、咨询及整改产生的费用。</span>
+                                                </span>
+                                            </span>
+                                        </th>
+                                        <th>
+                                            <span class="cds-tooltip-wrapper">
+                                                生产安全事故应急预案编制和演练(元)
+                                                <span class="cds-tooltip-icon">?</span>
+                                                <span class="cds-tooltip-content">
+                                                    <span class="cds-tooltip-title">生产安全事故应急预案编制和演练</span>
+                                                    <span class="cds-tooltip-text">包含应急预案的编写、评审以及组织实地应急演练的费用。</span>
+                                                </span>
+                                            </span>
+                                        </th>
+                                        <th>
+                                            <span class="cds-tooltip-wrapper">
+                                                安全生产科技推广应用(元)
+                                                <span class="cds-tooltip-icon">?</span>
+                                                <span class="cds-tooltip-content">
+                                                    <span class="cds-tooltip-title">安全生产科技推广应用</span>
+                                                    <span class="cds-tooltip-text">购买安全生产监测预警设备、信息化系统建设等科技投入费用。</span>
+                                                </span>
+                                            </span>
+                                        </th>
+                                        <th>
+                                            <span class="cds-tooltip-wrapper">
+                                                安全生产其他有关事故预防工作(元)
+                                                <span class="cds-tooltip-icon">?</span>
+                                                <span class="cds-tooltip-content">
+                                                    <span class="cds-tooltip-title">安全生产其他有关事故预防工作</span>
+                                                    <span class="cds-tooltip-text">不属于上述分类，但符合监管规定的其他预防性支出。</span>
+                                                </span>
+                                            </span>
+                                        </th>
+                                        <th>
+                                            <span class="cds-tooltip-wrapper">
+                                                已完成服务金额(元)
+                                                <span class="cds-tooltip-icon">?</span>
+                                                <span class="cds-tooltip-content">
+                                                    <span class="cds-tooltip-title">已完成服务金额(元)</span>
+                                                    <span class="cds-tooltip-text">该行业下，服务已验收并确认结算的费用总额。</span>
+                                                </span>
+                                            </span>
+                                        </th>
+                                        <th>
+                                            <span class="cds-tooltip-wrapper">
+                                                服务费用执行率(%)
+                                                <span class="cds-tooltip-icon">?</span>
+                                                <span class="cds-tooltip-content">
+                                                    <span class="cds-tooltip-title">服务费用执行率</span>
+                                                    <span class="cds-tooltip-formula">公式：(已完成服务金额 ÷ 约定费用金额) × 100%</span>
+                                                    <span class="cds-tooltip-text">反映资金的实际使用效率。</span>
+                                                </span>
+                                            </span>
+                                        </th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -23170,19 +23443,116 @@
                                 <thead>
                                     <tr>
                                         <th rowspan="2" class="industry-col">行业</th>
-                                        <th rowspan="2">投保企业总数(家)</th>
+                                        <th rowspan="2">
+                                            <span class="cds-tooltip-wrapper">
+                                                投保企业总数(家)
+                                                <span class="cds-tooltip-icon">?</span>
+                                                <span class="cds-tooltip-content">
+                                                    <span class="cds-tooltip-title">投保企业总数</span>
+                                                    <span class="cds-tooltip-text">该行业下的参保企业基数。</span>
+                                                </span>
+                                            </span>
+                                        </th>
                                         <th colspan="7">服务开展统计情况【按服务项目】</th>
-                                        <th rowspan="2">已服务企业总数(家)</th>
-                                        <th rowspan="2">服务开展率(%)</th>
+                                        <th rowspan="2">
+                                            <span class="cds-tooltip-wrapper">
+                                                已服务企业总数(家)
+                                                <span class="cds-tooltip-icon">?</span>
+                                                <span class="cds-tooltip-content">
+                                                    <span class="cds-tooltip-title">已服务企业总数</span>
+                                                    <span class="cds-tooltip-text">该行业下，接受了任意一项服务的去重企业总数。</span>
+                                                </span>
+                                            </span>
+                                        </th>
+                                        <th rowspan="2">
+                                            <span class="cds-tooltip-wrapper">
+                                                服务开展率(%)
+                                                <span class="cds-tooltip-icon">?</span>
+                                                <span class="cds-tooltip-content">
+                                                    <span class="cds-tooltip-title">服务开展率</span>
+                                                    <span class="cds-tooltip-formula">公式：(已服务企业总数 ÷ 投保企业总数) × 100%</span>
+                                                </span>
+                                            </span>
+                                        </th>
                                     </tr>
                                     <tr>
-                                        <th>安全生产教育培训(家)</th>
-                                        <th>安全风险辨识、评估和安全评价(家)</th>
-                                        <th>安全生产事故隐患排查(家)</th>
-                                        <th>安全生产标准化建设(家)</th>
-                                        <th>生产安全事故应急预案编制和演练(家)</th>
-                                        <th>安全生产科技推广应用(家)</th>
-                                        <th>安全生产其他有关事故预防工作(家)</th>
+                                        <th>
+                                            <span class="cds-tooltip-wrapper">
+                                                安全生产教育培训(家)
+                                                <span class="cds-tooltip-icon">?</span>
+                                                <span class="cds-tooltip-content">
+                                                    <span class="cds-tooltip-title">安全生产教育培训</span>
+                                                    <span class="cds-tooltip-text">在该行业下，接受了该项特定服务的企业数量。</span>
+                                                    <span class="cds-tooltip-note">（注：一家企业若同时做了培训和演练，会在两列分别计数）</span>
+                                                </span>
+                                            </span>
+                                        </th>
+                                        <th>
+                                            <span class="cds-tooltip-wrapper">
+                                                安全风险辨识、评估和安全评价(家)
+                                                <span class="cds-tooltip-icon">?</span>
+                                                <span class="cds-tooltip-content">
+                                                    <span class="cds-tooltip-title">安全风险辨识、评估和安全评价</span>
+                                                    <span class="cds-tooltip-text">在该行业下，接受了该项特定服务的企业数量。</span>
+                                                    <span class="cds-tooltip-note">（注：一家企业若同时做了培训和演练，会在两列分别计数）</span>
+                                                </span>
+                                            </span>
+                                        </th>
+                                        <th>
+                                            <span class="cds-tooltip-wrapper">
+                                                安全生产事故隐患排查(家)
+                                                <span class="cds-tooltip-icon">?</span>
+                                                <span class="cds-tooltip-content">
+                                                    <span class="cds-tooltip-title">安全生产事故隐患排查</span>
+                                                    <span class="cds-tooltip-text">在该行业下，接受了该项特定服务的企业数量。</span>
+                                                    <span class="cds-tooltip-note">（注：一家企业若同时做了培训和演练，会在两列分别计数）</span>
+                                                </span>
+                                            </span>
+                                        </th>
+                                        <th>
+                                            <span class="cds-tooltip-wrapper">
+                                                安全生产标准化建设(家)
+                                                <span class="cds-tooltip-icon">?</span>
+                                                <span class="cds-tooltip-content">
+                                                    <span class="cds-tooltip-title">安全生产标准化建设</span>
+                                                    <span class="cds-tooltip-text">在该行业下，接受了该项特定服务的企业数量。</span>
+                                                    <span class="cds-tooltip-note">（注：一家企业若同时做了培训和演练，会在两列分别计数）</span>
+                                                </span>
+                                            </span>
+                                        </th>
+                                        <th>
+                                            <span class="cds-tooltip-wrapper">
+                                                生产安全事故应急预案编制和演练(家)
+                                                <span class="cds-tooltip-icon">?</span>
+                                                <span class="cds-tooltip-content">
+                                                    <span class="cds-tooltip-title">生产安全事故应急预案编制和演练</span>
+                                                    <span class="cds-tooltip-text">在该行业下，接受了该项特定服务的企业数量。</span>
+                                                    <span class="cds-tooltip-note">（注：一家企业若同时做了培训和演练，会在两列分别计数）</span>
+                                                </span>
+                                            </span>
+                                        </th>
+                                        <th>
+                                            <span class="cds-tooltip-wrapper">
+                                                安全生产科技推广应用(家)
+                                                <span class="cds-tooltip-icon">?</span>
+                                                <span class="cds-tooltip-content">
+                                                    <span class="cds-tooltip-title">安全生产科技推广应用</span>
+                                                    <span class="cds-tooltip-text">在该行业下，接受了该项特定服务的企业数量。</span>
+                                                    <span class="cds-tooltip-note">（注：一家企业若同时做了培训和演练，会在两列分别计数）</span>
+                                                </span>
+                                            </span>
+                                        </th>
+                                        <th>
+                                            <span class="cds-tooltip-wrapper">
+                                                安全生产其他有关事故预防工作(家)
+                                                <span class="cds-tooltip-icon">?</span>
+                                                <span class="cds-tooltip-content">
+                                                    <span class="cds-tooltip-title">安全生产其他有关事故预防工作</span>
+                                                    <span class="cds-tooltip-text">在该行业下，接受了该项特定服务的企业数量。</span>
+                                                    <span class="cds-tooltip-note">（注：一家企业若同时做了培训和演练，会在两列分别计数）</span>
+                                                </span>
+                                            </span>
+                                        </th>
                                     </tr>
                                 </thead>
                                 <tbody>
