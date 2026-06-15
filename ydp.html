@@ -2360,6 +2360,25 @@
             max-height: 170px;
             flex: 0 0 auto;
         }
+        /* 理赔风控分析屏幕使用真实flex容器 */
+        #screenClaim .perspective-view.active {
+            display: flex;
+            flex-direction: column;
+            flex: 1;
+            min-height: 0;
+        }
+        #screenClaim .sub-content {
+            flex: 1 1 0%;
+            min-height: 0;
+            overflow: hidden;
+        }
+        #screenClaim .policy-workbench {
+            max-height: 170px;
+            flex: 0 0 auto;
+        }
+        #screenClaim .wb-scroll-track {
+            height: 130px;
+        }
 
         @keyframes perspectiveIn {
             from { opacity: 0; transform: scale(0.96); }
@@ -4063,69 +4082,291 @@
 <!-- ===== 子大屏3：理赔风控分析 ===== -->
 <!-- ================================================================ -->
 <div class="sub-screen" id="screenClaim">
+    <!-- 顶部导航栏 - 含视角切换器 -->
     <div class="sub-header">
         <button class="back-btn" onclick="closeSubScreen('screenClaim')">
             <svg viewBox="0 0 24 24"><path d="M19 12H5M12 19l-7-7 7-7" stroke-linecap="round" stroke-linejoin="round"/></svg>
             返回总览
         </button>
         <div class="sub-header-title">理赔风控分析大屏</div>
-        <div style="width:120px;"></div>
-    </div>
-
-    <div class="sub-kpi-bar">
-        <div class="sub-kpi-item">
-            <div class="sub-kpi-value warning">0.00</div>
-            <div class="sub-kpi-label">累计赔付金额(万元)</div>
-            <div class="sub-kpi-change">同比持平</div>
-        </div>
-        <div class="sub-kpi-item">
-            <div class="sub-kpi-value">0.00%</div>
-            <div class="sub-kpi-label">综合赔付率</div>
-            <div class="sub-kpi-change success">&#9660; 低于警戒线</div>
-        </div>
-        <div class="sub-kpi-item">
-            <div class="sub-kpi-value">0</div>
-            <div class="sub-kpi-label">平均结案周期(天)</div>
-            <div class="sub-kpi-change">--</div>
-        </div>
-        <div class="sub-kpi-item">
-            <div class="sub-kpi-value success">0</div>
-            <div class="sub-kpi-label">拒赔/争议案件数</div>
-            <div class="sub-kpi-change success">良好</div>
+        <!-- 视角切换器 - 胶囊式 -->
+        <div class="perspective-switcher" id="claimPerspectiveSwitcher">
+            <button class="perspective-btn active" data-view="gov" onclick="switchClaimPerspective('gov', this)">
+                🏛️ 政府监管
+            </button>
+            <button class="perspective-btn" data-view="insurer" onclick="switchClaimPerspective('insurer', this)">
+                🏦 保险机构
+            </button>
+            <button class="perspective-btn" data-view="platform" onclick="switchClaimPerspective('platform', this)">
+                ⚙️ 平台运营
+            </button>
         </div>
     </div>
 
-    <div class="sub-content">
-        <div class="sub-col-left">
-            <div class="sub-panel">
-                <div class="sub-panel-title">赔款支出构成</div>
-                <div class="chart-box" id="subChartClaimPie" style="flex:1;"></div>
+    <!-- ==================== 视角一：政府监管 ==================== -->
+    <div class="perspective-view active" id="claim-view-gov">
+        <!-- KPI栏 -->
+        <div class="sub-kpi-bar">
+            <div class="sub-kpi-item">
+                <div class="sub-kpi-value warning">3,208.6<span class="sub-kpi-unit">万</span></div>
+                <div class="sub-kpi-label">累计赔付总金额</div>
+                <div class="sub-kpi-sub">较去年同期 <span class="sub-highlight sub-red">↑18.6%</span></div>
             </div>
-            <div class="sub-panel">
-                <div class="sub-panel-title">出险原因分析</div>
-                <div class="chart-box" id="subChartCause" style="flex:1;"></div>
+            <div class="sub-kpi-item">
+                <div class="sub-kpi-value success">1,245</div>
+                <div class="sub-kpi-label">惠及企业/人数</div>
+                <div class="sub-kpi-sub">企业 <span class="sub-highlight sub-cyan">386</span> 家 | 伤亡 <span class="sub-highlight sub-red">859</span> 人</div>
+            </div>
+            <div class="sub-kpi-item">
+                <div class="sub-kpi-value">23.4<span class="sub-kpi-unit">天</span></div>
+                <div class="sub-kpi-label">平均结案周期</div>
+                <div class="sub-kpi-sub">较上月 <span class="sub-highlight sub-green">↓2.1天</span> 提速</div>
+            </div>
+            <div class="sub-kpi-item">
+                <div class="sub-kpi-value success">96.2<span class="sub-kpi-unit">%</span></div>
+                <div class="sub-kpi-label">重大事故响应率</div>
+                <div class="sub-kpi-progress-wrap"><div class="sub-kpi-progress-bar progress-green" style="width:96.2%;"></div></div>
+                <div class="sub-kpi-sub">重大事故 <span class="sub-highlight sub-red">52</span> 件已介入 <span class="sub-highlight sub-green">50</span> 件</div>
+            </div>
+            <div class="sub-kpi-item">
+                <div class="sub-kpi-value danger">8</div>
+                <div class="sub-kpi-label">今日新增报案</div>
+                <div class="sub-kpi-sub">较昨日 <span class="sub-highlight sub-red">↑3</span> 件，需关注</div>
             </div>
         </div>
-
-        <div class="sub-col-center">
-            <div class="sub-panel" style="flex:0 0 auto;">
-                <div class="sub-panel-title">案件处理状态漏斗</div>
-                <div class="funnel-container" id="claimFunnel"></div>
+        <div class="sub-content">
+            <!-- 左侧 -->
+            <div class="sub-col-left">
+                <div class="sub-panel">
+                    <div class="sub-panel-header">
+                        <div class="sub-panel-title">各行业赔付金额占比</div>
+                        <div style="font-size:9px;color:var(--text-dim);">南丁格尔玫瑰图</div>
+                    </div>
+                    <div class="chart-box" id="claimGovRose" style="flex:1;min-height:150px;"></div>
+                </div>
+                <div class="sub-panel" style="flex:1;">
+                    <div class="sub-panel-header">
+                        <div class="sub-panel-title">赔付原因 Top5</div>
+                    </div>
+                    <div class="chart-box" id="claimGovCauseBar" style="flex:1;"></div>
+                </div>
             </div>
-            <div class="sub-panel" style="flex:1;">
-                <div class="sub-panel-title">典型案例滚动</div>
-                <div class="scroll-list" id="claimScrollList"></div>
+            <!-- 中间地图 -->
+            <div class="sub-col-center">
+                <div class="sub-panel" style="flex:1;display:flex;flex-direction:column;">
+                    <div class="sub-panel-header">
+                        <div class="sub-panel-title">全市理赔案件热力分布</div>
+                        <div style="font-size:9px;color:var(--text-dim);">点击区县查看赔付详情</div>
+                    </div>
+                    <div class="chart-box" id="claimGovMap" style="flex:1;"></div>
+                </div>
+            </div>
+            <!-- 右侧 -->
+            <div class="sub-col-right">
+                <div class="sub-panel">
+                    <div class="sub-panel-header">
+                        <div class="sub-panel-title">各保险机构赔付率/结案率对比</div>
+                    </div>
+                    <div class="chart-box" id="claimGovInsRateChart" style="flex:1;min-height:160px;"></div>
+                </div>
+                <div class="sub-panel" style="flex:1;">
+                    <div class="sub-panel-header">
+                        <div class="sub-panel-title">未决赔款 Top10 企业</div>
+                    </div>
+                    <div id="claimGovPendingList" style="flex:1;overflow-y:auto;padding:0 8px 6px;"></div>
+                </div>
             </div>
         </div>
-
-        <div class="sub-col-right">
-            <div class="sub-panel">
-                <div class="sub-panel-title">各公司赔付率对比</div>
-                <div class="chart-box" id="subChartCompRate" style="flex:1;"></div>
+        <!-- 底部工作台 -->
+        <div class="policy-workbench" style="position:relative;">
+            <div class="wb-header">
+                <div class="wb-title">
+                    <svg viewBox="0 0 24 24"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                    重大案件通报
+                    <span class="blink-dot"></span>
+                </div>
+                <div style="font-size:10px;color:var(--text-dim);margin-left:auto;">鼠标悬停暂停滚动</div>
             </div>
-            <div class="sub-panel">
-                <div class="sub-panel-title">亿元保费赔付额</div>
-                <div class="chart-box" id="subChartUnitClaim" style="flex:1;"></div>
+            <div class="wb-scroll-track">
+                <div class="wb-scroll-inner" id="wbClaimGovScroll"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ==================== 视角二：保险机构 ==================== -->
+    <div class="perspective-view" id="claim-view-insurer">
+        <!-- KPI栏 -->
+        <div class="sub-kpi-bar">
+            <div class="sub-kpi-item">
+                <div class="sub-kpi-value warning">52.3<span class="sub-kpi-unit">%</span></div>
+                <div class="sub-kpi-label">当前综合赔付率</div>
+                <div class="sub-kpi-sub">警戒线 <span class="sub-highlight sub-red">70%</span> | 低于预警</div>
+            </div>
+            <div class="sub-kpi-item">
+                <div class="sub-kpi-value">8.6<span class="sub-kpi-unit">万</span></div>
+                <div class="sub-kpi-label">案均赔款</div>
+                <div class="sub-kpi-sub">大案(>50万) <span class="sub-highlight sub-red">12</span> 件拉高成本</div>
+            </div>
+            <div class="sub-kpi-item">
+                <div class="sub-kpi-value success">4.2<span class="sub-kpi-unit">%</span></div>
+                <div class="sub-kpi-label">估损偏差率</div>
+                <div class="sub-kpi-sub">低 <span class="sub-highlight sub-green">良好</span> | 行业均值 8.5%</div>
+            </div>
+            <div class="sub-kpi-item">
+                <div class="sub-kpi-value danger">17</div>
+                <div class="sub-kpi-label">重开案件数</div>
+                <div class="sub-kpi-sub">较上月 <span class="sub-highlight sub-red">↑5</span> 件，需关注</div>
+            </div>
+            <div class="sub-kpi-item">
+                <div class="sub-kpi-value">43</div>
+                <div class="sub-kpi-label">今日待处理任务</div>
+                <div class="sub-kpi-sub">超时 <span class="sub-highlight sub-red">8</span> 件 | 大额待审 <span class="sub-highlight sub-yellow">5</span> 件</div>
+            </div>
+        </div>
+        <div class="sub-content">
+            <!-- 左侧 -->
+            <div class="sub-col-left">
+                <div class="sub-panel">
+                    <div class="sub-panel-header">
+                        <div class="sub-panel-title">理赔全流程漏斗</div>
+                    </div>
+                    <div class="chart-box" id="claimInsFunnel" style="flex:1;min-height:160px;"></div>
+                </div>
+                <div class="sub-panel" style="flex:1;">
+                    <div class="sub-panel-header">
+                        <div class="sub-panel-title">各环节平均滞留时长 Top5</div>
+                    </div>
+                    <div class="chart-box" id="claimInsDelayBar" style="flex:1;"></div>
+                </div>
+            </div>
+            <!-- 中间地图 -->
+            <div class="sub-col-center">
+                <div class="sub-panel" style="flex:1;display:flex;flex-direction:column;">
+                    <div class="sub-panel-header">
+                        <div class="sub-panel-title">出险地点与案件分布</div>
+                        <div style="font-size:9px;color:var(--text-dim);">气泡大小代表案件数量</div>
+                    </div>
+                    <div class="chart-box" id="claimInsMap" style="flex:1;"></div>
+                </div>
+            </div>
+            <!-- 右侧 -->
+            <div class="sub-col-right">
+                <div class="sub-panel">
+                    <div class="sub-panel-header">
+                        <div class="sub-panel-title">我司 vs 行业平均赔付率趋势</div>
+                    </div>
+                    <div class="chart-box" id="claimInsCompTrend" style="flex:1;min-height:160px;"></div>
+                </div>
+                <div class="sub-panel" style="flex:1;">
+                    <div class="sub-panel-header">
+                        <div class="sub-panel-title">高频出险企业 Top10</div>
+                    </div>
+                    <div id="claimInsHighFreqList" style="flex:1;overflow-y:auto;padding:0 8px 6px;"></div>
+                </div>
+            </div>
+        </div>
+        <!-- 底部工作台 -->
+        <div class="policy-workbench" style="position:relative;">
+            <div class="wb-header">
+                <div class="wb-title">
+                    <svg viewBox="0 0 24 24"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                    任务提醒
+                    <span class="blink-dot"></span>
+                </div>
+                <div style="font-size:10px;color:var(--text-dim);margin-left:auto;">鼠标悬停暂停滚动</div>
+            </div>
+            <div class="wb-scroll-track">
+                <div class="wb-scroll-inner" id="wbClaimInsScroll"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ==================== 视角三：平台运营 ==================== -->
+    <div class="perspective-view" id="claim-view-platform">
+        <!-- KPI栏 -->
+        <div class="sub-kpi-bar">
+            <div class="sub-kpi-item">
+                <div class="sub-kpi-value success">94.8<span class="sub-kpi-unit">%</span></div>
+                <div class="sub-kpi-label">数据上报及时率</div>
+                <div class="sub-kpi-progress-wrap"><div class="sub-kpi-progress-bar progress-green" style="width:94.8%;"></div></div>
+                <div class="sub-kpi-sub">延迟 <span class="sub-highlight sub-red">3</span> 家 | 未上报 <span class="sub-highlight sub-yellow">2</span> 家</div>
+            </div>
+            <div class="sub-kpi-item">
+                <div class="sub-kpi-value warning">87.2<span class="sub-kpi-unit">分</span></div>
+                <div class="sub-kpi-label">数据完整度评分</div>
+                <div class="sub-kpi-sub">缺失字段最多：<span class="sub-highlight sub-yellow">伤者身份证</span></div>
+            </div>
+            <div class="sub-kpi-item">
+                <div class="sub-kpi-value success">99.3<span class="sub-kpi-unit">%</span></div>
+                <div class="sub-kpi-label">理赔接口调用成功率</div>
+                <div class="sub-kpi-sub">今日失败 <span class="sub-highlight sub-red">4</span> 次 | 已自动重试</div>
+            </div>
+            <div class="sub-kpi-item">
+                <div class="sub-kpi-value danger">128</div>
+                <div class="sub-kpi-label">异常数据拦截数</div>
+                <div class="sub-kpi-sub">已自动修正 <span class="sub-highlight sub-green">82</span> 条 | 待审 <span class="sub-highlight sub-yellow">46</span> 条</div>
+            </div>
+            <div class="sub-kpi-item">
+                <div class="sub-kpi-value">36</div>
+                <div class="sub-kpi-label">今日数据更新批次</div>
+                <div class="sub-kpi-sub">最近更新 <span class="sub-highlight sub-cyan">9:28</span></div>
+            </div>
+        </div>
+        <div class="sub-content">
+            <!-- 左侧 -->
+            <div class="sub-col-left">
+                <div class="sub-panel">
+                    <div class="sub-panel-header">
+                        <div class="sub-panel-title">各保司数据质量评分</div>
+                        <div style="font-size:9px;color:var(--text-dim);">雷达图 · 及时性/完整性/准确性</div>
+                    </div>
+                    <div class="chart-box" id="claimPlatRadar" style="flex:1;min-height:160px;"></div>
+                </div>
+                <div class="sub-panel" style="flex:1;">
+                    <div class="sub-panel-header">
+                        <div class="sub-panel-title">常见数据缺失项 Top5</div>
+                    </div>
+                    <div class="chart-box" id="claimPlatMissBar" style="flex:1;"></div>
+                </div>
+            </div>
+            <!-- 中间 -->
+            <div class="sub-col-center">
+                <div class="sub-panel" style="flex:1;display:flex;flex-direction:column;">
+                    <div class="sub-panel-header">
+                        <div class="sub-panel-title">全市理赔数据流转拓扑</div>
+                        <div style="font-size:9px;color:var(--text-dim);">动态展示保司→平台→监管端流转</div>
+                    </div>
+                    <div class="chart-box" id="claimPlatTopo" style="flex:1;"></div>
+                </div>
+            </div>
+            <!-- 右侧 -->
+            <div class="sub-col-right">
+                <div class="sub-panel">
+                    <div class="sub-panel-header">
+                        <div class="sub-panel-title">理赔数据增长趋势</div>
+                    </div>
+                    <div class="chart-box" id="claimPlatGrowthChart" style="flex:1;min-height:160px;"></div>
+                </div>
+                <div class="sub-panel" style="flex:1;">
+                    <div class="sub-panel-header">
+                        <div class="sub-panel-title">理赔服务满意度 / 投诉率 Top10</div>
+                    </div>
+                    <div id="claimPlatSatisfyList" style="flex:1;overflow-y:auto;padding:0 8px 6px;"></div>
+                </div>
+            </div>
+        </div>
+        <!-- 底部工作台 -->
+        <div class="policy-workbench" style="position:relative;">
+            <div class="wb-header">
+                <div class="wb-title">
+                    <svg viewBox="0 0 24 24"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                    运营日志
+                    <span class="blink-dot"></span>
+                </div>
+                <div style="font-size:10px;color:var(--text-dim);margin-left:auto;">鼠标悬停暂停滚动</div>
+            </div>
+            <div class="wb-scroll-track">
+                <div class="wb-scroll-inner" id="wbClaimPlatScroll"></div>
             </div>
         </div>
     </div>
@@ -5851,117 +6092,504 @@ window.showPrevToast = showPrevToast;
 // =============================================
 // 4C. 理赔风控分析大屏
 // =============================================
+// =============================================
+// 子大屏3：理赔风控分析 — 视角切换函数
+// =============================================
+window._currentClaimPerspective = 'gov';
+
+window.switchClaimPerspective = function(viewName, btn) {
+    if (window._currentClaimPerspective === viewName) return;
+    var prev = window._currentClaimPerspective;
+    window._currentClaimPerspective = viewName;
+
+    // 切换按钮激活态
+    document.querySelectorAll('#claimPerspectiveSwitcher .perspective-btn').forEach(function(b) {
+        b.classList.remove('active');
+    });
+    if (btn) btn.classList.add('active');
+
+    // 切换视图
+    var prevView = document.getElementById('claim-view-' + prev);
+    var nextView = document.getElementById('claim-view-' + viewName);
+    if (prevView) prevView.classList.remove('active');
+    if (nextView) {
+        setTimeout(function() { nextView.classList.add('active'); }, 50);
+    }
+
+    // 按需初始化
+    if (viewName === 'gov' && !window._claimGovInited) {
+        window._claimGovInited = true;
+        setTimeout(function() { initClaimGovCharts(); }, 100);
+    } else if (viewName === 'insurer' && !window._claimInsInited) {
+        window._claimInsInited = true;
+        setTimeout(function() { initClaimInsCharts(); }, 100);
+    } else if (viewName === 'platform' && !window._claimPlatInited) {
+        window._claimPlatInited = true;
+        setTimeout(function() { initClaimPlatCharts(); }, 100);
+    }
+
+    // 重绘已有图表
+    setTimeout(function() {
+        if (window.claimCharts) {
+            Object.values(window.claimCharts).forEach(function(c) { if (c && c.resize) c.resize(); });
+        }
+    }, 200);
+};
+
 window.initClaimScreen = function() {
     window.claimCharts = {};
-    // 赔款支出构成 - 环形图
-    var c1 = echarts.init(document.getElementById('subChartClaimPie')); window.claimCharts.pie = c1;
-    c1.setOption({
-        tooltip: { trigger: 'item', backgroundColor: 'rgba(5,18,45,0.92)', borderColor: 'rgba(0,224,255,0.5)', textStyle: { color: '#FFFFFF', fontSize: 12 }, formatter: '{b}: {c}万元 ({d}%)' },
-        legend: { bottom: 0, textStyle: { color: '#AABBCC', fontSize: 10 }, itemWidth: 10, itemHeight: 10 },
-        series: [{
-            type: 'pie', radius: ['45%', '72%'], center: ['50%', '45%'],
-            itemStyle: { borderColor: 'rgba(3,11,31,1)', borderWidth: 3, borderRadius: 3 },
-            label: { show: true, position: 'outside', color: '#AABBCC', fontSize: 11, formatter: '{b}\n{d}%' },
-            labelLine: { lineStyle: { color: 'rgba(0,224,255,0.3)' }, length: 12, length2: 20 },
-            data: [
-                {value: 45.2, name: '死亡伤残', itemStyle: {color: '#FF4D4F'}},
-                {value: 32.8, name: '医疗费用', itemStyle: {color: '#FFB800'}},
-                {value: 18.5, name: '财产损失', itemStyle: {color: '#1E90FF'}},
-                {value: 8.6, name: '其他赔偿', itemStyle: {color: '#00D68F'}}
-            ]
-        }, {
-            type: 'pie', radius: ['0%', '38%'], center: ['50%', '45%'], silent: true,
-            label: { show: false }, data: [{value: 1, itemStyle: {color: 'transparent'}}], z: 1
-        }],
-        graphic: [{ type: 'text', left: 'center', top: '40%', style: { text: '105.1', textAlign: 'center', fill: '#FFFFFF', fontSize: 24, fontWeight: 'bold', fontFamily: 'Segoe UI', textShadowBlur: 10, textShadowColor: 'rgba(0,224,255,0.6)' } }, { type: 'text', left: 'center', top: '49%', style: { text: '赔付总额(万元)', textAlign: 'center', fill: '#6B7A90', fontSize: 11 } }]
-    });
-
-    // 出险原因分析 - 帕累托图
-    var c2 = echarts.init(document.getElementById('subChartCause')); window.claimCharts.cause = c2;
-    var causes = ['高处坠落','物体打击','机械伤害','触电','火灾爆炸','坍塌','中毒窒息','其他'];
-    var causeVals = [32, 24, 18, 12, 8, 4, 2, 2];
-    var cumulative = []; var sum = 0; causeVals.forEach(function(v) { sum += v; cumulative.push(Math.round(sum / causeVals.reduce(function(a,b){return a+b;},0) * 100)); });
-    c2.setOption({
-        tooltip: { trigger: 'axis', backgroundColor: 'rgba(5,18,45,0.92)', borderColor: 'rgba(0,224,255,0.5)', textStyle: { color: '#FFFFFF', fontSize: 12 } },
-        legend: { data: ['事故次数', '累计占比'], top: 0, textStyle: { color: '#AABBCC', fontSize: 10 }, itemWidth: 12, itemHeight: 8 },
-        grid: { top: 30, right: 45, bottom: 24, left: 10, containLabel: true },
-        xAxis: { type: 'category', data: causes, axisLine: { lineStyle: { color: 'rgba(0,224,255,0.3)' } }, axisTick: { show: false }, axisLabel: { color: '#6B7A90', fontSize: 10, rotate: 20 } },
-        yAxis: [
-            { type: 'value', axisLine: { show: false }, axisTick: { show: false }, axisLabel: { color: '#6B7A90', fontSize: 10 }, splitLine: { lineStyle: { color: 'rgba(0,224,255,0.06)', type: 'dashed' } } },
-            { type: 'value', max: 100, axisLine: { show: false }, axisTick: { show: false }, axisLabel: { color: '#6B7A90', fontSize: 10, formatter: '{value}%' }, splitLine: { show: false } }
-        ],
-        series: [
-            { name: '事故次数', type: 'bar', data: causeVals, barWidth: 16, itemStyle: { borderRadius: [4,4,0,0], color: function(p) { return p.dataIndex < 3 ? '#FF4D4F' : p.dataIndex < 5 ? '#FFB800' : '#1E90FF'; } }, label: { show: true, position: 'top', color: '#AABBCC', fontSize: 10 } },
-            { name: '累计占比', type: 'line', yAxisIndex: 1, data: cumulative, smooth: true, symbol: 'circle', symbolSize: 6, lineStyle: { width: 2, color: '#00E0FF' }, itemStyle: { color: '#00E0FF' }, label: { show: true, position: 'top', color: '#00E0FF', fontSize: 10, formatter: '{c}%' } }
-        ]
-    });
-
-    // 案件处理状态漏斗
-    var funnelSteps = [
-        {label: '报案', count: 156, color: '#00E0FF'},
-        {label: '立案', count: 142, color: '#1E90FF'},
-        {label: '查勘', count: 128, color: '#00D68F'},
-        {label: '定损', count: 96, color: '#FFB800'},
-        {label: '核赔', count: 82, color: '#FF6B35'},
-        {label: '支付', count: 76, color: '#00D68F'}
-    ];
-    var funnelHtml = '';
-    var maxCount = funnelSteps[0].count;
-    funnelSteps.forEach(function(s) {
-        var widthPct = Math.max(30, (s.count / maxCount) * 100);
-        funnelHtml += '<div class="funnel-step" style="width:' + widthPct + '%;background:' + s.color + '22;border:1px solid ' + s.color + '55;"><span class="funnel-label">' + s.label + '</span><span class="funnel-count">' + s.count + '</span></div>';
-    });
-    document.getElementById('claimFunnel').innerHTML = funnelHtml;
-
-    // 典型案例滚动列表
-    var cases = [
-        {time: '2026-06-01', content: '博罗县某化工企业火灾事故报案', amount: '预估 52.3万'},
-        {time: '2026-05-28', content: '惠城区某建筑工地高处坠落', amount: '预估 38.6万'},
-        {time: '2026-05-22', content: '惠阳区某矿山企业设备伤害', amount: '预估 25.1万'},
-        {time: '2026-05-15', content: '龙门县某工厂触电事故', amount: '预估 12.8万'},
-        {time: '2026-05-08', content: '大亚湾区仓储火灾案', amount: '预估 68.5万'},
-        {time: '2026-04-30', content: '仲恺区机械伤害事故', amount: '预估 15.2万'},
-        {time: '2026-04-22', content: '惠东县物体打击致死案', amount: '预估 45.0万'},
-        {time: '2026-04-15', content: '惠城区坍塌事故', amount: '预估 32.4万'}
-    ];
-    var listHtml = '';
-    cases.forEach(function(c) {
-        listHtml += '<div class="scroll-item"><span class="scroll-item-time">' + c.time + '</span><span class="scroll-item-content">' + c.content + '</span><span class="scroll-item-amount">' + c.amount + '</span></div>';
-    });
-    // 复制一份用于无缝滚动
-    document.getElementById('claimScrollList').innerHTML = '<div class="scroll-list-inner">' + listHtml + listHtml + '</div>';
-
-    // 各公司赔付率对比
-    var c3 = echarts.init(document.getElementById('subChartCompRate')); window.claimCharts.compRate = c3;
-    c3.setOption({
-        tooltip: { trigger: 'axis', backgroundColor: 'rgba(5,18,45,0.92)', borderColor: 'rgba(0,224,255,0.5)', textStyle: { color: '#FFFFFF', fontSize: 12 }, formatter: '{b}: {c}%' },
-        grid: { top: 5, right: 50, bottom: 5, left: 10, containLabel: true },
-        xAxis: { type: 'value', max: 100, axisLine: { show: false }, axisTick: { show: false }, axisLabel: { color: '#6B7A90', fontSize: 10, formatter: '{value}%' }, splitLine: { lineStyle: { color: 'rgba(0,224,255,0.06)', type: 'dashed' } } },
-        yAxis: { type: 'category', data: ['平安财险','人保财险','中国人寿','都邦保险','太平洋'], axisLine: { lineStyle: { color: 'rgba(0,224,255,0.2)' } }, axisTick: { show: false }, axisLabel: { color: '#AABBCC', fontSize: 11 } },
-        series: [{
-            type: 'bar', data: [68, 55, 48, 42, 38], barWidth: 16,
-            itemStyle: { borderRadius: [0, 4, 4, 0], color: function(p) { return p.value > 60 ? '#FF4D4F' : p.value > 45 ? '#FFB800' : '#00D68F'; } },
-            label: { show: true, position: 'right', color: '#00E0FF', fontSize: 11, fontWeight: 'bold', formatter: '{c}%' },
-            markLine: { silent: true, lineStyle: { color: '#FF4D4F', type: 'dashed', width: 1.5 }, label: { color: '#FF4D4F', fontSize: 10, formatter: '警戒线 70%' }, data: [{ xAxis: 70 }] }
-        }]
-    });
-
-    // 亿元保费赔付额
-    var c4 = echarts.init(document.getElementById('subChartUnitClaim')); window.claimCharts.unitClaim = c4;
-    c4.setOption({
-        tooltip: { trigger: 'axis', backgroundColor: 'rgba(5,18,45,0.92)', borderColor: 'rgba(0,224,255,0.5)', textStyle: { color: '#FFFFFF', fontSize: 12 } },
-        grid: { top: 15, right: 50, bottom: 24, left: 45 },
-        xAxis: { type: 'category', data: ['平安','人保','人寿','都邦','太平洋'], axisLine: { lineStyle: { color: 'rgba(0,224,255,0.3)' } }, axisTick: { show: false }, axisLabel: { color: '#6B7A90', fontSize: 11 } },
-        yAxis: { type: 'value', name: '万元/亿元保费', nameTextStyle: { color: '#6B7A90', fontSize: 10 }, axisLine: { show: false }, axisTick: { show: false }, axisLabel: { color: '#6B7A90', fontSize: 10 }, splitLine: { lineStyle: { color: 'rgba(0,224,255,0.06)', type: 'dashed' } } },
-        series: [{
-            type: 'bar', data: [3850, 2680, 2100, 1860, 1520], barWidth: 28,
-            itemStyle: { borderRadius: [4, 4, 0, 0], color: new echarts.graphic.LinearGradient(0,0,0,1,[{offset:0,color:'#00E0FF'},{offset:1,color:'rgba(0,224,255,0.15)'}]) },
-            label: { show: true, position: 'top', color: '#00E0FF', fontSize: 11, fontWeight: 'bold' }
-        }]
-    });
-
-    window.addEventListener('resize', function() { c1.resize(); c2.resize(); c3.resize(); c4.resize(); });
+    window._claimGovInited = true;
+    // 默认初始化政府监管视角
+    initClaimGovCharts();
 }
+
+// =============================================
+// 视角一：政府监管 — 社会治理与兜底实效
+// =============================================
+function initClaimGovCharts() {
+    var tooltipStyle = { trigger: 'item', backgroundColor: 'rgba(5,18,45,0.92)', borderColor: 'rgba(0,224,255,0.5)', textStyle: { color: '#FFF', fontSize: 11 } };
+
+    // 1. 各行业赔付金额占比 — 南丁格尔玫瑰图
+    (function() {
+        var dom = document.getElementById('claimGovRose');
+        if (!dom) return;
+        var c = echarts.init(dom); window.claimCharts.govRose = c;
+        var roseData = [
+            { name: '矿山开采', value: 856, color: '#FF4D4F' },
+            { name: '危化品', value: 724, color: '#FF6B35' },
+            { name: '建筑施工', value: 685, color: '#FFB800' },
+            { name: '交通运输', value: 402, color: '#00D68F' },
+            { name: '金属冶炼', value: 268, color: '#1E90FF' },
+            { name: '机械制造', value: 155, color: '#A78BFA' },
+            { name: '化工行业', value: 86, color: '#00E0FF' },
+            { name: '其他行业', value: 32, color: '#6B7A90' }
+        ];
+        c.setOption({
+            tooltip: tooltipStyle,
+            legend: { type: 'scroll', bottom: 0, textStyle: { color: '#AABBCC', fontSize: 9 }, itemWidth: 8, itemHeight: 8 },
+            series: [{
+                type: 'pie', radius: ['18%', '68%'], center: ['50%', '42%'], roseType: 'area',
+                itemStyle: { borderColor: 'rgba(3,11,31,0.8)', borderWidth: 1, borderRadius: 2 },
+                label: { show: true, position: 'outside', color: '#AABBCC', fontSize: 9, formatter: '{b}: {d}%' },
+                labelLine: { lineStyle: { color: 'rgba(0,224,255,0.2)' }, length: 8, length2: 14 },
+                data: roseData.map(function(d) { return { value: d.value, name: d.name, itemStyle: { color: d.color } }; })
+            }],
+            graphic: [{ type: 'text', left: 'center', top: '36%', style: { text: '3,208.6万', textAlign: 'center', fill: '#FFF', fontSize: 18, fontWeight: 'bold', fontFamily: 'Segoe UI', textShadowBlur: 8, textShadowColor: 'rgba(0,224,255,0.5)' } }, { type: 'text', left: 'center', top: '46%', style: { text: '总赔付金额', textAlign: 'center', fill: '#6B7A90', fontSize: 10 } }]
+        });
+        if (window._claimGovResizer) window.removeEventListener('resize', window._claimGovResizer);
+        window._claimGovResizer = function() { c && !c.isDisposed() && c.resize(); };
+    })();
+
+    // 2. 赔付原因 Top5 — 横向柱状图
+    (function() {
+        var dom = document.getElementById('claimGovCauseBar');
+        if (!dom) return;
+        var c = echarts.init(dom); window.claimCharts.govCauseBar = c;
+        var causeNames = ['意外身故赔偿', '意外医疗费用', '职业病赔付', '第三者责任', '财产损失'];
+        var causeVals = [186, 145, 98, 67, 42];
+        var causeColors = ['#FF4D4F', '#FFB800', '#1E90FF', '#FF6B35', '#00D68F'];
+        c.setOption({
+            tooltip: { trigger: 'axis', backgroundColor: 'rgba(5,18,45,0.92)', borderColor: 'rgba(0,224,255,0.5)', textStyle: { color: '#FFF', fontSize: 11 }, formatter: function(p) { return '<b>' + p[0].name + '</b><br/>赔付金额：<span style="color:#FFB800;font-weight:bold;">' + p[0].value + '万元</span>'; } },
+            grid: { top: 8, right: 48, bottom: 8, left: 78, containLabel: false },
+            xAxis: { type: 'value', axisLine: { show: false }, axisTick: { show: false }, axisLabel: { color: '#6B7A90', fontSize: 9 }, splitLine: { lineStyle: { color: 'rgba(0,224,255,0.06)', type: 'dashed' } } },
+            yAxis: { type: 'category', data: causeNames, axisLine: { show: false }, axisTick: { show: false }, axisLabel: { color: '#AABBCC', fontSize: 10 }, inverse: true },
+            series: [{
+                type: 'bar', data: causeVals.map(function(v, i) { return { value: v, itemStyle: { borderRadius: [0,3,3,0], color: causeColors[i] } }; }), barWidth: 12,
+                label: { show: true, position: 'right', color: '#AABBCC', fontSize: 9, formatter: '{c}万' }
+            }]
+        });
+    })();
+
+    // 3. 全市理赔案件热力分布图
+    (function() {
+        var dom = document.getElementById('claimGovMap');
+        if (!dom) return;
+        var c = echarts.init(dom); window.claimCharts.govMap = c;
+        if (typeof echarts.getMap('huizhouClaim') === 'undefined') {
+            echarts.registerMap('huizhouClaim', huizhouGeo);
+        }
+        var heatData = [
+            { name: '惠城区', value: 95, claims: 620, amount: '1,245.6万' },
+            { name: '惠阳区', value: 82, claims: 385, amount: '768.3万' },
+            { name: '博罗县', value: 78, claims: 342, amount: '586.2万' },
+            { name: '惠东县', value: 65, claims: 248, amount: '335.8万' },
+            { name: '大亚湾区', value: 58, claims: 186, amount: '185.2万' },
+            { name: '仲恺区', value: 72, claims: 210, amount: '212.5万' },
+            { name: '龙门县', value: 42, claims: 98, amount: '75.0万' }
+        ];
+        c.setOption({
+            tooltip: { trigger: 'item', backgroundColor: 'rgba(5,18,45,0.92)', borderColor: 'rgba(255,77,79,0.5)', textStyle: { color: '#FFF', fontSize: 11 }, formatter: function(p) { var d = heatData.find(function(x) { return x.name === p.name; }); return d ? '<b>' + d.name + '</b><br/>赔付强度指数：<span style="color:#FF4D4F;font-weight:bold;">' + d.value + '</span><br/>案件数：<span style="color:#00E0FF;">' + d.claims + '件</span><br/>累计赔付：<span style="color:#FFB800;">' + d.amount + '</span>' : ''; } },
+            visualMap: { min: 30, max: 100, show: false, inRange: { color: ['#0A1937', '#2D1045', '#5C1A45', '#8B2A3A', '#CC3A28', '#FF4D4F'] } },
+            geo: { map: 'huizhouClaim', roam: false, zoom: 1.15, center: [114.38, 23.15], itemStyle: { areaColor: '#0A1937', borderColor: 'rgba(0,224,255,0.5)', borderWidth: 1.5 }, label: { show: true, color: '#FFFFFF', fontSize: 10 } },
+            series: [{ type: 'map', map: 'huizhouClaim', geoIndex: 0, data: heatData.map(function(d) { return { name: d.name, value: d.value }; }), emphasis: { itemStyle: { shadowBlur: 18, shadowColor: 'rgba(255,77,79,0.6)', borderColor: '#FF4D4F', borderWidth: 2 }, label: { show: true, color: '#FFF', fontSize: 11, fontWeight: 'bold' } } }]
+        });
+        c.on('click', function(params) {
+            var d = heatData.find(function(x) { return x.name === params.name; });
+            if (d) { showClaimDistrictDetail(d); }
+        });
+    })();
+
+    // 4. 各保险机构赔付率/结案率对比 — 双轴混合图
+    (function() {
+        var dom = document.getElementById('claimGovInsRateChart');
+        if (!dom) return;
+        var c = echarts.init(dom); window.claimCharts.govInsRateChart = c;
+        var orgs = ['平安财险', '人保财险', '太平洋', '中国人寿', '都邦保险'];
+        var claimAmts = [865, 742, 558, 486, 352];
+        var closeRates = [58, 72, 68, 75, 62];
+        c.setOption({
+            tooltip: { trigger: 'axis', backgroundColor: 'rgba(5,18,45,0.92)', borderColor: 'rgba(0,224,255,0.5)', textStyle: { color: '#FFF', fontSize: 11 } },
+            legend: { data: ['赔付金额', '结案率'], top: 0, textStyle: { color: '#AABBCC', fontSize: 10 }, itemWidth: 12, itemHeight: 8 },
+            grid: { top: 30, right: 42, bottom: 10, left: 48 },
+            xAxis: { type: 'category', data: orgs, axisLine: { lineStyle: { color: 'rgba(0,224,255,0.3)' } }, axisTick: { show: false }, axisLabel: { color: '#6B7A90', fontSize: 9, rotate: 25 } },
+            yAxis: [
+                { type: 'value', name: '万元', nameTextStyle: { color: '#6B7A90', fontSize: 9 }, axisLine: { show: false }, axisTick: { show: false }, axisLabel: { color: '#6B7A90', fontSize: 9 }, splitLine: { lineStyle: { color: 'rgba(0,224,255,0.06)', type: 'dashed' } } },
+                { type: 'value', name: '%', nameTextStyle: { color: '#6B7A90', fontSize: 9 }, max: 100, axisLine: { show: false }, axisTick: { show: false }, axisLabel: { color: '#6B7A90', fontSize: 9 }, splitLine: { show: false } }
+            ],
+            series: [
+                { name: '赔付金额', type: 'bar', data: claimAmts, barWidth: 14, itemStyle: { borderRadius: [3,3,0,0], color: new echarts.graphic.LinearGradient(0,0,0,1,[{offset:0,color:'rgba(0,224,255,0.8)'},{offset:1,color:'rgba(0,224,255,0.15)'}]) }, label: { show: false } },
+                { name: '结案率', type: 'line', yAxisIndex: 1, data: closeRates, smooth: true, symbol: 'circle', symbolSize: 7, lineStyle: { width: 2, color: '#FFB800' }, itemStyle: { color: '#FFB800', borderColor: '#FFF', borderWidth: 1 }, label: { show: true, color: '#FFB800', fontSize: 9, formatter: '{c}%' }, markLine: { silent: true, lineStyle: { color: '#FF4D4F', type: 'dashed' }, label: { color: '#FF4D4F', fontSize: 9, formatter: '70%线' }, data: [{ yAxis: 70 }] } }
+            ]
+        });
+    })();
+
+    // 5. 未决赔款 Top10 企业列表
+    (function() {
+        var el = document.getElementById('claimGovPendingList');
+        if (!el) return;
+        var list = [
+            { name: 'XX化工集团', amount: '385.6万', since: '2026-03-12', status: '定损争议' },
+            { name: 'XX建筑集团有限公司', amount: '268.3万', since: '2026-04-05', status: '待第三方鉴定' },
+            { name: 'XX矿业股份', amount: '195.2万', since: '2026-02-28', status: '待司法裁决' },
+            { name: 'XX物流配送', amount: '156.8万', since: '2026-04-18', status: '待社保分割' },
+            { name: 'XX制造工厂', amount: '128.5万', since: '2026-05-02', status: '等待治疗结束' },
+            { name: 'XX危化品储运', amount: '98.6万', since: '2026-05-10', status: '材料审核中' },
+            { name: 'XX建筑工程队', amount: '86.4万', since: '2026-04-22', status: '责任认定中' },
+            { name: 'XX家具制造', amount: '72.1万', since: '2026-03-30', status: '议价阶段' },
+            { name: 'XX电气设备', amount: '58.9万', since: '2026-05-18', status: '初步查勘' },
+            { name: 'XX交通运输', amount: '45.3万', since: '2026-05-25', status: '证迹采集中' }
+        ];
+        el.innerHTML = list.map(function(item, i) {
+            var cls = i < 3 ? 'risk-high' : i < 6 ? 'risk-mid' : '';
+            return '<div style="display:flex;align-items:center;gap:6px;padding:4px 6px;border-bottom:1px solid rgba(0,224,255,0.06);font-size:10px;cursor:pointer;" onclick="showPendingDetail(\'' + item.name + '\')">'
+                + '<span style="width:18px;color:#6B7A90;text-align:center;">' + (i + 1) + '</span>'
+                + '<span style="flex:1;color:#FFF;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">' + item.name + '</span>'
+                + '<span style="color:#FFB800;font-weight:700;white-space:nowrap;">' + item.amount + '</span>'
+                + '<span style="font-size:9px;color:#6B7A90;white-space:nowrap;">' + item.since + '</span>'
+                + '<span class="renewal-type ' + (cls === 'risk-high' ? 'renewal-type-eng' : 'renewal-type-normal') + '">' + item.status + '</span>'
+                + '</div>';
+        }).join('');
+    })();
+
+    // 6. 政府监管工作台
+    initClaimGovWorkbench();
+}
+
+function initClaimGovWorkbench() {
+    var data = [
+        { tag: 'wb-tag-urgent', tagText: '🔴 重大事故', text: '<strong>XX化工集团</strong>爆炸事故已预付赔款 <strong>50万元</strong>，事故造成3人重伤，应急管理局已介入调查。', time: '14:30', tooltip: '保单号：P2026-4412 | 承保机构：平安产险 | 保额：500万 | 预估总赔付：320万' },
+        { tag: 'wb-tag-urgent', tagText: '🔴 紧急', text: '<strong>博罗县XX建筑工地</strong>高处坠落致死案已结案，赔款 <strong>85万元</strong> 已支付至家属账户。', time: '13:45', tooltip: '若赔偿未在60天内完成，该企业将被列入"红色监管"名单，限制其新工程开工资格' },
+        { tag: 'wb-tag-warn', tagText: '🟡 预警', text: '<strong>龙门县XX矿山</strong>累计3次轻微事故报案，赔付强度指数达 <strong>0.85</strong>，建议重点监管。', time: '12:20', tooltip: '近6个月赔付金额：第1次8.5万 → 第2次12.3万 → 第3次15.8万，事故频率呈上升趋势' },
+        { tag: 'wb-tag-ok', tagText: '🟢 通报', text: '<strong>惠城区</strong>本季度重大事故响应率达 <strong>100%</strong>，平均结案周期 <strong>18.5天</strong>，全市领先。', time: '11:10', tooltip: '惠城区本季度重大事故2起，均在24小时内完成应急介入，赔付资金48小时内到位' },
+        { tag: 'wb-tag-info', tagText: '🔵 数据', text: '<strong>全市安责险</strong>累计赔付 <strong>3,208.6万元</strong>，覆盖企业 <strong>386家</strong>，占参保企业总数 <strong>92.3%</strong>。', time: '10:00', tooltip: '去年同期累计赔付2,705.2万元，覆盖企业328家。社保覆盖面持续扩大，保障能力稳步提升' }
+    ];
+    buildWorkbenchScroll('wbClaimGovScroll', data);
+}
+
+// =============================================
+// 视角二：保险机构 — 经营分析与案件管理
+// =============================================
+function initClaimInsCharts() {
+    var tooltipStyle = { trigger: 'item', backgroundColor: 'rgba(5,18,45,0.92)', borderColor: 'rgba(0,224,255,0.5)', textStyle: { color: '#FFF', fontSize: 11 } };
+
+    // 1. 理赔全流程漏斗图 — ECharts漏斗
+    (function() {
+        var dom = document.getElementById('claimInsFunnel');
+        if (!dom) return;
+        var c = echarts.init(dom); window.claimCharts.insFunnel = c;
+        c.setOption({
+            tooltip: { trigger: 'item', backgroundColor: 'rgba(5,18,45,0.92)', borderColor: 'rgba(0,224,255,0.5)', textStyle: { color: '#FFF', fontSize: 11 }, formatter: '{b}: {c}件' },
+            series: [{
+                type: 'funnel', left: '10%', right: '10%', top: 10, bottom: 10, width: '80%',
+                min: 0, max: 200, minSize: '28%', maxSize: '100%', sort: 'descending', gap: 3,
+                label: { show: true, position: 'inside', color: '#FFF', fontSize: 11, formatter: '{b}\n{c}件' },
+                labelLine: { show: false },
+                itemStyle: { borderColor: 'rgba(3,11,31,0.8)', borderWidth: 1 },
+                emphasis: { label: { fontSize: 14, fontWeight: 'bold' } },
+                data: [
+                    { value: 186, name: '报案', itemStyle: { color: '#00E0FF' } },
+                    { value: 172, name: '立案', itemStyle: { color: '#1E90FF' } },
+                    { value: 156, name: '查勘', itemStyle: { color: '#00D68F' } },
+                    { value: 128, name: '定损', itemStyle: { color: '#FFB800' } },
+                    { value: 98, name: '核赔', itemStyle: { color: '#FF6B35' } },
+                    { value: 86, name: '支付', itemStyle: { color: '#00D68F' } }
+                ]
+            }]
+        });
+    })();
+
+    // 2. 各环节平均滞留时长 Top5
+    (function() {
+        var dom = document.getElementById('claimInsDelayBar');
+        if (!dom) return;
+        var c = echarts.init(dom); window.claimCharts.insDelayBar = c;
+        var stages = ['定损环节', '等待单证', '等待审批', '核赔阶段', '查勘调度'];
+        var days = [8.5, 6.2, 4.8, 3.6, 2.1];
+        var colors = ['#FF4D4F', '#FF6B35', '#FFB800', '#1E90FF', '#00D68F'];
+        c.setOption({
+            tooltip: { trigger: 'axis', backgroundColor: 'rgba(5,18,45,0.92)', borderColor: 'rgba(0,224,255,0.5)', textStyle: { color: '#FFF', fontSize: 11 }, formatter: function(p) { return '<b>' + p[0].name + '</b><br/>平均滞留：<span style="color:#FF4D4F;font-weight:bold;">' + p[0].value + '天</span>'; } },
+            grid: { top: 8, right: 42, bottom: 8, left: 65, containLabel: false },
+            xAxis: { type: 'value', name: '天数', nameTextStyle: { color: '#6B7A90', fontSize: 9 }, axisLine: { show: false }, axisTick: { show: false }, axisLabel: { color: '#6B7A90', fontSize: 9 }, splitLine: { lineStyle: { color: 'rgba(0,224,255,0.06)', type: 'dashed' } } },
+            yAxis: { type: 'category', data: stages, axisLine: { show: false }, axisTick: { show: false }, axisLabel: { color: '#AABBCC', fontSize: 10 }, inverse: true },
+            series: [{ type: 'bar', data: days.map(function(v, i) { return { value: v, itemStyle: { borderRadius: [0,3,3,0], color: colors[i] } }; }), barWidth: 12, label: { show: true, position: 'right', color: '#AABBCC', fontSize: 9, formatter: '{c}天' }, markLine: { silent: true, lineStyle: { color: '#FFB800', type: 'dashed' }, label: { color: '#FFB800', fontSize: 8, formatter: '目标3天' }, data: [{ xAxis: 3 }] } }]
+        });
+    })();
+
+    // 3. 出险地点与案件分布地图
+    (function() {
+        var dom = document.getElementById('claimInsMap');
+        if (!dom) return;
+        var c = echarts.init(dom); window.claimCharts.insMap = c;
+        if (typeof echarts.getMap('huizhouClaimIns') === 'undefined') {
+            echarts.registerMap('huizhouClaimIns', huizhouGeo);
+        }
+        var scatterData = [
+            { name: 'XX化工厂火灾', value: [114.42, 23.10, 28], amount: '85.6万' },
+            { name: 'XX建筑工地坠落', value: [114.38, 22.98, 22], amount: '68.3万' },
+            { name: 'XX仓储物流事故', value: [114.52, 22.68, 18], amount: '52.1万' },
+            { name: 'XX矿山透水', value: [114.28, 23.42, 15], amount: '125.0万' },
+            { name: 'XX交通肇事', value: [114.46, 22.92, 12], amount: '38.6万' },
+            { name: 'XX机械触电', value: [114.72, 22.78, 10], amount: '28.5万' },
+            { name: 'XX家具厂火灾', value: [114.13, 23.88, 8], amount: '42.0万' },
+            { name: 'XX电子厂中毒', value: [114.36, 23.03, 6], amount: '15.2万' }
+        ];
+        c.setOption({
+            tooltip: { trigger: 'item', backgroundColor: 'rgba(5,18,45,0.92)', borderColor: 'rgba(0,224,255,0.5)', textStyle: { color: '#FFF', fontSize: 11 }, formatter: function(p) { return '<b>' + p.name + '</b><br/>赔款金额：<span style="color:#FFB800;">' + p.data.amount + '</span><br/>案件数：<span style="color:#00E0FF;">' + p.data.value[2] + '件</span>'; } },
+            geo: { map: 'huizhouClaimIns', roam: false, zoom: 1.15, center: [114.38, 23.15], itemStyle: { areaColor: '#0A1937', borderColor: 'rgba(0,224,255,0.4)', borderWidth: 1.2 }, label: { show: true, color: '#FFFFFF', fontSize: 10 } },
+            series: [{ type: 'effectScatter', coordinateSystem: 'geo', data: scatterData, symbolSize: function(val) { return val[2] * 2 + 8; }, showEffectOn: 'render', rippleEffect: { brushType: 'stroke', scale: 3.5, period: 5, color: 'rgba(255,107,53,0.4)' }, itemStyle: { color: '#FF6B35', shadowBlur: 12, shadowColor: 'rgba(255,107,53,0.6)' }, label: { show: true, formatter: '{b}', position: 'right', color: '#FFF', fontSize: 9, distance: 6 } }]
+        });
+    })();
+
+    // 4. 我司 vs 行业平均赔付率趋势
+    (function() {
+        var dom = document.getElementById('claimInsCompTrend');
+        if (!dom) return;
+        var c = echarts.init(dom); window.claimCharts.insCompTrend = c;
+        var months = ['1月', '2月', '3月', '4月', '5月', '6月'];
+        var myRate = [48, 50, 52, 51, 53, 52.3];
+        var avgRate = [56, 55, 57, 55, 54, 53.6];
+        c.setOption({
+            tooltip: { trigger: 'axis', backgroundColor: 'rgba(5,18,45,0.92)', borderColor: 'rgba(0,224,255,0.5)', textStyle: { color: '#FFF', fontSize: 11 } },
+            legend: { data: ['我司赔付率', '行业平均'], top: 0, textStyle: { color: '#AABBCC', fontSize: 10 }, itemWidth: 12, itemHeight: 8 },
+            grid: { top: 28, right: 15, bottom: 10, left: 42 },
+            xAxis: { type: 'category', data: months, axisLine: { lineStyle: { color: 'rgba(0,224,255,0.3)' } }, axisTick: { show: false }, axisLabel: { color: '#6B7A90', fontSize: 10 } },
+            yAxis: { type: 'value', name: '%', nameTextStyle: { color: '#6B7A90', fontSize: 9 }, max: 65, axisLine: { show: false }, axisTick: { show: false }, axisLabel: { color: '#6B7A90', fontSize: 9 }, splitLine: { lineStyle: { color: 'rgba(0,224,255,0.06)', type: 'dashed' } } },
+            series: [
+                { name: '我司赔付率', type: 'line', data: myRate, smooth: true, symbol: 'circle', symbolSize: 7, lineStyle: { width: 2.5, color: '#00D68F' }, itemStyle: { color: '#00D68F', borderColor: '#FFF', borderWidth: 1 }, areaStyle: { color: 'rgba(0,214,143,0.08)' } },
+                { name: '行业平均', type: 'line', data: avgRate, smooth: true, symbol: 'diamond', symbolSize: 6, lineStyle: { width: 2, color: '#6B7A90', type: 'dashed' }, itemStyle: { color: '#6B7A90' }, areaStyle: { color: 'rgba(255,184,0,0.04)' } }
+            ]
+        });
+    })();
+
+    // 5. 高频出险企业 Top10
+    (function() {
+        var el = document.getElementById('claimInsHighFreqList');
+        if (!el) return;
+        var list = [
+            { name: 'XX化工集团', times: 8, amount: '385.6万' },
+            { name: 'XX建筑集团', times: 6, amount: '268.3万' },
+            { name: 'XX物流配送', times: 5, amount: '156.8万' },
+            { name: 'XX危化品储运', times: 5, amount: '98.6万' },
+            { name: 'XX家具制造', times: 4, amount: '72.1万' },
+            { name: 'XX矿业股份', times: 4, amount: '195.2万' },
+            { name: 'XX交通运输', times: 3, amount: '45.3万' },
+            { name: 'XX制造工厂', times: 3, amount: '128.5万' },
+            { name: 'XX电气设备', times: 2, amount: '58.9万' },
+            { name: 'XX建筑工程队', times: 2, amount: '86.4万' }
+        ];
+        el.innerHTML = list.map(function(item, i) {
+            var cls = item.times >= 5 ? 'risk-high' : item.times >= 3 ? 'risk-mid' : '';
+            return '<div style="display:flex;align-items:center;gap:6px;padding:4px 6px;border-bottom:1px solid rgba(0,224,255,0.06);font-size:10px;">'
+                + '<span style="width:18px;color:#6B7A90;text-align:center;">' + (i + 1) + '</span>'
+                + '<span style="flex:1;color:#FFF;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">' + item.name + '</span>'
+                + '<span style="color:#FF4D4F;font-weight:700;">' + item.times + '次</span>'
+                + '<span style="color:#FFB800;font-size:9px;">' + item.amount + '</span>'
+                + '</div>';
+        }).join('');
+    })();
+
+    // 6. 保险机构工作台
+    initClaimInsWorkbench();
+}
+
+function initClaimInsWorkbench() {
+    var data = [
+        { tag: 'wb-tag-urgent', tagText: '🔴 超时提醒', text: '<strong>XX化工集团火灾案</strong>查勘任务已超时 <strong>6小时</strong>，请在2小时内完成现场查勘。', time: '14:35', tooltip: '案件号：CLM2026-0615-08 | 报案时间：06-15 08:30 | 查勘员：王建国 | 联系电话：138xxxx6789' },
+        { tag: 'wb-tag-urgent', tagText: '🔴 大额审批', text: '<strong>XX矿业透水事故</strong>预估赔付 <strong>125万元</strong>，请核赔主管尽快完成审批。', time: '14:10', tooltip: '案件号：CLM2026-0612-03 | 定损完成时间：06-14 16:20 | 待审批金额：125万' },
+        { tag: 'wb-tag-warn', tagText: '🟡 即将超时', text: '<strong>博罗县XX工地坠落案</strong>核赔环节已滞留 <strong>9天</strong>，距离超时红线仅剩 <strong>1天</strong>。', time: '13:25', tooltip: '案件号：CLM2026-0605-12 | 核赔岗：李丽 | 滞留原因：等待医院诊断证明书' },
+        { tag: 'wb-tag-warn', tagText: '🟡 重开关注', text: '<strong>惠阳区XX仓库案</strong>已结案又重开（第2次），请核查案件质量。', time: '12:50', tooltip: '案件号：CLM2026-0508-18 | 原结案时间：05-28 | 重开原因：伤者后续医疗费用新发生' },
+        { tag: 'wb-tag-ok', tagText: '🟢 时效达标', text: '<strong>大亚湾区</strong>本月小额案件（<10万）平均结案周期 <strong>12.3天</strong>，达标。', time: '11:30', tooltip: '小额案件本月共处理28件，其中18件在10天内完成结案，占比64.3%' },
+        { tag: 'wb-tag-info', tagText: '🔵 调度更新', text: '<strong>查勘员张伟</strong>已到达龙门县XX矿山现场，预计查勘时间 <strong>90分钟</strong>。', time: '09:45', tooltip: 'GPS定位已更新，预计往返路程时间：180分钟 | 案件号：CLM2026-0615-02' }
+    ];
+    buildWorkbenchScroll('wbClaimInsScroll', data);
+}
+
+// =============================================
+// 视角三：平台运营 — 数据赋能与服务监控
+// =============================================
+function initClaimPlatCharts() {
+    var tooltipStyle = { trigger: 'item', backgroundColor: 'rgba(5,18,45,0.92)', borderColor: 'rgba(0,224,255,0.5)', textStyle: { color: '#FFF', fontSize: 11 } };
+
+    // 1. 各保司数据质量评分 — 雷达图
+    (function() {
+        var dom = document.getElementById('claimPlatRadar');
+        if (!dom) return;
+        var c = echarts.init(dom); window.claimCharts.platRadar = c;
+        c.setOption({
+            tooltip: tooltipStyle,
+            legend: { data: ['平安产险', '人保财险', '太平洋', '都邦保险', '人寿财险'], bottom: 0, textStyle: { color: '#AABBCC', fontSize: 9 }, itemWidth: 8, itemHeight: 6 },
+            radar: {
+                indicator: [{ name: '及时性', max: 100 }, { name: '完整性', max: 100 }, { name: '准确性', max: 100 }],
+                shape: 'polygon', splitNumber: 4, radius: '58%', center: ['50%', '45%'],
+                axisName: { color: '#AABBCC', fontSize: 9 },
+                splitLine: { lineStyle: { color: 'rgba(0,224,255,0.12)' } },
+                splitArea: { show: true, areaStyle: { color: ['rgba(0,224,255,0.01)', 'rgba(0,224,255,0.04)'] } },
+                axisLine: { lineStyle: { color: 'rgba(0,224,255,0.2)' } }
+            },
+            series: [
+                { type: 'radar', name: '平安产险', data: [{ value: [92, 88, 95] }], lineStyle: { color: '#00E0FF', width: 1.5 }, itemStyle: { color: '#00E0FF' }, areaStyle: { color: 'rgba(0,224,255,0.08)' }, symbol: 'circle', symbolSize: 4 },
+                { type: 'radar', name: '人保财险', data: [{ value: [88, 92, 86] }], lineStyle: { color: '#00D68F', width: 1.5 }, itemStyle: { color: '#00D68F' }, areaStyle: { color: 'rgba(0,214,143,0.08)' }, symbol: 'circle', symbolSize: 4 },
+                { type: 'radar', name: '太平洋', data: [{ value: [85, 82, 90] }], lineStyle: { color: '#FFB800', width: 1.5 }, itemStyle: { color: '#FFB800' }, areaStyle: { color: 'rgba(255,184,0,0.08)' }, symbol: 'circle', symbolSize: 4 },
+                { type: 'radar', name: '都邦保险', data: [{ value: [68, 72, 65] }], lineStyle: { color: '#FF6B35', width: 1.5 }, itemStyle: { color: '#FF6B35' }, areaStyle: { color: 'rgba(255,107,53,0.08)' }, symbol: 'circle', symbolSize: 4 },
+                { type: 'radar', name: '人寿财险', data: [{ value: [78, 85, 80] }], lineStyle: { color: '#A78BFA', width: 1.5 }, itemStyle: { color: '#A78BFA' }, areaStyle: { color: 'rgba(167,139,250,0.08)' }, symbol: 'circle', symbolSize: 4 }
+            ]
+        });
+    })();
+
+    // 2. 常见数据缺失项 Top5
+    (function() {
+        var dom = document.getElementById('claimPlatMissBar');
+        if (!dom) return;
+        var c = echarts.init(dom); window.claimCharts.platMissBar = c;
+        var missItems = ['缺少伤者身份证', '缺少医院诊断书', '缺少事故认定书', '缺少用人单位信息', '缺少费用明细清单'];
+        var missVals = [186, 145, 98, 67, 42];
+        var colors = ['#FF4D4F', '#FF6B35', '#FFB800', '#1E90FF', '#00D68F'];
+        c.setOption({
+            tooltip: { trigger: 'axis', backgroundColor: 'rgba(5,18,45,0.92)', borderColor: 'rgba(0,224,255,0.5)', textStyle: { color: '#FFF', fontSize: 11 }, formatter: function(p) { return '<b>' + p[0].name + '</b><br/>缺失次数：<span style="color:#FF4D4F;font-weight:bold;">' + p[0].value + '次</span>'; } },
+            grid: { top: 8, right: 42, bottom: 8, left: 115, containLabel: false },
+            xAxis: { type: 'value', axisLine: { show: false }, axisTick: { show: false }, axisLabel: { color: '#6B7A90', fontSize: 9 }, splitLine: { lineStyle: { color: 'rgba(0,224,255,0.06)', type: 'dashed' } } },
+            yAxis: { type: 'category', data: missItems, axisLine: { show: false }, axisTick: { show: false }, axisLabel: { color: '#AABBCC', fontSize: 9 }, inverse: true },
+            series: [{ type: 'bar', data: missVals.map(function(v, i) { return { value: v, itemStyle: { borderRadius: [0,3,3,0], color: colors[i] } }; }), barWidth: 10, label: { show: true, position: 'right', color: '#AABBCC', fontSize: 9, formatter: '{c}次' } }]
+        });
+    })();
+
+    // 3. 理赔数据流转拓扑图
+    (function() {
+        var dom = document.getElementById('claimPlatTopo');
+        if (!dom) return;
+        var c = echarts.init(dom); window.claimCharts.platTopo = c;
+        if (typeof echarts.getMap('huizhouClaimPlat') === 'undefined') {
+            echarts.registerMap('huizhouClaimPlat', huizhouGeo);
+        }
+        // 用地图+多个散点表示数据流转节点
+        var insNodes = [
+            { name: '平安产险节点', value: [114.42, 23.12, 25], status: 'online' },
+            { name: '人保财险节点', value: [114.38, 23.18, 22], status: 'online' },
+            { name: '太平洋节点', value: [114.46, 22.92, 18], status: 'delay' },
+            { name: '都邦保险节点', value: [114.52, 22.65, 15], status: 'online' },
+            { name: '人寿财险节点', value: [114.25, 23.72, 10], status: 'offline' }
+        ];
+        c.setOption({
+            tooltip: { trigger: 'item', backgroundColor: 'rgba(5,18,45,0.92)', borderColor: 'rgba(0,224,255,0.5)', textStyle: { color: '#FFF', fontSize: 11 }, formatter: function(p) {
+                var statusMap = { 'online': '🟢 数据实时同步中', 'delay': '🟡 数据延迟 > 2小时', 'offline': '🔴 断连，未上报' };
+                return '<b>' + p.name + '</b><br/>今日上传：<span style="color:#00E0FF;">' + p.data.value[2] + '批次</span><br/>状态：' + (statusMap[p.data.status] || '--');
+            } },
+            geo: { map: 'huizhouClaimPlat', roam: false, zoom: 1.15, center: [114.38, 23.15], itemStyle: { areaColor: '#0A1937', borderColor: 'rgba(0,224,255,0.3)', borderWidth: 1.2 }, label: { show: true, color: '#FFFFFF', fontSize: 10 } },
+            series: [{
+                type: 'scatter', coordinateSystem: 'geo',
+                data: insNodes.map(function(n) {
+                    var color = n.status === 'online' ? '#00D68F' : n.status === 'delay' ? '#FFB800' : '#FF4D4F';
+                    return { name: n.name, value: n.value, status: n.status, symbolSize: n.value[2] * 1.2 + 8, itemStyle: { color: color, opacity: 0.85 } };
+                })
+            }]
+        });
+    })();
+
+    // 4. 理赔数据增长趋势 — 柱折混合图
+    (function() {
+        var dom = document.getElementById('claimPlatGrowthChart');
+        if (!dom) return;
+        var c = echarts.init(dom); window.claimCharts.platGrowthChart = c;
+        var weeks = ['W19','W20','W21','W22','W23','W24','W25','W26'];
+        var reportCnt = [42, 48, 38, 52, 45, 58, 62, 55];
+        var closeCnt = [35, 38, 32, 45, 40, 48, 52, 46];
+        c.setOption({
+            tooltip: { trigger: 'axis', backgroundColor: 'rgba(5,18,45,0.92)', borderColor: 'rgba(0,224,255,0.5)', textStyle: { color: '#FFF', fontSize: 11 } },
+            legend: { data: ['报案量', '结案量'], top: 0, textStyle: { color: '#AABBCC', fontSize: 10 }, itemWidth: 12, itemHeight: 8 },
+            grid: { top: 28, right: 15, bottom: 10, left: 40 },
+            xAxis: { type: 'category', data: weeks, axisLine: { lineStyle: { color: 'rgba(0,224,255,0.3)' } }, axisTick: { show: false }, axisLabel: { color: '#6B7A90', fontSize: 10 } },
+            yAxis: { type: 'value', name: '件', nameTextStyle: { color: '#6B7A90', fontSize: 9 }, axisLine: { show: false }, axisTick: { show: false }, axisLabel: { color: '#6B7A90', fontSize: 9 }, splitLine: { lineStyle: { color: 'rgba(0,224,255,0.06)', type: 'dashed' } } },
+            series: [
+                { name: '报案量', type: 'bar', data: reportCnt, barWidth: 12, itemStyle: { borderRadius: [3,3,0,0], color: new echarts.graphic.LinearGradient(0,0,0,1,[{offset:0,color:'rgba(0,224,255,0.7)'},{offset:1,color:'rgba(0,224,255,0.15)'}]) } },
+                { name: '结案量', type: 'line', data: closeCnt, smooth: true, symbol: 'circle', symbolSize: 6, lineStyle: { width: 2, color: '#00D68F' }, itemStyle: { color: '#00D68F', borderColor: '#FFF', borderWidth: 1 } }
+            ]
+        });
+    })();
+
+    // 5. 理赔服务满意度/投诉率 Top10
+    (function() {
+        var el = document.getElementById('claimPlatSatisfyList');
+        if (!el) return;
+        var list = [
+            { name: '人保财险', score: 94.2, complaint: 1.2 },
+            { name: '太平洋', score: 91.8, complaint: 1.5 },
+            { name: '平安产险', score: 89.5, complaint: 2.1 },
+            { name: '人寿财险', score: 85.3, complaint: 2.8 },
+            { name: '都邦保险', score: 82.6, complaint: 3.5 },
+            { name: 'XX产险', score: 78.4, complaint: 4.2 },
+            { name: 'ZZ财险', score: 75.1, complaint: 5.8 },
+            { name: 'AA保险', score: 72.0, complaint: 6.5 },
+            { name: 'BB财险', score: 68.8, complaint: 7.2 },
+            { name: 'CC产险', score: 62.3, complaint: 9.8 }
+        ];
+        el.innerHTML = list.map(function(item, i) {
+            var sColor = item.score >= 90 ? '#00D68F' : item.score >= 80 ? '#FFB800' : '#FF4D4F';
+            var cColor = item.complaint <= 2 ? '#00D68F' : item.complaint <= 5 ? '#FFB800' : '#FF4D4F';
+            return '<div style="display:flex;align-items:center;gap:6px;padding:4px 6px;border-bottom:1px solid rgba(0,224,255,0.06);font-size:10px;">'
+                + '<span style="width:18px;color:#6B7A90;text-align:center;">' + (i + 1) + '</span>'
+                + '<span style="flex:1;color:#FFF;">' + item.name + '</span>'
+                + '<span style="color:' + sColor + ';font-weight:700;">' + item.score + '</span>'
+                + '<span style="color:' + cColor + ';font-size:9px;">投诉率 ' + item.complaint + '%</span>'
+                + '</div>';
+        }).join('');
+    })();
+
+    // 6. 平台运营工作台
+    initClaimPlatWorkbench();
+}
+
+function initClaimPlatWorkbench() {
+    var data = [
+        { tag: 'wb-tag-ok', tagText: '🟢 数据同步', text: '<strong>平安产险</strong>刚刚上传了 <strong>10条新赔案数据</strong>，校验通过率 <strong>100%</strong>，数据优质。', time: '14:32', tooltip: '上传批次号：BAT2026-0615-003 | 数据条数：10 | 通过率：100% | 及时性：提前上报' },
+        { tag: 'wb-tag-warn', tagText: '🟡 质量警告', text: '<strong>都邦保险</strong>今日上报数据完整度仅 <strong>72%</strong>，缺项严重，已自动推送质量提醒。', time: '14:15', tooltip: '主要缺失项：伤者身份证（8条）、医院诊断书（6条）、费用明细（3条），已生成质量报告' },
+        { tag: 'wb-tag-ok', tagText: '🟢 自动修正', text: '<strong>系统自动修正</strong>了 <strong>3条地址解析错误</strong>数据，已同步至数据仓库。', time: '13:40', tooltip: '修正明细：博罗县XX厂 → 博罗县罗阳镇XX厂 | 惠东XX项目 → 惠东县平山镇XX工程 | 龙门XX矿 → 龙门县龙城镇XX矿' },
+        { tag: 'wb-tag-info', tagText: '🔵 报告生成', text: '<strong>月度理赔分析报告</strong>生成完成，覆盖时间2026-05-01至2026-05-31，已推送至监管端。', time: '12:00', tooltip: '报告包含：累计赔付3,208.6万元 | 赔付增速18.6% | 结案周期优化2.1天 | 文件大小：2.8MB' },
+        { tag: 'wb-tag-warn', tagText: '🟡 接口异常', text: '<strong>太平洋</strong>理赔接口调用超时 <strong>2次</strong>，系统已自动触发重试机制，第3次重试成功。', time: '11:20', tooltip: '异常时间：11:18-11:20 | 超时时长：45秒 | 根因分析：对方网关负载过高 | 已通知对方运维团队' },
+        { tag: 'wb-tag-urgent', tagText: '🔴 预警', text: '<strong>人寿财险</strong>连续 <strong>3天</strong>未上报理赔数据，需核查接口状态。', time: '09:50', tooltip: '最后一次上报：2026-06-12 17:45 | 累计未上报条目预计：18条 | 已自动发送催报通知' }
+    ];
+    buildWorkbenchScroll('wbClaimPlatScroll', data);
+}
+
+// =============================================
+// 理赔风控—辅助函数
+// =============================================
+window.showClaimDistrictDetail = function(d) {
+    alert('【' + d.name + ' 赔付详情】\n\n赔付强度指数：' + d.value + '\n案件总数：' + d.claims + '件\n累计赔付金额：' + d.amount + '\n\n请点击"确认为高风险区域"将该区县纳入重点监管清单。');
+};
+
+window.showPendingDetail = function(name) {
+    alert('【未决赔案详情】\n\n企业名称：' + name + '\n当前状态：待处理\n\n建议：加快理赔流程，防范群体性事件风险。');
+};
 
 // =============================================
 // 启动主界面图表
