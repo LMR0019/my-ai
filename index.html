@@ -7963,6 +7963,61 @@
             margin-bottom: 12px;
         }
 
+        /* ====== 理赔抽屉：高级字段折叠区 ====== */
+        .claim-advanced-toggle {
+            display: flex; align-items: center; justify-content: center;
+            gap: 6px; padding: 10px 0; cursor: pointer;
+            color: #1890ff; font-size: 13px; border-top: 1px dashed #e8e8e8;
+            margin-top: 4px; user-select: none; transition: color 0.2s;
+        }
+        .claim-advanced-toggle:hover { color: #096dd9; }
+        .claim-advanced-toggle .toggle-arrow {
+            display: inline-block; transition: transform 0.25s ease;
+            font-size: 11px;
+        }
+        .claim-advanced-toggle.expanded .toggle-arrow { transform: rotate(180deg); }
+
+        .claim-advanced-area {
+            display: none; overflow: hidden;
+            animation: claimSlideDown 0.3s ease forwards;
+        }
+        @keyframes claimSlideDown {
+            from { opacity: 0; max-height: 0; } to { opacity: 1; max-height: 5000px; }
+        }
+
+        /* 理赔详情抽屉：高级字段只读展示 */
+        .claim-readonly {
+            padding: 7px 12px; background: #fafafa; border: 1px solid #e8e8e8;
+            border-radius: 4px; color: #333; font-size: 13px; min-height: 36px;
+            line-height: 1.5; word-break: break-all; white-space: pre-wrap;
+        }
+
+        /* 文件上传占位 */
+        .claim-file-upload {
+            position: relative; display: flex; align-items: center; gap: 8px;
+            padding: 8px 12px; border: 1px dashed #d9d9d9; border-radius: 4px;
+            background: #fafafa; cursor: pointer; font-size: 12px; color: #999;
+            transition: border-color 0.2s;
+        }
+        .claim-file-upload:hover { border-color: #1890ff; color: #1890ff; }
+        .claim-file-upload input[type="file"] {
+            position: absolute; inset: 0; opacity: 0; cursor: pointer;
+        }
+        .claim-file-hint { font-size: 11px; color: #bbb; margin-top: 2px; }
+
+        /* 动态增行按钮 */
+        .claim-dynamic-add {
+            display: flex; align-items: center; justify-content: center;
+            padding: 6px; border: 1px dashed #d9d9d9; border-radius: 4px;
+            cursor: pointer; font-size: 13px; color: #999; margin-bottom: 14px;
+            transition: all 0.2s; background: #fff;
+        }
+        .claim-dynamic-add:hover { border-color: #1890ff; color: #1890ff; background: #f0f7ff; }
+
+        /* 单选组 */
+        .claim-radio-group { display: flex; gap: 20px; align-items: center; height: 34px; }
+        .claim-radio-group label { display: flex; align-items: center; gap: 4px; font-size: 13px; color: #555; cursor: pointer; }
+
         /* 服务机构关联保险机构卡片 */
         .so-relation-card {
             border: 1px solid #e8e8e8;
@@ -16868,6 +16923,23 @@
         .mrc-calc-result .mrc-calc-label{font-size:12px;color:#666;margin-top:4px;}
         .mrc-calc-detail{margin-top:10px;text-align:left;font-size:12px;color:#888;line-height:1.8;}
         .mrc-calc-detail span{color:#333;font-weight:500;}
+        /* 监测生效时间配置卡片 */
+        .mrc-effective-card{border-color:#91d5ff;box-shadow:0 0 0 3px rgba(24,144,255,0.06);}
+        .mrc-effective-card .mrc-card-title{background:linear-gradient(90deg,#e6f7ff,#fafafa);}
+        .mrc-effective-row{display:flex;align-items:stretch;gap:18px;flex-wrap:wrap;}
+        .mrc-effective-main{flex:1;min-width:300px;}
+        .mrc-effective-main .mrc-form-label{min-width:120px;}
+        .mrc-effective-main .mrc-input[type=date]{width:170px;}
+        .mrc-effective-stat{display:flex;align-items:center;gap:18px;background:#f7faff;border:1px solid #e8e8e8;border-radius:8px;padding:10px 22px;flex-shrink:0;}
+        .mrc-effective-stat-item{display:flex;flex-direction:column;align-items:center;gap:2px;min-width:64px;}
+        .mrc-effective-stat-num{font-size:26px;font-weight:700;color:#52c41a;line-height:1.1;}
+        .mrc-effective-stat-num--out{color:#bfbfbf;}
+        .mrc-effective-stat-label{font-size:12px;color:#888;}
+        .mrc-effective-stat-divider{width:1px;height:34px;background:#e8e8e8;}
+        .mrc-effective-note{font-size:12px;color:#fa8c16;background:#fff7e6;border:1px solid #ffd591;border-radius:6px;padding:8px 12px;margin-top:12px;line-height:1.6;}
+        /* 未纳入监测徽标 */
+        .ai-monitor-badge.muted{background:#f5f5f5;color:#999;cursor:default;}
+        .ai-monitor-badge.muted svg{color:#bbb;}
         /* 响应式 */
         @media(max-width:1100px){.mrc-body{grid-template-columns:1fr;}.mrc-calc-card{position:static;}}
 
@@ -20616,6 +20688,8 @@
                                 <div class="pc-sidebar-submenu-item" onclick="selectSubmenu(this)">结算规则配置</div>
                                 <div class="pc-sidebar-submenu-item" onclick="selectSubmenu(this)">监测规则配置</div>
                                 <div class="pc-sidebar-submenu-item" onclick="selectSubmenu(this)">模块画像综合配置</div>
+                                <div class="pc-sidebar-submenu-item" onclick="selectSubmenu(this)">服务质量评价配置</div>
+                                <div class="pc-sidebar-submenu-item" onclick="selectSubmenu(this)">服务机构价格配置</div>
                             </div>
                             <div class="pc-sidebar-menu-item" data-menu="operation" onclick="toggleSubmenu(this)">
                                 <span class="pc-sidebar-menu-icon"><svg viewBox="0 0 24 24"><path d="M22.7 19l-9.1-9.1c.9-2.3.4-5-1.5-6.9-2-2-5-2.4-7.4-1.3L9 6 6 9 1.6 4.7C.4 7.1.9 10.1 2.9 12.1c1.9 1.9 4.6 2.4 6.9 1.5l9.1 9.1c.4.4 1 .4 1.4 0l2.3-2.3c.5-.4.5-1.1.1-1.4z"></path></svg></span>
@@ -26928,6 +27002,40 @@
                     </div>
                     <div class="mrc-body">
                         <div class="mrc-config-area">
+                            <!-- 区域零：监测生效时间配置 -->
+                            <div class="mrc-card mrc-effective-card">
+                                <div class="mrc-card-title">
+                                    <h3><svg viewBox="0 0 24 24"><path d="M11.99 2C6.47 2 2 6.48 2 12s4.47 10 9.99 10C17.52 22 17.52 22 22 12S17.52 2 11.99 2zM12 20c-4.42 0-8-3.58-8-8s3.58-8 8-8 8 3.58 8 8-3.58 8-8 8zm.5-13H11v6l5.25 3.15.75-1.23-4.5-2.67z"></path></svg> 监测生效时间配置</h3>
+                                    <span class="mrc-tag blue" id="mrcEffCityTag">惠州市</span>
+                                </div>
+                                <div class="mrc-card-body">
+                                    <div class="mrc-effective-row">
+                                        <div class="mrc-effective-main">
+                                            <div class="mrc-form-row" style="border:none;padding:0;margin:0;">
+                                                <span class="mrc-form-label"><span class="mrc-required">*</span> 规则生效时间</span>
+                                                <div class="mrc-input-group">
+                                                    <input class="mrc-input mrc-input-sm" type="date" id="mrcEffectiveDate" onchange="onMrcEffectiveChange()">
+                                                </div>
+                                            </div>
+                                            <div class="mrc-form-hint" style="margin-left:132px;line-height:1.7;">
+                                                监测规则生效的主要时间依据为保单 <b>起保时间</b>。仅当保单起保时间 <b>≥ 规则生效时间</b> 时，该保单才<b>纳入监测</b>；起保时间早于该时间的保单<b>不纳入监测</b>。留空表示不限制，全部保单均纳入监测。
+                                            </div>
+                                        </div>
+                                        <div class="mrc-effective-stat" id="mrcEffectiveStat" title="基于当前在库保单（insuranceData）按起保时间与规则生效时间实时统计">
+                                            <div class="mrc-effective-stat-item">
+                                                <span class="mrc-effective-stat-num" id="mrcEffInCount">0</span>
+                                                <span class="mrc-effective-stat-label">纳入监测</span>
+                                            </div>
+                                            <div class="mrc-effective-stat-divider"></div>
+                                            <div class="mrc-effective-stat-item">
+                                                <span class="mrc-effective-stat-num mrc-effective-stat-num--out" id="mrcEffOutCount">0</span>
+                                                <span class="mrc-effective-stat-label">未纳入</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="mrc-effective-note" id="mrcEffNote" style="display:none;"></div>
+                                </div>
+                            </div>
                             <!-- 区域一：基础参数与限额配置 -->
                             <div class="mrc-card">
                                 <div class="mrc-card-title">
@@ -29765,6 +29873,86 @@
     </div>
 </div>
 
+<!-- 服务机构价格配置页（由服务机构列表“价格配置”迁移而来，按价格体系管理多机构） -->
+<div class="pc-page-content" id="servicePriceConfigContent" style="display:none;">
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;">
+        <div>
+            <h3 style="margin:0;font-size:18px;color:#333;">服务机构价格配置</h3>
+            <div style="font-size:12px;color:#999;margin-top:4px;">按价格体系统一管理多个服务机构的价格方案</div>
+        </div>
+        <button class="insurance-list-btn insurance-list-btn-primary" onclick="showAddPriceSystemModal()">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="vertical-align:-2px;margin-right:4px;"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>新增价格体系
+        </button>
+    </div>
+    <div style="display:flex;gap:16px;align-items:flex-start;">
+        <!-- 左：价格体系列表 -->
+        <div style="width:280px;flex-shrink:0;background:#fff;border:1px solid #e8e8e8;border-radius:8px;overflow:hidden;">
+            <div style="padding:12px 16px;font-size:13px;font-weight:600;color:#333;border-bottom:1px solid #f0f0f0;background:#fafafa;">价格体系（<span id="psSystemCount">0</span>）</div>
+            <div id="psSystemList" style="padding:8px;max-height:70vh;overflow-y:auto;"></div>
+        </div>
+        <!-- 右：体系详情 -->
+        <div id="psSystemDetail" style="flex:1;min-width:0;"></div>
+    </div>
+</div>
+
+<!-- 新增/编辑价格体系弹窗 -->
+<div class="insurance-list-modal" id="priceSystemModal" style="min-width:480px;display:none;">
+    <div class="insurance-list-modal-header">
+        <h3 class="insurance-list-modal-title" id="priceSystemModalTitle">新增价格体系</h3>
+        <button class="insurance-list-modal-close" onclick="closeModal('priceSystemModal')">&times;</button>
+    </div>
+    <div class="insurance-list-modal-body">
+        <input type="hidden" id="priceSystemEditId">
+        <div class="insurance-list-form-group">
+            <label class="insurance-list-form-label"><span class="required">*</span>体系名称</label>
+            <input type="text" class="insurance-list-form-input" id="priceSystemName" placeholder="如：2026年标准价体系">
+        </div>
+        <div class="insurance-list-form-group">
+            <label class="insurance-list-form-label">状态</label>
+            <select class="insurance-list-form-select" id="priceSystemStatus">
+                <option value="启用">启用</option>
+                <option value="停用">停用</option>
+            </select>
+        </div>
+        <div class="insurance-list-form-group">
+            <label class="insurance-list-form-label">备注</label>
+            <textarea class="insurance-list-form-textarea" id="priceSystemRemark" rows="3" placeholder="选填"></textarea>
+        </div>
+    </div>
+    <div class="insurance-list-modal-footer">
+        <button class="insurance-list-btn insurance-list-btn-gray" onclick="closeModal('priceSystemModal')">取消</button>
+        <button class="insurance-list-btn insurance-list-btn-primary" onclick="savePriceSystem()">保存</button>
+    </div>
+</div>
+
+<!-- 价格体系-添加服务机构弹窗 -->
+<div class="insurance-list-modal" id="psAddOrgModal" style="min-width:520px;display:none;">
+    <div class="insurance-list-modal-header">
+        <h3 class="insurance-list-modal-title">添加服务机构到当前价格体系</h3>
+        <button class="insurance-list-modal-close" onclick="closeModal('psAddOrgModal')">&times;</button>
+    </div>
+    <div class="insurance-list-modal-body">
+        <div class="insurance-list-filter-item" style="margin-bottom:10px;"><label>搜索</label><input type="text" class="insurance-list-form-input" id="psAddOrgSearch" placeholder="机构名称" oninput="renderPsAddOrgList()"></div>
+        <div id="psAddOrgList" style="max-height:50vh;overflow-y:auto;"></div>
+    </div>
+    <div class="insurance-list-modal-footer">
+        <button class="insurance-list-btn insurance-list-btn-gray" onclick="closeModal('psAddOrgModal')">取消</button>
+        <button class="insurance-list-btn insurance-list-btn-primary" onclick="confirmAddOrgsToSystem()">确定添加</button>
+    </div>
+</div>
+
+<!-- 机构继承价格明细弹窗（只读） -->
+<div class="insurance-list-modal" id="psOrgPriceModal" style="min-width:560px;display:none;">
+    <div class="insurance-list-modal-header">
+        <h3 class="insurance-list-modal-title">机构价格明细（继承价格体系）</h3>
+        <button class="insurance-list-modal-close" onclick="closeModal('psOrgPriceModal')">&times;</button>
+    </div>
+    <div class="insurance-list-modal-body" id="psOrgPriceBody" style="max-height:60vh;overflow-y:auto;"></div>
+    <div class="insurance-list-modal-footer">
+        <button class="insurance-list-btn insurance-list-btn-gray" onclick="closeModal('psOrgPriceModal')">关闭</button>
+    </div>
+</div>
+
 <!-- 批量设置价格弹窗 -->
 <div class="insurance-list-modal" id="batchPriceModal" style="display:none;">
     <div class="insurance-list-modal-header">
@@ -31728,6 +31916,60 @@
                     </div>
                 </div>
 
+                <!-- 服务质量评价配置 -->
+                <div class="pc-page-content" id="serviceQualityConfigContent" style="display:none;">
+                    <div class="sqc-header">
+                        <div>
+                            <h3>服务质量评价配置</h3>
+                            <p>为「保险机构评价 / 政府评价 / 服务中心评价」三类评价配置评分维度与评分标准。维度可细分至四级（如：能力评估 12 分 → 经营诚信 2 分、业绩规模 2 分…），含子项的评分项分值由其子项自动累加。修改保存后实时同步至对应评价页面。</p>
+                        </div>
+                        <div class="sqc-header-actions">
+                            <button class="sqc-btn" onclick="sqcResetDefault()">恢复默认</button>
+                            <button class="sqc-btn sqc-btn-primary" onclick="sqcSaveConfig()">保存配置</button>
+                        </div>
+                    </div>
+                    <div class="sqc-tabs" id="sqcTabs">
+                        <div class="sqc-tab active" data-type="insurance" onclick="sqcSwitchType('insurance')">保险机构评价 <span class="sqc-tab-max" id="sqcMaxInsurance"></span></div>
+                        <div class="sqc-tab" data-type="gov" onclick="sqcSwitchType('gov')">政府评价 <span class="sqc-tab-max" id="sqcMaxGov"></span></div>
+                        <div class="sqc-tab" data-type="service" onclick="sqcSwitchType('service')">服务中心评价 <span class="sqc-tab-max" id="sqcMaxService"></span></div>
+                    </div>
+                    <div class="sqc-toolbar">
+                        <button class="sqc-btn sqc-btn-primary" onclick="sqcAddRoot()">+ 新增一级评分项</button>
+                        <span class="sqc-tip">提示：最多支持四级细分；含子项的评分项分值由其子项自动累加，不可单独设分。</span>
+                    </div>
+                    <div class="sqc-tree" id="sqcTree"></div>
+
+                    <!-- 编辑弹窗 -->
+                    <div class="sqc-modal" id="sqcModal">
+                        <div class="sqc-modal-mask" onclick="sqcCloseModal()"></div>
+                        <div class="sqc-modal-box">
+                            <div class="sqc-modal-header">
+                                <h3 id="sqcModalTitle">编辑评分项</h3>
+                                <button onclick="sqcCloseModal()">×</button>
+                            </div>
+                            <div class="sqc-modal-body">
+                                <div class="sqc-form-group">
+                                    <label>评分项名称</label>
+                                    <input type="text" id="sqcEditName" placeholder="如：经营诚信">
+                                </div>
+                                <div class="sqc-form-group" id="sqcMaxGroup">
+                                    <label>满分（分）</label>
+                                    <input type="number" id="sqcEditMax" min="0" placeholder="如：2">
+                                </div>
+                                <div class="sqc-form-group">
+                                    <label>评分标准</label>
+                                    <textarea id="sqcEditStandard" rows="4" placeholder="描述该维度/子项的评分要点，供评分人对照手动算分"></textarea>
+                                </div>
+                                <div class="sqc-modal-hint" id="sqcModalHint">该项包含子评分项，分值由子项自动累加，无需单独设置满分。</div>
+                            </div>
+                            <div class="sqc-modal-footer">
+                                <button class="sqc-btn" onclick="sqcCloseModal()">取消</button>
+                                <button class="sqc-btn sqc-btn-primary" onclick="sqcSaveNode()">保存</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
                 <!-- 服务配置中心 -->
                 <div class="pc-page-content" id="serviceConfigCenterContent" style="display:none;">
                     <!-- TOP HEADER BAR -->
@@ -32983,12 +33225,298 @@
         <input type="text" class="insurance-list-form-input" id="claimFormRemark" placeholder="选填">
         </div>
         </div>
+
+        <!-- ========== 高级字段折叠区（默认收起，非必填/非常用） ========== -->
+        <div class="claim-advanced-toggle" id="claimAdvancedToggle" onclick="toggleClaimAdvanced()">
+            <span class="toggle-arrow">▼</span>
+            <span id="claimAdvancedToggleText">展开高级字段（查勘 / 定损 / 赔付明细等）</span>
+        </div>
+        <div class="claim-advanced-area" id="claimAdvancedArea">
+
+        <!-- ====== 事故详细信息补充 ====== -->
+        <div class="insurance-list-form-section" style="border-top: 2px solid #e8f4fd; padding-top:16px;">
+        <div class="insurance-list-form-section-title">📋 事故详细信息</div>
+        <div class="insurance-list-form-row">
+            <div class="insurance-list-form-group">
+            <label class="insurance-list-form-label">申请事由</label>
+            <select class="insurance-list-form-select" id="claimFormApplyReason">
+                <option value="">请选择</option>
+                <option value="意外伤害">意外伤害</option>
+                <option value="财产损失">财产损失</option>
+                <option value="医疗费用">医疗费用</option>
+                <option value="死亡赔偿">死亡赔偿</option>
+                <option value="伤残赔偿">伤残赔偿</option>
+                <option value="其他">其他</option>
+            </select>
+            </div>
+            <div class="insurance-list-form-group">
+            <label class="insurance-list-form-label">报案人姓名</label>
+            <input type="text" class="insurance-list-form-input" id="claimFormReporterName" placeholder="请输入报案人姓名">
+            </div>
+        </div>
+        <div class="insurance-list-form-row">
+            <div class="insurance-list-form-group">
+            <label class="insurance-list-form-label">报案人电话</label>
+            <input type="text" class="insurance-list-form-input" id="claimFormReporterPhone" placeholder="请输入报案人电话">
+            </div>
+            <div class="insurance-list-form-group">
+            <label class="insurance-list-form-label">事故发生时间</label>
+            <input type="datetime-local" class="insurance-list-form-input" id="claimFormAccidentTime">
+            </div>
+        </div>
+        <div class="insurance-list-form-row">
+            <div class="insurance-list-form-group">
+            <label class="insurance-list-form-label">立案时间</label>
+            <input type="date" class="insurance-list-form-input" id="claimFormCaseTime">
+            </div>
+            <div class="insurance-list-form-group">
+            <label class="insurance-list-form-label">立案号（赔案号）</label>
+            <input type="text" class="insurance-list-form-input" id="claimFormCaseNo" placeholder="请输入立案号/赔案号">
+            </div>
+        </div>
+        <div class="insurance-list-form-group">
+            <label class="insurance-list-form-label">事故详细地址</label>
+            <input type="text" class="insurance-list-form-input" id="claimFormAccidentDetailAddr" placeholder="请输入详细地址">
+        </div>
+        <div class="insurance-list-form-group">
+            <label class="insurance-list-form-label">事故调查报告</label>
+            <div class="claim-file-upload">
+                <input type="file" id="claimFormAccidentReport" accept=".jpg,.png,.pdf,.doc,.docx,.xls,.xlsx" multiple>
+                <span>📎 点击上传文件</span>
+            </div>
+            <div class="claim-file-hint">支持 jpg, png, pdf, word, xls 格式，单文件最大10M</div>
+        </div>
+        <div class="insurance-list-form-group">
+            <label class="insurance-list-form-label">事故描述</label>
+            <textarea class="insurance-list-form-textarea" id="claimFormAccidentDesc" rows="4" placeholder="请描述事故经过"></textarea>
+        </div>
+        </div>
+
+        <!-- ====== 查勘信息管理 ====== -->
+        <div class="insurance-list-form-section" style="border-top: 2px solid #e8f4fd; padding-top:16px;">
+        <div class="insurance-list-form-section-title">🔍 查勘信息管理</div>
+        <div class="insurance-list-form-group">
+            <label class="insurance-list-form-label">查勘信息管理</label>
+            <div class="claim-radio-group">
+                <label><input type="radio" name="claimSurveyExists" value="yes" checked /> 有</label>
+                <label><input type="radio" name="claimSurveyExists" value="no" /> 无</label>
+            </div>
+        </div>
+        <div class="insurance-list-form-row">
+            <div class="insurance-list-form-group">
+            <label class="insurance-list-form-label">查勘人员姓名</label>
+            <input type="text" class="insurance-list-form-input" id="claimFormSurveyorName" placeholder="请输入">
+            </div>
+            <div class="insurance-list-form-group">
+            <label class="insurance-list-form-label">查勘人员联系手机</label>
+            <input type="text" class="insurance-list-form-input" id="claimFormSurveyorPhone" placeholder="请输入">
+            </div>
+        </div>
+        <div class="insurance-list-form-row">
+            <div class="insurance-list-form-group">
+            <label class="insurance-list-form-label">查勘时间</label>
+            <input type="date" class="insurance-list-form-input" id="claimFormSurveyTime">
+            </div>
+            <div class="insurance-list-form-group">
+            <label class="insurance-list-form-label">估损金额</label>
+            <input type="number" class="insurance-list-form-input" id="claimFormSurveyEstLoss" placeholder="请输入" min="0" step="0.01">
+            </div>
+        </div>
+        <div class="insurance-list-form-group">
+            <label class="insurance-list-form-label">在线查勘报告图片</label>
+            <div class="claim-file-upload">
+                <input type="file" id="claimFormSurveyPhotos" accept=".jpg,.png,.jpeg" multiple>
+                <span>📎 点击上传文件</span>
+            </div>
+            <div class="claim-file-hint">支持 jpg、png格式，大小限制10M</div>
+        </div>
+        <div class="insurance-list-form-group">
+            <label class="insurance-list-form-label">查勘描述</label>
+            <textarea class="insurance-list-form-textarea" id="claimFormSurveyDesc" rows="3" placeholder="请输入"></textarea>
+        </div>
+        </div>
+
+        <!-- ====== 定损信息管理 ====== -->
+        <div class="insurance-list-form-section" style="border-top: 2px solid #e8f4fd; padding-top:16px;">
+        <div class="insurance-list-form-section-title">💰 定损信息管理</div>
+        <div class="insurance-list-form-row">
+            <div class="insurance-list-form-group">
+            <label class="insurance-list-form-label">定损总金额</label>
+            <input type="number" class="insurance-list-form-input" id="claimFormAssessTotal" placeholder="请输入" min="0" step="0.01">
+            </div>
+            <div class="insurance-list-form-group">
+            <label class="insurance-list-form-label">从业人员伤亡定损金额</label>
+            <input type="number" class="insurance-list-form-input" id="claimFormAssessEmpInjury" placeholder="请输入" min="0" step="0.01">
+            </div>
+        </div>
+        <div class="insurance-list-form-row">
+            <div class="insurance-list-form-group">
+            <label class="insurance-list-form-label">第三者人身伤亡定损金额</label>
+            <input type="number" class="insurance-list-form-input" id="claimFormAssessThirdPartyInjury" placeholder="请输入" min="0" step="0.01">
+            </div>
+            <div class="insurance-list-form-group">
+            <label class="insurance-list-form-label">医疗费用定损金额</label>
+            <input type="number" class="insurance-list-form-input" id="claimFormAssessMedical" placeholder="请输入" min="0" step="0.01">
+            </div>
+        </div>
+        <div class="insurance-list-form-row">
+            <div class="insurance-list-form-group">
+            <label class="insurance-list-form-label">被保险约定理赔费用金额</label>
+            <input type="number" class="insurance-list-form-input" id="claimFormAssessAgreedFee" placeholder="请输入" min="0" step="0.01">
+            </div>
+            <div class="insurance-list-form-group">
+            <label class="insurance-list-form-label">其他理赔金额</label>
+            <input type="number" class="insurance-list-form-input" id="claimFormAssessOther" placeholder="请输入" min="0" step="0.01">
+            </div>
+        </div>
+        </div>
+
+        <!-- ====== 赔付信息管理 ====== -->
+        <div class="insurance-list-form-section" style="border-top: 2px solid #e8f4fd; padding-top:16px;">
+        <div class="insurance-list-form-section-title">💳 赔付信息管理</div>
+        <div class="insurance-list-form-group">
+            <label class="insurance-list-form-label">赔付总金额</label>
+            <input type="number" class="insurance-list-form-input" id="claimFormPayTotal" placeholder="请输入" min="0" step="0.01">
+        </div>
+
+        <!-- 人伤明细 -->
+        <div style="margin-bottom:14px;">
+        <div style="font-size:13px;color:#555;font-weight:500;margin-bottom:8px;">人员人身伤亡赔付金额</div>
+        <div class="claim-radio-group" style="margin-bottom:10px;">
+            <label><input type="radio" name="claimPayInjuryHas" value="yes" onchange="toggleClaimPaySection('injury','yes')" /> 有</label>
+            <label><input type="radio" name="claimPayInjuryHas" value="no" checked onchange="toggleClaimPaySection('injury','no')" /> 无</label>
+            <span id="claimPayInjuryAmountWrap" style="display:none;margin-left:12px;">
+                金额：<input type="number" style="width:120px;padding:4px 8px;border:1px solid #d9d9d9;border-radius:4px;" id="claimPayInjuryAmount" min="0" step="0.01" placeholder="请输入">
+            </span>
+        </div>
+        <div id="claimPayInjuryDetailArea" style="display:none;">
+            <div class="insurance-list-form-row" style="margin-bottom:8px;">
+                <div class="insurance-list-form-group"><label class="insurance-list-form-label">人员类别</label>
+                    <select class="insurance-list-form-select" id="claimPayInjuryCat_0"><option value="">请选择</option><option value="从业人员">从业人员</option><option value="第三者">第三者</option></select></div>
+                <div class="insurance-list-form-group"><label class="insurance-list-form-label">人员姓名</label>
+                    <input type="text" class="insurance-list-form-input" id="claimPayInjuryName_0" placeholder="请输入"></div>
+            </div>
+            <div class="insurance-list-form-row" style="margin-bottom:8px;">
+                <div class="insurance-list-form-group"><label class="insurance-list-form-label">人员证件类型及号码</label>
+                    <input type="text" class="insurance-list-form-input" id="claimPayInjuryIdNo_0" placeholder="请输入"></div>
+                <div class="insurance-list-form-group"><label class="insurance-list-form-label">人员伤亡情况</label>
+                    <select class="insurance-list-form-select" id="claimPayInjuryStatus_0"><option value="">请选择</option><option value="死亡">死亡</option><option value="重伤">重伤</option><option value="轻伤">轻伤</option><option value="残疾">残疾</option></select></div>
+            </div>
+            <div class="insurance-list-form-group" style="margin-bottom:8px;">
+                <label class="insurance-list-form-label">人伤死亡证明文件</label>
+                <div class="claim-file-upload">
+                    <input type="file" id="claimPayInjuryProof_0" accept=".jpg,.png,.pdf,.doc,.docx">
+                    <span>📎 点击上传文件</span>
+                </div>
+                <div class="claim-file-hint">支持 jpg、png、pdf格式，大小限制10M</div>
+            </div>
+            <div class="claim-dynamic-add" onclick="addClaimPayInjuryRow()">
+                <span>+ 添加人伤记录</span>
+            </div>
+            <div id="claimPayInjuryExtraRows"></div>
+        </div>
+        </div>
+
+        <!-- 第三者财产明细 -->
+        <div style="margin-bottom:14px;">
+        <div style="font-size:13px;color:#555;font-weight:500;margin-bottom:8px;">第三者财产赔付金额</div>
+        <div class="claim-radio-group" style="margin-bottom:10px;">
+            <label><input type="radio" name="claimPayPropertyHas" value="yes" onchange="toggleClaimPaySection('property','yes')" /> 有</label>
+            <label><input type="radio" name="claimPayPropertyHas" value="no" checked onchange="toggleClaimPaySection('property','no')" /> 无</label>
+            <span id="claimPayPropertyAmountWrap" style="display:none;margin-left:12px;">
+                金额：<input type="number" style="width:120px;padding:4px 8px;border:1px solid #d9d9d9;border-radius:4px;" id="claimPayPropertyAmount" min="0" step="0.01" placeholder="请输入">
+            </span>
+        </div>
+        <div id="claimPayPropertyDetailArea" style="display:none;">
+            <div class="insurance-list-form-row" style="margin-bottom:8px;">
+                <div class="insurance-list-form-group"><label class="insurance-list-form-label">第三者名称</label>
+                    <input type="text" class="insurance-list-form-input" id="claimPayPropName_0" placeholder="请输入"></div>
+                <div class="insurance-list-form-group"><label class="insurance-list-form-label">第三者财产名称</label>
+                    <input type="text" class="insurance-list-form-input" id="claimPayPropItem_0" placeholder="请输入"></div>
+            </div>
+            <div class="insurance-list-form-group" style="margin-bottom:8px;">
+                <label class="insurance-list-form-label">第三者相关财产权属证明文件</label>
+                <div class="claim-file-upload">
+                    <input type="file" id="claimPayPropProof_0" accept=".jpg,.png,.pdf,.doc,.docx">
+                    <span>📎 点击上传文件</span>
+                </div>
+                <div class="claim-file-hint">支持 jpg、png、pdf格式，大小限制10M</div>
+            </div>
+            <div class="claim-dynamic-add" onclick="addClaimPayPropertyRow()">
+                <span>+ 添加第三者财产记录</span>
+            </div>
+            <div id="claimPayPropertyExtraRows"></div>
+        </div>
+        </div>
+
+        <!-- 各类费用赔付 -->
+        <div class="insurance-list-form-row">
+            <div class="insurance-list-form-group">
+            <label class="insurance-list-form-label">非强制救助费用赔付金额</label>
+            <input type="number" class="insurance-list-form-input" id="claimPayRescue" placeholder="请输入" min="0" step="0.01">
+            </div>
+            <div class="insurance-list-form-group">
+            <label class="insurance-list-form-label">医疗费用赔付金额</label>
+            <input type="number" class="insurance-list-form-input" id="claimPayMedical" placeholder="请输入" min="0" step="0.01">
+            </div>
+        </div>
+        <div class="insurance-list-form-row">
+            <div class="insurance-list-form-group">
+            <label class="insurance-list-form-label">事故鉴定费用赔付金额</label>
+            <input type="number" class="insurance-list-form-input" id="claimPayAppraisal" placeholder="请输入" min="0" step="0.01">
+            </div>
+            <div class="insurance-list-form-group">
+            <label class="insurance-list-form-label">法律诉讼费用赔付金额</label>
+            <input type="number" class="insurance-list-form-input" id="claimPayLegal" placeholder="请输入" min="0" step="0.01">
+            </div>
+        </div>
+        <div class="insurance-list-form-row">
+            <div class="insurance-list-form-group">
+            <label class="insurance-list-form-label">其他费用赔付金额</label>
+            <input type="number" class="insurance-list-form-input" id="claimPayOtherFee" placeholder="请输入" min="0" step="0.01">
+            </div>
+            <div class="insurance-list-form-group">
+            <label class="insurance-list-form-label">核赔说明</label>
+            <textarea class="insurance-list-form-textarea" id="claimPayNote" rows="2" placeholder="请输入"></textarea>
+            </div>
+        </div>
+
+        <!-- 付款凭证 -->
+        <div class="insurance-list-form-group">
+            <label class="insurance-list-form-label">付款类型</label>
+            <select class="insurance-list-form-select" id="claimFormPayType">
+                <option value="">请选择</option>
+                <option value="银行转账">银行转账</option>
+                <option value="现金支付">现金支付</option>
+                <option value="支票支付">支票支付</option>
+                <option value="线上支付">线上支付</option>
+            </select>
+        </div>
+        <div class="insurance-list-form-group">
+            <label class="insurance-list-form-label">付款凭证</label>
+            <div class="claim-file-upload">
+                <input type="file" id="claimFormPayVoucher" accept=".jpg,.png,.pdf,.doc,.docx">
+                <span>📎 点击上传文件</span>
+            </div>
+            <div class="claim-file-hint">支持 jpg, png, pdf, word, xls 格式</div>
+        </div>
+        <div class="insurance-list-form-group">
+            <label class="insurance-list-form-label">上传附件</label>
+            <div class="claim-file-upload">
+                <input type="file" id="claimFormAttachFiles" accept=".jpg,.png,.pdf,.doc,.docx,.xls,.xlsx" multiple>
+                <span>📎 点击上传文件</span>
+            </div>
+            <div class="claim-file-hint">支持 jpg, png, pdf, word, xls 格式，大小限制10M</div>
+        </div>
+        </div><!-- end claimAdvancedArea -->
+
         </div>
 
         </div>
         <div class="insurance-list-drawer-footer">
         <button class="insurance-list-btn insurance-list-btn-gray insurance-list-btn-sm" onclick="closeClaimFormDrawer()">取消</button>
         <button class="insurance-list-btn insurance-list-btn-primary insurance-list-btn-sm" onclick="saveClaimForm()">保存</button>
+        </div>
         </div>
         </div>
 
@@ -33295,6 +33823,10 @@
         <div class="insurance-list-form-group"><label class="insurance-list-form-label">创建日期</label><input type="text" class="insurance-list-form-input" id="editSOCreateDate"></div>
         </div>
         <div class="insurance-list-form-group"><label class="insurance-list-form-label">实际经营地址</label><input type="text" class="insurance-list-form-input" id="editSOAddress"></div>
+        </div>
+        <div class="insurance-list-form-row">
+        <div class="insurance-list-form-group"><label class="insurance-list-form-label">关联价格体系</label><select class="insurance-list-form-select" id="editSOPriceSystem" onchange="var sel=this;document.getElementById('editSOPriceSystemName').value = sel.value ? sel.options[sel.selectedIndex].text : '';"></select></div>
+        <div class="insurance-list-form-group"><label class="insurance-list-form-label">关联价格体系名称</label><input type="text" class="insurance-list-form-input" id="editSOPriceSystemName" placeholder="自动带出" readonly></div>
         </div>
 
         <!-- 关联保险机构（多组联动） -->
@@ -35944,6 +36476,10 @@ function showPcPortalSelector() {
             if (sccContent) sccContent.style.display = 'none';
             const mpcContent = document.getElementById('modulePortraitConfigContent');
             if (mpcContent) mpcContent.style.display = 'none';
+            const sqcContent = document.getElementById('serviceQualityConfigContent');
+            if (sqcContent) sqcContent.style.display = 'none';
+            const spcContent = document.getElementById('servicePriceConfigContent');
+            if (spcContent) spcContent.style.display = 'none';
             // 防御性隐藏：批单申报面板（避免从批单tab跳转其他页面时残留显示）
             var _batchPanel = document.getElementById('batchDeclarePanel');
             if (_batchPanel) _batchPanel.style.display = 'none';
@@ -36263,6 +36799,20 @@ function showPcPortalSelector() {
                 if (mpcEl) {
                     mpcEl.style.display = '';
                     if (typeof initMpcPage === 'function') initMpcPage();
+                }
+            } else if (subText === '服务质量评价配置') {
+                updatePcBreadcrumb([parentText, '服务质量评价配置']);
+                const sqcEl = document.getElementById('serviceQualityConfigContent');
+                if (sqcEl) {
+                    sqcEl.style.display = '';
+                    if (typeof sqcInit === 'function') sqcInit();
+                }
+            } else if (subText === '服务机构价格配置') {
+                updatePcBreadcrumb([parentText, '服务机构价格配置']);
+                const spcEl = document.getElementById('servicePriceConfigContent');
+                if (spcEl) {
+                    spcEl.style.display = '';
+                    if (typeof initServicePriceConfig === 'function') initServicePriceConfig();
                 }
             } else if (subText === '投诉建议') {
                 updatePcBreadcrumb([parentText, '投诉建议']);
@@ -36949,6 +37499,16 @@ function showPcPortalSelector() {
         function fillAiReportTab(item){
             var el = document.getElementById('tab-aimonitor');
             if(!el) return;
+            // 规则生效时间门控：未纳入监测的保单直接提示，不展示规则明细
+            if(!isPolicyUnderMonitor(item)){
+                var effDate = getMrcEffectiveDate();
+                el.innerHTML = '<div class="ai-report-summary muted" style="background:#fafafa;border:1px solid #e8e8e8;">' +
+                    '<div style="text-align:center;width:100%;">' +
+                    '<div class="ai-report-status gray" style="color:#999;">未纳入监测</div>' +
+                    '<div class="ai-report-subtitle" style="margin-top:6px;color:#888;line-height:1.7;">该保单起保时间 <b>' + (item.startDate || '—') + '</b> 早于规则生效时间 <b>' + (effDate || '—') + '</b><br>依据监测规则，此保单不纳入本轮监测。</div>' +
+                    '</div></div>';
+                return;
+            }
             var ai = getAiMonitor(item.id);
             var cls = ai.status==='normal'?'compliant':ai.status==='warning'?'risk':'danger';
             var statusText = ai.status==='normal'?'合规':ai.status==='warning'?'存在风险':'严重违规';
@@ -37095,8 +37655,12 @@ function showPcPortalSelector() {
                     }
                 }
                 var aiData = getAiMonitor(item.id);
-                if(aiData.status === 'warning') aiWarningCount++;
-                if(aiData.status === 'error') aiErrorCount++;
+                if(!isPolicyUnderMonitor(item)){
+                    // 未纳入监测的保单不计入 AI 预警/异常统计
+                } else {
+                    if(aiData.status === 'warning') aiWarningCount++;
+                    if(aiData.status === 'error') aiErrorCount++;
+                }
                 if(item.remainDays > 0 && item.remainDays <= 30) soonExpireCount++;
                 if(item.status === '脱保') lapsedCount++;
             });
@@ -37351,7 +37915,15 @@ function showPcPortalSelector() {
                 // AI监测结果
                 var aiData = getAiMonitor(item.id);
                 var aiTipText = aiData.reasons.length > 0 ? aiData.reasons.join('；') : '该保单符合所有监测规则';
-                var aiStatusHtml = '<span class="ai-monitor-tip" onmouseenter="showAiTooltip(this, \'' + aiTipText.replace(/'/g, "\\'") + '\')" onmouseleave="hideAiTooltip(this)"><span class="ai-monitor-badge ' + aiStatusClass(aiData.status) + '" onclick="openAiMonitorDetail(' + item.id + ', \'' + aiData.status + '\')">' + aiStatusSvg(aiData.status) + ' ' + aiStatusText(aiData.status) + '</span><div class="ai-tip-box" style="display:none;">' + aiTipText + '</div></span>';
+                // 规则生效时间门控：起保时间 < 规则生效时间 -> 不纳入监测
+                var aiStatusHtml;
+                if (!isPolicyUnderMonitor(item)) {
+                    var effDate = getMrcEffectiveDate();
+                    var muteTip = '该保单起保时间 ' + (item.startDate || '—') + ' 早于规则生效时间 ' + (effDate || '—') + '，未纳入监测。';
+                    aiStatusHtml = '<span class="ai-monitor-tip" onmouseenter="showAiTooltip(this, \'' + muteTip.replace(/'/g, "\\'") + '\')" onmouseleave="hideAiTooltip(this)"><span class="ai-monitor-badge muted">⏸ 未纳入监测</span><div class="ai-tip-box" style="display:none;">' + muteTip + '</div></span>';
+                } else {
+                    aiStatusHtml = '<span class="ai-monitor-tip" onmouseenter="showAiTooltip(this, \'' + aiTipText.replace(/'/g, "\\'") + '\')" onmouseleave="hideAiTooltip(this)"><span class="ai-monitor-badge ' + aiStatusClass(aiData.status) + '" onclick="openAiMonitorDetail(' + item.id + ', \'' + aiData.status + '\')">' + aiStatusSvg(aiData.status) + ' ' + aiStatusText(aiData.status) + '</span><div class="ai-tip-box" style="display:none;">' + aiTipText + '</div></span>';
+                }
                 // 保费旁警告图标
                 var premiumWarnHtml = '';
                 if(aiData.status === 'warning' || aiData.status === 'error'){
@@ -42528,7 +43100,7 @@ function showPcPortalSelector() {
                 chartData: [{name: '车险', value: 60}, {name: '财险', value: 40}]
             },
             {
-                title: '自动核保通过率',
+                title: '自动核对通过率',
                 value: '85%',
                 subtitle: '人工干预 15单',
                 trend: '',
@@ -44256,6 +44828,98 @@ function showPcPortalSelector() {
             drawer.style.zIndex = '1100';
         }
 
+        // 构建理赔详情抽屉中的高级字段（只读，默认隐藏）
+        function buildViewClaimAdvancedHtml(claim) {
+            var adv = claim.adv || {};
+            function g(key) {
+                if (adv && adv[key] !== undefined && adv[key] !== null && adv[key] !== '') return adv[key];
+                if (claim[key] !== undefined && claim[key] !== null && claim[key] !== '') return claim[key];
+                return '';
+            }
+            function money(v) {
+                var n = parseFloat(v);
+                if (!isNaN(n) && n !== 0) return '¥' + n.toLocaleString();
+                if (v && v !== '') return v;
+                return '';
+            }
+            function cell(label, value) {
+                return '<div class="insurance-list-form-group"><label class="insurance-list-form-label">' + label + '</label><div class="claim-readonly">' + (value === '' ? '-' : String(value)) + '</div></div>';
+            }
+            function row(html) { return '<div class="insurance-list-form-row">' + html + '</div>'; }
+
+            var surveyExists = g('surveyExists');
+            var payInjuryHas = g('payInjuryHas');
+            var payPropertyHas = g('payPropertyHas');
+
+            var h = '';
+            h += '<div class="claim-advanced-toggle" id="viewClaimAdvancedToggle" onclick="toggleViewClaimAdvanced()">';
+            h += '<span class="toggle-arrow">&#9660;</span>';
+            h += '<span id="viewClaimAdvancedToggleText">展开高级字段（查勘 / 定损 / 赔付明细等）</span>';
+            h += '</div>';
+            h += '<div class="claim-advanced-area" id="viewClaimAdvancedArea">';
+
+            // 事故详细信息
+            h += '<div class="insurance-list-form-section" style="border-top:2px solid #e8f4fd;padding-top:16px;">';
+            h += '<div class="insurance-list-form-section-title">📋 事故详细信息</div>';
+            h += row(cell('申请事由', g('applyReason')) + cell('报案人姓名', g('reporterName')));
+            h += row(cell('报案人电话', g('reporterPhone')) + cell('事故发生时间', g('accidentTime')));
+            h += row(cell('立案时间', g('caseTime')) + cell('立案号（赔案号）', g('caseNo')));
+            h += cell('事故详细地址', g('accidentDetailAddr'));
+            h += cell('事故调查报告', '（见附件）');
+            h += cell('事故描述', g('accidentDesc'));
+            h += '</div>';
+
+            // 查勘信息管理
+            h += '<div class="insurance-list-form-section" style="border-top:2px solid #e8f4fd;padding-top:16px;">';
+            h += '<div class="insurance-list-form-section-title">🔍 查勘信息管理</div>';
+            h += row(cell('查勘有无', surveyExists === 'no' ? '无' : '有') + cell('查勘人员姓名', g('surveyorName')));
+            h += row(cell('查勘人员联系手机', g('surveyorPhone')) + cell('查勘时间', g('surveyTime')));
+            h += row(cell('估损金额', money(g('surveyEstLoss'))) + cell('在线查勘报告图片', '（见附件）'));
+            h += cell('查勘描述', g('surveyDesc'));
+            h += '</div>';
+
+            // 定损信息管理
+            h += '<div class="insurance-list-form-section" style="border-top:2px solid #e8f4fd;padding-top:16px;">';
+            h += '<div class="insurance-list-form-section-title">💰 定损信息管理</div>';
+            h += row(cell('定损总金额', money(g('assessTotal'))) + cell('从业人员伤亡定损金额', money(g('assessEmpInjury'))));
+            h += row(cell('第三者人身伤亡定损金额', money(g('assessThirdPartyInjury'))) + cell('医疗费用定损金额', money(g('assessMedical'))));
+            h += row(cell('被保险约定理赔费用金额', money(g('assessAgreedFee'))) + cell('其他理赔金额', money(g('assessOther'))));
+            h += '</div>';
+
+            // 赔付信息管理
+            h += '<div class="insurance-list-form-section" style="border-top:2px solid #e8f4fd;padding-top:16px;">';
+            h += '<div class="insurance-list-form-section-title">💳 赔付信息管理</div>';
+            h += cell('赔付总金额', money(g('payTotal')));
+            h += row(cell('人员人身伤亡赔付', (payInjuryHas === 'no' ? '无' : '有') + (g('payInjuryAmount') ? '（' + money(g('payInjuryAmount')) + '）' : '')) + cell('第三者财产赔付', (payPropertyHas === 'no' ? '无' : '有') + (g('payPropertyAmount') ? '（' + money(g('payPropertyAmount')) + '）' : '')));
+            h += row(cell('非强制救助费用赔付金额', money(g('payRescue'))) + cell('医疗费用赔付金额', money(g('payMedical'))));
+            h += row(cell('事故鉴定费用赔付金额', money(g('payAppraisal'))) + cell('法律诉讼费用赔付金额', money(g('payLegal'))));
+            h += row(cell('其他费用赔付金额', money(g('payOtherFee'))) + cell('付款类型', g('payType')));
+            h += cell('核赔说明', g('payNote'));
+            h += cell('付款凭证', '（见附件）');
+            h += cell('上传附件', '（见附件）');
+            h += '</div>';
+
+            h += '</div><!-- end viewClaimAdvancedArea -->';
+            return h;
+        }
+
+        function toggleViewClaimAdvanced() {
+            var area = document.getElementById('viewClaimAdvancedArea');
+            var toggle = document.getElementById('viewClaimAdvancedToggle');
+            var textEl = document.getElementById('viewClaimAdvancedToggleText');
+            if (!area) return;
+            var isExpanded = area.style.display === 'block';
+            if (isExpanded) {
+                area.style.display = '';
+                toggle.classList.remove('expanded');
+                textEl.textContent = '展开高级字段（查勘 / 定损 / 赔付明细等）';
+            } else {
+                area.style.display = 'block';
+                toggle.classList.add('expanded');
+                textEl.textContent = '收起高级字段';
+            }
+        }
+
         function viewClaimDetail(id) {
             var claim = claimData.find(function(item) { return item.id === id; });
             if (!claim) return;
@@ -44319,7 +44983,15 @@ function showPcPortalSelector() {
             basicInfoContainer.innerHTML = claimContentHtml;
             basicInfoContainer.style.display = 'block';
             basicInfoContainer.style.gridTemplateColumns = 'none';
-            
+
+            // 注入高级字段（默认隐藏，点击展开）
+            var contentTabEl = document.getElementById('tab-claim-content');
+            if (contentTabEl) {
+                var advWrap = document.createElement('div');
+                advWrap.innerHTML = buildViewClaimAdvancedHtml(claim);
+                while (advWrap.firstChild) { contentTabEl.appendChild(advWrap.firstChild); }
+            }
+
             var viewCoverageInfo = document.getElementById('viewCoverageInfo');
             if (viewCoverageInfo) {
                 viewCoverageInfo.innerHTML = generateClaimAnalysisHtml(claim);
@@ -44757,7 +45429,7 @@ function showPcPortalSelector() {
             // 重置表单
             document.getElementById('claimFormId').value = '';
             document.getElementById('claimFormDrawerTitle').textContent = '新增理赔';
-            // 清空所有输入
+            // 清空所有输入 — 基础字段
             ['claimFormInsuredName','claimFormPolicyNo','claimFormAccidentLocation','claimFormEstimatedLoss','claimFormClaimAmount','claimFormRemark'].forEach(function(id) {
                 var el = document.getElementById(id); if (el) el.value = '';
             });
@@ -44771,14 +45443,138 @@ function showPcPortalSelector() {
             document.getElementById('claimFormDeathCount').value = '0';
             document.getElementById('claimFormInjuryCount').value = '0';
             document.getElementById('claimFormStatus').value = '已报案';
+
+            // 清空高级字段
+            _resetClaimAdvancedFields();
+
+            // 收起高级区
+            var advArea = document.getElementById('claimAdvancedArea');
+            var advToggle = document.getElementById('claimAdvancedToggle');
+            var advText = document.getElementById('claimAdvancedToggleText');
+            if (advArea) advArea.style.display = '';
+            if (advToggle) advToggle.classList.remove('expanded');
+            if (advText) advText.textContent = '展开高级字段（查勘 / 定损 / 赔付明细等）';
+
             // 显示抽屉
             showDrawer('claimFormDrawer');
+        }
+
+        /* 清空所有高级字段 */
+        function _resetClaimAdvancedFields() {
+            var ids = [
+                'claimFormApplyReason','claimFormReporterName','claimFormReporterPhone',
+                'claimFormAccidentTime','claimFormCaseTime','claimFormCaseNo',
+                'claimFormAccidentDetailAddr','claimFormAccidentDesc',
+                'claimFormSurveyorName','claimFormSurveyorPhone','claimFormSurveyTime',
+                'claimFormSurveyEstLoss','claimFormSurveyDesc',
+                'claimFormAssessTotal','claimFormAssessEmpInjury','claimFormAssessThirdPartyInjury',
+                'claimFormAssessMedical','claimFormAssessAgreedFee','claimFormAssessOther',
+                'claimFormPayTotal','claimPayRescue','claimPayMedical','claimPayAppraisal',
+                'claimPayLegal','claimPayOtherFee','claimPayNote','claimFormPayType'
+            ];
+            ids.forEach(function(id){ var el=document.getElementById(id); if(el) el.value=''; });
+
+            // 重置单选
+            var surveyYes = document.querySelector('input[name="claimSurveyExists"][value="yes"]');
+            if (surveyYes) surveyYes.checked = true;
+
+            // 重置赔付明细区
+            var injNo = document.querySelector('input[name="claimPayInjuryHas"][value="no"]');
+            if (injNo) { injNo.checked = true; toggleClaimPaySection('injury','no'); }
+            var propNo = document.querySelector('input[name="claimPayPropertyHas"][value="no"]');
+            if (propNo) { propNo.checked = true; toggleClaimPaySection('property','no'); }
+
+            // 清除动态行
+            var extraInjury = document.getElementById('claimPayInjuryExtraRows');
+            if (extraInjury) extraInjury.innerHTML = '';
+            var extraProp = document.getElementById('claimPayPropertyExtraRows');
+            if (extraProp) extraProp.innerHTML = '';
+            _claimInjuryRowIdx = 1;
+            _claimPropRowIdx = 1;
         }
 
         // 关闭理赔抽屉
         function closeClaimFormDrawer() {
             closeDrawer('claimFormDrawer');
         }
+
+        /* ====== 高级字段折叠/展开 ====== */
+        function toggleClaimAdvanced() {
+            var area = document.getElementById('claimAdvancedArea');
+            var toggle = document.getElementById('claimAdvancedToggle');
+            var textEl = document.getElementById('claimAdvancedToggleText');
+            if (!area) return;
+            var isExpanded = area.style.display === 'block';
+            if (isExpanded) {
+                area.style.display = '';
+                toggle.classList.remove('expanded');
+                textEl.textContent = '展开高级字段（查勘 / 定损 / 赔付明细等）';
+            } else {
+                area.style.display = 'block';
+                toggle.classList.add('expanded');
+                textEl.textContent = '收起高级字段';
+            }
+        }
+
+        /* ====== 赔付明细区显隐切换 ====== */
+        function toggleClaimPaySection(type, val) {
+            if (type === 'injury') {
+                document.getElementById('claimPayInjuryDetailArea').style.display = (val === 'yes') ? '' : 'none';
+                document.getElementById('claimPayInjuryAmountWrap').style.display = (val === 'yes') ? '' : 'none';
+            } else if (type === 'property') {
+                document.getElementById('claimPayPropertyDetailArea').style.display = (val === 'yes') ? '' : 'none';
+                document.getElementById('claimPayPropertyAmountWrap').style.display = (val === 'yes') ? '' : 'none';
+            }
+        }
+
+        /* ====== 动态增行：人伤记录 ====== */
+        var _claimInjuryRowIdx = 1;
+        function addClaimPayInjuryRow() {
+            var i = _claimInjuryRowIdx++;
+            var container = document.getElementById('claimPayInjuryExtraRows');
+            var html = '<div id="injuryRow_' + i + '" style="border-top:1px dashed #e8e8e8;padding-top:10px;margin-bottom:10px;">' +
+                '<div class="insurance-list-form-row" style="margin-bottom:8px;">' +
+                    '<div class="insurance-list-form-group"><label class="insurance-list-form-label">人员类别</label>' +
+                        '<select class="insurance-list-form-select" id="claimPayInjuryCat_' + i +'"><option value="">请选择</option><option value="从业人员">从业人员</option><option value="第三者">第三者</option></select></div>' +
+                    '<div class="insurance-list-form-group"><label class="insurance-list-form-label">人员姓名</label>' +
+                        '<input type="text" class="insurance-list-form-input" id="claimPayInjuryName_' + i +'" placeholder="请输入"></div>' +
+                '</div>' +
+                '<div class="insurance-list-form-row" style="margin-bottom:8px;">' +
+                    '<div class="insurance-list-form-group"><label class="insurance-list-form-label">证件类型及号码</label>' +
+                        '<input type="text" class="insurance-list-form-input" id="claimPayInjuryIdNo_' + i +'" placeholder="请输入"></div>' +
+                    '<div class="insurance-list-form-group"><label class="insurance-list-form-label">伤亡情况</label>' +
+                        '<select class="insurance-list-form-select" id="claimPayInjuryStatus_' + i +'"><option value="">请选择</option><option value="死亡">死亡</option><option value="重伤">重伤</option><option value="轻伤">轻伤</option><option value="残疾">残疾</option></select></div>' +
+                '</div>' +
+                '<div class="insurance-list-form-group" style="margin-bottom:4px;"><label class="insurance-list-form-label">证明文件</label>' +
+                    '<div class="claim-file-upload"><input type="file" id="claimPayInjuryProof_' + i +'" accept=".jpg,.png,.pdf"><span>📎 点击上传文件</span></div></div>' +
+                '<div style="text-align:right;"><button type="button" onclick="document.getElementById(\'injuryRow_' + i +'\').remove()" style="border:none;background:none;color:#ff4d4f;cursor:pointer;font-size:12px;padding:2px 8px;">✕ 删除本条</button></div>' +
+            '</div>';
+            container.insertAdjacentHTML('beforeend', html);
+        }
+
+        /* ====== 动态增行：第三者财产记录 ====== */
+        var _claimPropRowIdx = 1;
+        function addClaimPayPropertyRow() {
+            var i = _claimPropRowIdx++;
+            var container = document.getElementById('claimPayPropertyExtraRows');
+            var html = '<div id="propRow_' + i + '" style="border-top:1px dashed #e8e8e8;padding-top:10px;margin-bottom:10px;">' +
+                '<div class="insurance-list-form-row" style="margin-bottom:8px;">' +
+                    '<div class="insurance-list-form-group"><label class="insurance-list-form-label">第三者名称</label>' +
+                        '<input type="text" class="insurance-list-form-input" id="claimPayPropName_' + i +'" placeholder="请输入"></div>' +
+                    '<div class="insurance-list-form-group"><label class="insurance-list-form-label">财产名称</label>' +
+                        '<input type="text" class="insurance-list-form-input" id="claimPayPropItem_' + i +'" placeholder="请输入"></div>' +
+                '</div>' +
+                '<div class="insurance-list-form-group" style="margin-bottom:4px;"><label class="insurance-list-form-label">权属证明文件</label>' +
+                    '<div class="claim-file-upload"><input type="file" id="claimPayPropProof_' + i +'" accept=".jpg,.png,.pdf"><span>📎 点击上传文件</span></div></div>' +
+                '<div style="text-align:right;"><button type="button" onclick="document.getElementById(\'propRow_' + i +'\').remove()" style="border:none;background:none;color:#ff4d4f;cursor:pointer;font-size:12px;padding:2px 8px;">✕ 删除本条</button></div>' +
+            '</div>';
+            container.insertAdjacentHTML('beforeend', html);
+        }
+
+        /* 简写：安全回填 / 取值 / 单选取值 */
+        function _val(id, v){ var el=document.getElementById(id); if(el) el.value=(v!=null?v:''); }
+        function _gv(id){ var el=document.getElementById(id); return el?el.value:''; }
+        function _radioVal(name,dflt){ var r=document.querySelector('input[name="'+name+'"]:checked'); return r?r.value:dflt; }
 
         // 编辑理赔 - 回填数据
         function editClaim(id) {
@@ -44803,7 +45599,52 @@ function showPcPortalSelector() {
             document.getElementById('claimFormEstimatedLoss').value = claim.estimatedLoss || '';
             document.getElementById('claimFormClaimAmount').value = claim.claimAmount || '';
             document.getElementById('claimFormStatus').value = claim.status || '已报案';
-            document.getElementById('claimFormRemark').value = '';
+            document.getElementById('claimFormRemark').value = claim.remark || '';
+
+            // ====== 回填高级字段 ======
+            _val('claimFormApplyReason', claim.applyReason);
+            _val('claimFormReporterName', claim.reporterName);
+            _val('claimFormReporterPhone', claim.reporterPhone);
+            _val('claimFormAccidentTime', (claim.accidentTime||'').replace(' ','T'));
+            _val('claimFormCaseTime', claim.caseTime);
+            _val('claimFormCaseNo', claim.caseNo);
+            _val('claimFormAccidentDetailAddr', claim.accidentDetailAddr);
+            _val('claimFormAccidentDesc', claim.accidentDesc);
+
+            // 查勘
+            if(claim.surveyExists === 'no'){
+                var sr=document.querySelector('input[name="claimSurveyExists"][value="no"]'); if(sr) sr.checked=true;
+            }
+            _val('claimFormSurveyorName', claim.surveyorName);
+            _val('claimFormSurveyorPhone', claim.surveyorPhone);
+            _val('claimFormSurveyTime', claim.surveyTime);
+            _val('claimFormSurveyEstLoss', claim.surveyEstLoss);
+            _val('claimFormSurveyDesc', claim.surveyDesc);
+
+            // 定损
+            _val('claimFormAssessTotal', claim.assessTotal);
+            _val('claimFormAssessEmpInjury', claim.assessEmpInjury);
+            _val('claimFormAssessThirdPartyInjury', claim.assessThirdPartyInjury);
+            _val('claimFormAssessMedical', claim.assessMedical);
+            _val('claimFormAssessAgreedFee', claim.assessAgreedFee);
+            _val('claimFormAssessOther', claim.assessOther);
+
+            // 赔付
+            _val('claimFormPayTotal', claim.payTotal);
+            _val('claimPayRescue', claim.payRescue);
+            _val('claimPayMedical', claim.payMedical);
+            _val('claimPayAppraisal', claim.payAppraisal);
+            _val('claimPayLegal', claim.payLegal);
+            _val('claimPayOtherFee', claim.payOtherFee);
+            _val('claimPayNote', claim.payNote);
+            _val('claimFormPayType', claim.payType);
+
+            // 人伤/财产明细
+            if(claim.payInjuryHas==='yes'){ var r1=document.querySelector('input[name="claimPayInjuryHas"][value="yes"]');if(r1){r1.checked=true;toggleClaimPaySection('injury','yes');} }
+            _val('claimPayInjuryAmount', claim.payInjuryAmount);
+            if(claim.payPropertyHas==='yes'){ var r2=document.querySelector('input[name="claimPayPropertyHas"][value="yes"]');if(r2){r2.checked=true;toggleClaimPaySection('property','yes');} }
+            _val('claimPayPropertyAmount', claim.payPropertyAmount);
+
             // 显示抽屉
             showDrawer('claimFormDrawer');
         }
@@ -44838,7 +45679,45 @@ function showPcPortalSelector() {
             var reportTimeStr = reportTime.replace('T', ' ');
             var closingTime = document.getElementById('claimFormClosingTime').value;
             var claimAmount = parseFloat(document.getElementById('claimFormClaimAmount').value) || 0;
+            var remark = document.getElementById('claimFormRemark').value.trim();
             var editId = parseInt(document.getElementById('claimFormId').value);
+
+            // 收集高级字段（全部选填，不校验）
+            var adv = {
+                remark: remark,
+                applyReason: _gv('claimFormApplyReason'),
+                reporterName: _gv('claimFormReporterName'),
+                reporterPhone: _gv('claimFormReporterPhone'),
+                accidentTime: _gv('claimFormAccidentTime').replace('T',' '),
+                caseTime: _gv('claimFormCaseTime'),
+                caseNo: _gv('claimFormCaseNo'),
+                accidentDetailAddr: _gv('claimFormAccidentDetailAddr'),
+                accidentDesc: _gv('claimFormAccidentDesc'),
+                surveyExists: _radioVal('claimSurveyExists','yes'),
+                surveyorName: _gv('claimFormSurveyorName'),
+                surveyorPhone: _gv('claimFormSurveyorPhone'),
+                surveyTime: _gv('claimFormSurveyTime'),
+                surveyEstLoss: parseFloat(_gv('claimFormSurveyEstLoss'))||0,
+                surveyDesc: _gv('claimFormSurveyDesc'),
+                assessTotal: parseFloat(_gv('claimFormAssessTotal'))||0,
+                assessEmpInjury: parseFloat(_gv('claimFormAssessEmpInjury'))||0,
+                assessThirdPartyInjury: parseFloat(_gv('claimFormAssessThirdPartyInjury'))||0,
+                assessMedical: parseFloat(_gv('claimFormAssessMedical'))||0,
+                assessAgreedFee: parseFloat(_gv('claimFormAssessAgreedFee'))||0,
+                assessOther: parseFloat(_gv('claimFormAssessOther'))||0,
+                payTotal: parseFloat(_gv('claimFormPayTotal'))||0,
+                payRescue: parseFloat(_gv('claimPayRescue'))||0,
+                payMedical: parseFloat(_gv('claimPayMedical'))||0,
+                payAppraisal: parseFloat(_gv('claimPayAppraisal'))||0,
+                payLegal: parseFloat(_gv('claimPayLegal'))||0,
+                payOtherFee: parseFloat(_gv('claimPayOtherFee'))||0,
+                payNote: _gv('claimPayNote'),
+                payType: _gv('claimFormPayType'),
+                payInjuryHas: _radioVal('claimPayInjuryHas','no'),
+                payInjuryAmount: parseFloat(_gv('claimPayInjuryAmount'))||0,
+                payPropertyHas: _radioVal('claimPayPropertyHas','no'),
+                payPropertyAmount: parseFloat(_gv('claimPayPropertyAmount'))||0
+            };
 
             if (editId) {
                 // 编辑模式 - 更新已有数据
@@ -44859,6 +45738,8 @@ function showPcPortalSelector() {
                     item.estimatedLoss = parseFloat(estimatedLoss) || 0;
                     item.claimAmount = claimAmount;
                     item.status = status;
+                    // 合并高级字段
+                    Object.keys(adv).forEach(function(k){ item[k]=adv[k]; });
                     // 同步到 filteredData
                     var fItem = claimFilteredData.find(function(d) { return d.id === editId; });
                     if (fItem) {
@@ -44890,6 +45771,8 @@ function showPcPortalSelector() {
                     yearGrowth: 0,
                     avgEnterpriseClaim: 0
                 };
+                // 合并高级字段
+                Object.keys(adv).forEach(function(k){ newItem[k]=adv[k]; });
                 claimData.push(newItem);
                 claimFilteredData.push(newItem);
             }
@@ -53683,12 +54566,74 @@ function showPcPortalSelector() {
 
         /* ============ 监测规则配置模块 JS区域 ============ */
         var mrcCityConfigs = {
-            huizhou: { tag:'惠州市', empDeath:110, empMedical:10, thirdDeath:110, thirdMedical:10, thirdProperty:100, rescue:20, legal:20, totalLimit:5000, baseRate:0.2 },
-            guangzhou: { tag:'广州市', empDeath:120, empMedical:12, thirdDeath:120, thirdMedical:12, thirdProperty:120, rescue:25, legal:25, totalLimit:8000, baseRate:0.25 },
-            shenzhen: { tag:'深圳市', empDeath:130, empMedical:15, thirdDeath:130, thirdMedical:15, thirdProperty:150, rescue:30, legal:30, totalLimit:10000, baseRate:0.28 },
-            foshan: { tag:'佛山市', empDeath:110, empMedical:10, thirdDeath:110, thirdMedical:10, thirdProperty:100, rescue:20, legal:20, totalLimit:5000, baseRate:0.2 },
-            dongguan: { tag:'东莞市', empDeath:115, empMedical:11, thirdDeath:115, thirdMedical:11, thirdProperty:110, rescue:22, legal:22, totalLimit:6000, baseRate:0.22 }
+            huizhou: { tag:'惠州市', empDeath:110, empMedical:10, thirdDeath:110, thirdMedical:10, thirdProperty:100, rescue:20, legal:20, totalLimit:5000, baseRate:0.2, effectiveDate:'' },
+            guangzhou: { tag:'广州市', empDeath:120, empMedical:12, thirdDeath:120, thirdMedical:12, thirdProperty:120, rescue:25, legal:25, totalLimit:8000, baseRate:0.25, effectiveDate:'' },
+            shenzhen: { tag:'深圳市', empDeath:130, empMedical:15, thirdDeath:130, thirdMedical:15, thirdProperty:150, rescue:30, legal:30, totalLimit:10000, baseRate:0.28, effectiveDate:'' },
+            foshan: { tag:'佛山市', empDeath:110, empMedical:10, thirdDeath:110, thirdMedical:10, thirdProperty:100, rescue:20, legal:20, totalLimit:5000, baseRate:0.2, effectiveDate:'' },
+            dongguan: { tag:'东莞市', empDeath:115, empMedical:11, thirdDeath:115, thirdMedical:11, thirdProperty:110, rescue:22, legal:22, totalLimit:6000, baseRate:0.22, effectiveDate:'' }
         };
+
+        // 规则生效时间覆盖（持久化到 localStorage，保存后刷新不丢失）
+        var MRC_EFF_KEY = 'mrc_effective_dates_v1';
+        var mrcEffectiveOverrides = {};
+        (function(){
+            try {
+                var raw = localStorage.getItem(MRC_EFF_KEY);
+                if (raw) mrcEffectiveOverrides = JSON.parse(raw) || {};
+            } catch(e) { mrcEffectiveOverrides = {}; }
+        })();
+        function mrcPersistEffective(){
+            try { localStorage.setItem(MRC_EFF_KEY, JSON.stringify(mrcEffectiveOverrides)); } catch(e) {}
+        }
+        // 取某城市的规则生效时间（覆盖优先，否则取默认配置）
+        function mrcGetEffectiveDate(city){
+            if (city === undefined || city === null) {
+                var sel = document.getElementById('mrcCitySelect');
+                city = sel ? sel.value : 'huizhou';
+            }
+            if (mrcEffectiveOverrides[city] !== undefined && mrcEffectiveOverrides[city] !== null) {
+                return mrcEffectiveOverrides[city] || '';
+            }
+            return (mrcCityConfigs[city] && mrcCityConfigs[city].effectiveDate) || '';
+        }
+        // 全局生效时间（基于当前选中的监测城市配置）
+        function getMrcEffectiveDate(){ return mrcGetEffectiveDate(); }
+        // 保单是否纳入监测：起保时间(startDate) >= 规则生效时间 才纳入；生效时间为空表示不限制
+        function isPolicyUnderMonitor(item, effDate){
+            effDate = (effDate === undefined) ? getMrcEffectiveDate() : effDate;
+            if (!effDate) return true;
+            if (!item || !item.startDate) return true;
+            // startDate / effDate 均为 YYYY-MM-DD 字符串，字典序比较即日期比较
+            return String(item.startDate) >= String(effDate);
+        }
+        // 更新生效时间卡片中的纳入/未纳入统计
+        function updateMrcEffectiveStat(){
+            var inEl = document.getElementById('mrcEffInCount');
+            var outEl = document.getElementById('mrcEffOutCount');
+            var noteEl = document.getElementById('mrcEffNote');
+            if (!inEl || !outEl) return;
+            var eff = getMrcEffectiveDate();
+            var inCount = 0, outCount = 0, sample = null;
+            if (typeof insuranceData !== 'undefined' && insuranceData.length) {
+                insuranceData.forEach(function(it){
+                    if (isPolicyUnderMonitor(it, eff)) inCount++; else { outCount++; if (!sample) sample = it; }
+                });
+            }
+            inEl.textContent = inCount;
+            outEl.textContent = outCount;
+            if (noteEl) {
+                if (!eff) {
+                    noteEl.style.display = '';
+                    noteEl.innerHTML = 'ℹ️ 当前未设置规则生效时间，<b>全部保单均纳入监测</b>。设置后，起保时间早于该日期的保单将被移出监测范围。';
+                } else if (outCount > 0) {
+                    noteEl.style.display = '';
+                    noteEl.innerHTML = '⚠️ 规则生效时间 <b>' + eff + '</b>：共有 <b>' + outCount + '</b> 张保单起保时间早于该日期，已<b>不纳入监测</b>' + (sample ? '（示例：' + (sample.companyName || '') + ' 起保 ' + (sample.startDate || '') + '）' : '') + '。';
+                } else {
+                    noteEl.style.display = '';
+                    noteEl.innerHTML = '✅ 规则生效时间 <b>' + eff + '</b>：当前在库保单起保时间均 ≥ 该日期，<b>全部纳入监测</b>。';
+                }
+            }
+        }
 
         function initMrcPage(){
             switchMrcCity();
@@ -53708,7 +54653,20 @@ function showPcPortalSelector() {
             document.getElementById('mrcLegal').value = cfg.legal;
             document.getElementById('mrcTotalLimit').value = cfg.totalLimit;
             document.getElementById('mrcBaseRate').value = cfg.baseRate;
+            // 规则生效时间
+            var effEl = document.getElementById('mrcEffectiveDate');
+            var tagEl = document.getElementById('mrcEffCityTag');
+            if (effEl) effEl.value = mrcGetEffectiveDate(city);
+            if (tagEl) tagEl.textContent = cfg.tag;
+            updateMrcEffectiveStat();
             calcMrcRate();
+        }
+        // 规则生效时间变更：实时刷新统计（保存后才会写入持久化与监测门控）
+        function onMrcEffectiveChange(){
+            var city = document.getElementById('mrcCitySelect').value;
+            var val = document.getElementById('mrcEffectiveDate').value || '';
+            mrcEffectiveOverrides[city] = val; // 暂存到内存，保存后持久化
+            updateMrcEffectiveStat();
         }
         function toggleMrcCollapse(headerEl){
             var body = headerEl.nextElementSibling;
@@ -53761,8 +54719,9 @@ function showPcPortalSelector() {
         }
         function saveMrcConfig(){
             /* 收集配置（模拟保存） */
+            var city = document.getElementById('mrcCitySelect').value;
             var config = {
-                city: document.getElementById('mrcCitySelect').value,
+                city: city,
                 empDeath: document.getElementById('mrcEmpDeath').value,
                 empMedical: document.getElementById('mrcEmpMedical').value,
                 thirdDeath: document.getElementById('mrcThirdDeath').value,
@@ -53771,10 +54730,16 @@ function showPcPortalSelector() {
                 rescue: document.getElementById('mrcRescue').value,
                 legal: document.getElementById('mrcLegal').value,
                 totalLimit: document.getElementById('mrcTotalLimit').value,
-                baseRate: document.getElementById('mrcBaseRate').value
+                baseRate: document.getElementById('mrcBaseRate').value,
+                effectiveDate: document.getElementById('mrcEffectiveDate').value || ''
             };
+            // 写入模型与持久化
+            if (mrcCityConfigs[city]) mrcCityConfigs[city].effectiveDate = config.effectiveDate;
+            mrcEffectiveOverrides[city] = config.effectiveDate;
+            mrcPersistEffective();
+            updateMrcEffectiveStat();
             console.log('[监测规则] 保存草稿:', config);
-            alert('配置已保存为草稿（' + mrcCityConfigs[config.city].tag + '）。');
+            alert('配置已保存为草稿（' + mrcCityConfigs[city].tag + '）。\n规则生效时间：' + (config.effectiveDate || '（不限制，全部纳入监测）'));
         }
         function publishMrcConfig(){
             if(!confirm('确定发布当前配置？发布后AI预警模块将实时读取最新规则。')){
@@ -53786,6 +54751,9 @@ function showPcPortalSelector() {
         }
         function resetMrcConfig(){
             if(!confirm('确定重置为默认配置？当前修改将丢失。')) return;
+            var city = document.getElementById('mrcCitySelect').value;
+            delete mrcEffectiveOverrides[city];
+            mrcPersistEffective();
             switchMrcCity();
         }
 
@@ -57791,7 +58759,7 @@ function showPcPortalSelector() {
                 html += '<td style="overflow:hidden;text-overflow:ellipsis;white-space:nowrap;" title="' + item.relatedInsurance + '">' + item.relatedInsurance + '</td>';
                 html += '<td style="text-align:center;">' + rectifyRateHtml + '</td>';
                 html += '<td><span class="insurance-list-tag insurance-list-tag-green">' + item.status + '</span></td>';
-                html += '<td class="col-action"><button class="insurance-list-btn insurance-list-btn-outline insurance-list-btn-xs" onclick="editSO(' + item.id + ')">编辑</button><button class="insurance-list-btn insurance-list-btn-gray insurance-list-btn-xs" onclick="viewSODetail(' + item.id + ')" style="margin-left:4px;">查看</button><button class="insurance-list-btn insurance-list-btn-xs" style="margin-left:4px;background:#722ed1;color:#fff;border-color:#722ed1;" onclick="openServiceProductPage(' + item.id + ')">价格配置</button><button class="insurance-list-btn insurance-list-btn-red insurance-list-btn-xs" onclick="deleteSO(' + item.id + ')" style="margin-left:4px;">删除</button></td>';
+                html += '<td class="col-action"><button class="insurance-list-btn insurance-list-btn-outline insurance-list-btn-xs" onclick="editSO(' + item.id + ')">编辑</button><button class="insurance-list-btn insurance-list-btn-gray insurance-list-btn-xs" onclick="viewSODetail(' + item.id + ')" style="margin-left:4px;">查看</button><button class="insurance-list-btn insurance-list-btn-red insurance-list-btn-xs" onclick="deleteSO(' + item.id + ')" style="margin-left:4px;">删除</button></td>';
                 html += '</tr>';
             });
             tbody.innerHTML = html;
@@ -57806,18 +58774,18 @@ function showPcPortalSelector() {
 
 // 7大服务项数据
 var serviceProductDefs = [
-    {id:1, name:'安全教育培训', icon:'📚', subProducts:[
+    {id:1, name:'安全生产宣传教育培训', icon:'📚', subProducts:[
         {key:'online', name:'线上培训', unit:'元/人次'},
         {key:'offline_small', name:'线下培训-9家以下', unit:'元/场'},
         {key:'offline_large', name:'线下培训-10家以上', unit:'元/场'},
         {key:'manual', name:'印制手册', unit:'元/本'}
     ]},
-    {id:2, name:'安全隐患排查', icon:'🔍', subProducts:[]},
-    {id:3, name:'安全生产标准化', icon:'📋', subProducts:[]},
-    {id:4, name:'应急预案编制', icon:'🆘', subProducts:[]},
-    {id:5, name:'应急演练', icon:'🏋️', subProducts:[]},
-    {id:6, name:'安全风险评估', icon:'⚖️', subProducts:[]},
-    {id:7, name:'职业病防治', icon:'🏥', subProducts:[]}
+    {id:2, name:'安全风险辨识评估和安全评价', icon:'🔍', subProducts:[]},
+    {id:3, name:'生产安全事故隐患排查', icon:'📋', subProducts:[]},
+    {id:4, name:'安全生产标准化建设', icon:'📐', subProducts:[]},
+    {id:5, name:'生产安全事故应急预案编制与演练', icon:'🆘', subProducts:[]},
+    {id:6, name:'安全生产科技推广应用', icon:'💡', subProducts:[]},
+    {id:7, name:'其他有关事故预防工作', icon:'🛡️', subProducts:[]}
 ];
 
 // 当前机构ID
@@ -57865,9 +58833,14 @@ function openServiceProductPage(orgId) {
     currentSPOrgId = orgId;
     var org = serviceOrgData.find(function(d) { return d.id === orgId; });
     if (!org) return;
-    // 隐藏服务机构列表
-    var el = document.getElementById('serviceOrgListContent');
-    if (el) el.style.display = 'none';
+    // 根据来源隐藏对应页面：来自价格体系页则隐藏价格体系页，否则隐藏服务机构列表
+    if (psReturnTo === 'priceConfig') {
+        var cfgEl = document.getElementById('servicePriceConfigContent');
+        if (cfgEl) cfgEl.style.display = 'none';
+    } else {
+        var el = document.getElementById('serviceOrgListContent');
+        if (el) el.style.display = 'none';
+    }
     // 显示商品管理页
     el = document.getElementById('serviceProductListContent');
     if (el) el.style.display = '';
@@ -57876,10 +58849,947 @@ function openServiceProductPage(orgId) {
 }
 
 function backToServiceOrgList() {
-    var el = document.getElementById('serviceProductListContent');
-    if (el) el.style.display = 'none';
-    el = document.getElementById('serviceOrgListContent');
+    var spEl = document.getElementById('serviceProductListContent');
+    if (spEl) spEl.style.display = 'none';
+    // 若由“服务机构价格配置”页进入价格配置，返回时回到价格体系详情
+    if (psReturnTo === 'priceConfig') {
+        psReturnTo = null;
+        var cfgEl = document.getElementById('servicePriceConfigContent');
+        if (cfgEl) { cfgEl.style.display = ''; renderPsSystemDetail(); }
+        return;
+    }
+    var el = document.getElementById('serviceOrgListContent');
     if (el) { el.style.display = ''; renderSOTable(); }
+}
+
+// ========== 服务机构价格配置（价格体系） ==========
+// 核心模型：价格体系 = 一套完整价格方案，包含 7 大服务类型各自独立的价格配置（计价模型/规格/收费项/SKU表）。
+// 每个服务类型可独立选择：一口价 / 多规格阶梯价 / 需询价。
+// 定义好的体系统一"应用"到关联的服务机构；机构继承体系价格，不得单独改价。
+// 每个服务机构只能关联一个价格体系。
+
+/** 为指定服务类型构建默认价格配置数据 */
+function _psBuildDefaultServiceConfig(serviceId) {
+    var def = serviceProductDefs.find(function(d) { return d.id === serviceId; });
+    if (!def) return { pricingModel: 'fixed', fixedPrice: 0, specs: [], subProducts: [], skuData: [] };
+    var isTraining = (serviceId === 1);
+    return {
+        pricingModel: isTraining ? 'tiered' : 'fixed',
+        fixedPrice: isTraining ? null : 0,
+        specs: isTraining ? [{ name: '企业营收规模', values: ['0-10', '10-20', '20-30', '30-40', '40以上'] }] : [],
+        subProducts: (def.subProducts && def.subProducts.length)
+            ? def.subProducts.map(function(sp) { return { key: sp.key, name: sp.name, unit: sp.unit || '元' }; })
+            : [],
+        skuData: []
+    };
+}
+
+/** 构建默认的 services 数组（7 大类型）*/
+function _psBuildDefaultServices() {
+    return serviceProductDefs.map(function(d) {
+        var cfg = _psBuildDefaultServiceConfig(d.id);
+        if (cfg.pricingModel === 'tiered' && cfg.specs.length && cfg.subProducts.length) {
+            cfg.skuData = _pspeGenDefaultSkuData(cfg.specs, cfg.subProducts);
+        }
+        return { serviceId: d.id, name: d.name, icon: d.icon };
+    });
+}
+
+/** 为阶梯价模式预生成默认 SKU 数据 */
+function _pspeGenDefaultSkuData(specs, subProducts) {
+    if (!specs.length || !specs[0].values.length) return [];
+    var basePrices = { online: 95, offline_small: 3325, offline_large: 4275, manual: 28.5 };
+    return specs[0].values.map(function(val, idx) {
+        var items = {};
+        subProducts.forEach(function(sp) {
+            items[sp.key] = { marketPrice: '', sellPrice: basePrices[sp.key] || 0, stock: 9999, code: 'AUTO-' + String(idx + 1).padStart(3, '0') };
+        });
+        return { specValue: val, items: items };
+    });
+}
+
+/** 计算某服务体系的总价格 */
+function _psComputeSystemTotal(s) {
+    var total = 0;
+    (s.services || []).forEach(function(svc) {
+        if (svc.pricingModel === 'fixed' && svc.fixedPrice) {
+            total += Number(svc.fixedPrice) || 0;
+        } else if (svc.pricingModel === 'tiered' && svc.skuData && svc.skuData.length) {
+            var min = Infinity;
+            svc.skuData.forEach(function(row) {
+                Object.keys(row.items || {}).forEach(function(k) {
+                    var v = Number((row.items[k] || {}).sellPrice) || 0;
+                    if (v > 0 && v < min) min = v;
+                });
+            });
+            if (min !== Infinity) total += min;
+        }
+    });
+    return Math.round(total * 100) / 100;
+}
+
+/** 将体系配置转换为机构服务商品数据格式 */
+function _psSystemToProducts(s) {
+    return (s.services || []).map(function(svc) {
+        if (svc.pricingModel === 'fixed') {
+            return { id: svc.serviceId, name: svc.name, icon: svc.icon, pricingModel: 'fixed', fixedPrice: svc.fixedPrice, status: '上架', specs: [], subProducts: [], skuData: [] };
+        } else if (svc.pricingModel === 'tiered') {
+            return { id: svc.serviceId, name: svc.name, icon: svc.icon, pricingModel: 'tiered', status: '上架', specs: JSON.parse(JSON.stringify(svc.specs || [])), subProducts: JSON.parse(JSON.stringify(svc.subProducts || [])), skuData: JSON.parse(JSON.stringify(svc.skuData || [])) };
+        } else {
+            return { id: svc.serviceId, name: svc.name, icon: svc.icon, pricingModel: 'inquiry', fixedPrice: null, status: '上架', specs: [], subProducts: [], skuData: [] };
+        }
+    });
+}
+
+/** 将某体系的最新价格同步应用到其下所有关联机构 */
+function psSyncSystemToOrgs(systemId) {
+    var s = priceSystems.find(function(x) { return x.id === systemId; });
+    if (!s) return;
+    // 将完整 services 配置合并到每个 service 对象中
+    var products = _psSystemToProducts(s);
+    serviceOrgData.forEach(function(o) { if (o.priceSystemId === systemId) spDataMap[o.id] = { products: products }; });
+}
+
+/** 将体系价格应用到单个机构 */
+function psApplySystemToOrg(orgId, systemId) {
+    var s = priceSystems.find(function(x) { return x.id === systemId; });
+    if (s) spDataMap[orgId] = { products: _psSystemToProducts(s) };
+}
+
+var priceSystems = [
+    { id: 1, name: '2026标准价体系', status: '启用', remark: '全市统一基础服务价', services: _psBuildDefaultServices(), totalPrice: 0 },
+    { id: 2, name: '政府补贴专项价', status: '启用', remark: '面向政府统保项目的优惠价', services: _psBuildDefaultServices(), totalPrice: 0 }
+];
+priceSystems.forEach(function(s) { s.totalPrice = _psComputeSystemTotal(s); });
+var psCurrentSystemId = null;   // 当前选中的价格体系ID
+var psReturnTo = null;          // 价格配置来源标记（保留，兼容既有服务商品页返回逻辑）
+var _psAddOrgChecked = {};      // 添加机构弹窗中的临时勾选
+
+// 生成价格体系下拉选项（供服务机构弹窗“关联价格体系”使用）
+function psSystemOptions(selectedId) {
+    var opts = '<option value="">不关联价格体系</option>';
+    priceSystems.forEach(function(s) {
+        opts += '<option value="' + s.id + '"' + (s.id === selectedId ? ' selected' : '') + '>' + s.name + '</option>';
+    });
+    return opts;
+}
+
+function initServicePriceConfig() {
+    if (!psCurrentSystemId || !priceSystems.some(function(s) { return s.id === psCurrentSystemId; })) {
+        psCurrentSystemId = priceSystems.length ? priceSystems[0].id : null;
+    }
+    renderPriceSystemList();
+    renderPsSystemDetail();
+}
+
+function renderPriceSystemList() {
+    var el = document.getElementById('psSystemList');
+    if (!el) return;
+    var countEl = document.getElementById('psSystemCount');
+    if (countEl) countEl.textContent = priceSystems.length;
+    if (!priceSystems.length) {
+        el.innerHTML = '<div style="padding:20px;text-align:center;color:#999;font-size:13px;">暂无价格体系，点击右上角新增</div>';
+        return;
+    }
+    var html = '';
+    priceSystems.forEach(function(s) {
+        var cnt = serviceOrgData.filter(function(o) { return o.priceSystemId === s.id; }).length;
+        var active = (s.id === psCurrentSystemId) ? 'background:#e6f7ff;border-color:#91d5ff;' : 'border-color:#f0f0f0;';
+        html += '<div onclick="selectPriceSystem(' + s.id + ')" style="padding:12px;margin-bottom:8px;border:1px solid;' + active + 'border-radius:8px;cursor:pointer;transition:all .2s;">' +
+            '<div style="display:flex;justify-content:space-between;align-items:center;">' +
+                '<span style="font-size:14px;font-weight:600;color:#333;">' + s.name + '</span>' +
+                '<span class="insurance-list-tag ' + (s.status === '启用' ? 'insurance-list-tag-green' : 'insurance-list-tag-red') + '">' + s.status + '</span>' +
+            '</div>' +
+            '<div style="font-size:12px;color:#999;margin-top:6px;">关联机构：' + cnt + ' 家 ｜ 总价格：¥' + s.totalPrice + '</div>' +
+        '</div>';
+    });
+    el.innerHTML = html;
+}
+
+function selectPriceSystem(id) {
+    psCurrentSystemId = id;
+    renderPriceSystemList();
+    renderPsSystemDetail();
+}
+
+function renderPsSystemDetail() {
+    var el = document.getElementById('psSystemDetail');
+    if (!el) return;
+    var s = priceSystems.find(function(x) { return x.id === psCurrentSystemId; });
+    if (!s) {
+        el.innerHTML = '<div style="background:#fff;border:1px solid #e8e8e8;border-radius:8px;padding:40px;text-align:center;color:#999;">请选择左侧价格体系，或点击右上角新增一个价格体系</div>';
+        return;
+    }
+    var orgs = serviceOrgData.filter(function(o) { return o.priceSystemId === s.id; });
+    var html = '';
+
+    // ========== 1. 体系信息头（含总价格） ==========
+    html += '<div style="background:#fff;border:1px solid #e8e8e8;border-radius:8px;padding:20px;margin-bottom:16px;">';
+    html += '<div style="display:flex;justify-content:space-between;align-items:flex-start;">';
+    html += '<div><h4 style="margin:0 0 6px;font-size:16px;color:#333;">' + s.name + '</h4><div style="font-size:12px;color:#999;">' + (s.remark || '无备注') + '</div></div>';
+    html += '<div style="display:flex;gap:8px;align-items:center;"><div style="text-align:right;margin-right:8px;"><div style="font-size:12px;color:#999;">体系总价格</div><div id="psSystemTotalDisplay" style="font-size:22px;font-weight:700;color:#f5222d;">¥' + s.totalPrice + '</div></div>';
+    html += '<button class="insurance-list-btn insurance-list-btn-outline insurance-list-btn-sm" onclick="showEditPriceSystemModal(' + s.id + ')">编辑</button>';
+    html += '<button class="insurance-list-btn insurance-list-btn-red insurance-list-btn-sm" onclick="deletePriceSystem(' + s.id + ')">删除</button></div>';
+    html += '</div></div>';
+
+    // ========== 2. 7 大服务类型价格配置区 ==========
+    html += '<div style="background:#fff;border:1px solid #e8e8e8;border-radius:8px;padding:20px;margin-bottom:16px;">';
+    html += '<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;">';
+    html += '<h4 style="margin:0;font-size:15px;color:#333;">体系价格配置（7 大服务类型）</h4>';
+    html += '<button class="insurance-list-btn insurance-list-btn-primary insurance-list-btn-sm" onclick="saveSystemPrice()">保存全部配置</button>';
+    html += '</div>';
+    html += '<div style="font-size:12px;color:#999;margin-bottom:14px;">每种服务类型可独立选择计价模型（一口价 / 多规格阶梯价 / 需询价），阶梯价支持自定义规格维度和收费项目。</div>';
+
+    // 渲染每个服务类型的编辑器卡片
+    (s.services || []).forEach(function(svc) {
+        var sid = svc.serviceId;
+        var model = svc.pricingModel || 'fixed';
+        var modelTag = model === 'fixed' ? '一口价' : (model === 'tiered' ? '阶梯价' : '询价');
+        var modelColor = model === 'fixed' ? '#1890ff' : (model === 'tiered' ? '#722ed1' : '#fa8c16');
+
+        html += '<div id="pspe_' + sid + '_card" style="border:1px solid #e8e8e8;border-radius:8px;padding:16px;margin-bottom:16px;background:#fafafa;">';
+        // 服务类型标题栏
+        html += '<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;cursor:pointer;" onclick="pspeToggleCard(' + sid + ')">';
+        html += '<div style="display:flex;align-items:center;gap:8px;"><span style="font-size:18px;">' + (svc.icon || '') + '</span><span style="font-size:15px;font-weight:600;color:#333;">' + svc.name + '</span>';
+        html += '<span class="insurance-list-tag" style="margin-left:6px;background:' + modelColor + '20;color:' + modelColor + ';border-color:' + modelColor + '30;">' + modelTag + '</span></div>';
+        html += '<span id="pspe_' + sid + '_toggle" style="font-size:12px;color:#999;">▼ 收起</span></div>';
+
+        // 可折叠的编辑器内容区
+        html += '<div id="pspe_' + sid + '_body">';
+
+        // ---- 计价模型选择器（3 张卡片） ----
+        html += '<div style="display:flex;gap:12px;margin-bottom:16px;" id="pspe_' + sid + '_modelCards">';
+        // 一口价
+        html += '<div class="pspe-model-card" data-sid="' + sid + '" data-model="fixed" onclick="pspeSelectModel(' + sid + ',\'fixed\')" style="flex:1;border:2px solid ' + (model === 'fixed' ? '#1890ff' : '#d9d9d9') + ';border-radius:8px;padding:14px;cursor:pointer;text-align:center;transition:all .2s;background:' + (model === 'fixed' ? '#e6f7ff' : '#fff') + ';position:relative;">';
+        html += '<div style="font-size:18px;margin-bottom:2px;">💰</div>';
+        html += '<div style="font-size:13px;font-weight:600;color:#333;">一口价模式</div>';
+        html += '<div style="font-size:11px;color:#999;margin-top:2px;">所有客户统一价</div></div>';
+        // 阶梯价
+        html += '<div class="pspe-model-card" data-sid="' + sid + '" data-model="tiered" onclick="pspeSelectModel(' + sid + ',\'tiered\')" style="flex:1;border:2px solid ' + (model === 'tiered' ? '#1890ff' : '#d9d9d9') + ';border-radius:8px;padding:14px;cursor:pointer;text-align:center;transition:all .2s;background:' + (model === 'tiered' ? '#e6f7ff' : '#fff') + ';position:relative;">';
+        html += '<div style="font-size:18px;margin-bottom:2px;">📊</div>';
+        html += '<div style="font-size:13px;font-weight:600;color:#333;">多规格阶梯价</div>';
+        html += '<div style="font-size:11px;color:#999;margin-top:2px;">根据规模区分价格（推荐）</div>';
+        html += '<span style="position:absolute;top:6px;right:6px;background:#1890ff;color:#fff;font-size:10px;padding:1px 5px;border-radius:4px;">推荐</span></div>';
+        // 询价
+        html += '<div class="pspe-model-card" data-sid="' + sid + '" data-model="inquiry" onclick="pspeSelectModel(' + sid + ',\'inquiry\')" style="flex:1;border:2px solid ' + (model === 'inquiry' ? '#1890ff' : '#d9d9d9') + ';border-radius:8px;padding:14px;cursor:pointer;text-align:center;transition:all .2s;background:' + (model === 'inquiry' ? '#e6f7ff' : '#fff') + ';position:relative;">';
+        html += '<div style="font-size:18px;margin-bottom:2px;">📞</div>';
+        html += '<div style="font-size:13px;font-weight:600;color:#333;">需询价模式</div>';
+        html += '<div style="font-size:11px;color:#999;margin-top:2px;">引导咨询，不展示价格</div></div>';
+        html += '</div>'; // end modelCards
+
+        // ---- 一口价面板 ----
+        html += '<div id="pspe_' + sid + '_fixedPanel" style="display:' + (model === 'fixed' ? '' : 'none') + ';margin-bottom:16px;padding:14px;border:1px solid #e8e8e8;border-radius:6px;background:#fff;">';
+        html += '<div style="display:flex;gap:12px;align-items:center;">';
+        html += '<label style="font-size:13px;color:#666;">统一售价：</label>';
+        html += '<input type="number" id="pspe_' + sid + '_fixedPrice" class="insurance-list-form-input" style="width:150px;" value="' + (svc.fixedPrice || 0) + '" placeholder="0.00" onchange="pspeOnFixedPriceChange(' + sid + ')">';
+        html += '<span style="font-size:13px;color:#999;">元</span>';
+        html += '</div></div>';
+
+        // ---- 询价面板 ----
+        html += '<div id="pspe_' + sid + '_inquiryPanel" style="display:' + (model === 'inquiry' ? '' : 'none') + ';margin-bottom:16px;">';
+        html += '<div style="background:#fffbe6;border:1px solid #ffe58f;border-radius:4px;padding:10px 14px;font-size:13px;color:#ad6800;">开启询价模式后，前端将不展示具体价格，用户需提交询价单由后台报价。</div></div>';
+
+        // ---- 阶梯价面板（规格与价格配置） ----
+        html += '<div id="pspe_' + sid + '_specArea" style="display:' + (model === 'tiered' ? '' : 'none') + ';">';
+        html += '<div style="background:#fff;border-radius:8px;padding:16px;margin-bottom:12px;border:1px solid #e8e8e8;">';
+        html += '<h5 style="margin:0 0 12px;font-size:14px;color:#333;border-bottom:1px solid #f0f0f0;padding-bottom:8px;">规格与价格配置</h5>';
+        // 规格名列表容器
+        html += '<div id="pspe_' + sid + '_specList"></div>';
+        html += '<button class="insurance-list-btn insurance-list-btn-outline insurance-list-btn-sm" onclick="pspeAddSpec(' + sid + ')" style="margin-bottom:12px;">+ 添加规格维度</button>';
+        // 收费项目管理
+        html += '<div id="pspe_' + sid + '_subProductArea"></div>';
+        // SKU 价格表工具栏
+        html += '<div style="display:flex;justify-content:space-between;align-items:center;margin-top:12px;">';
+        html += '<span style="font-size:13px;color:#666;font-weight:600;">SKU价格表</span>';
+        html += '<div style="display:flex;gap:6px;">';
+        html += '<button class="insurance-list-btn insurance-list-btn-outline insurance-list-btn-xs" onclick="pspeApplyFormula(' + sid + ')">应用公式</button>';
+        html += '<button class="insurance-list-btn insurance-list-btn-outline insurance-list-btn-xs" onclick="pspePasteExcel(' + sid + ')">粘贴Excel</button>';
+        html += '</div></div>';
+        // SKU 表格
+        html += '<div style="overflow-x:auto;margin-top:8px;"><table class="insurance-list-table" id="pspe_' + sid + '_skuTable" style="width:100%;table-layout:auto;min-width:500px;"><thead id="pspe_' + sid + '_skuThead"></thead><tbody id="pspe_' + sid + '_skuTbody"></tbody></table></div>';
+        html += '</div></div>'; // end tiered panel
+
+        html += '</div>'; // end body
+        html += '</div>'; // end card
+    });
+
+    // 该服务类型的小计汇总行
+    html += '<div id="psServiceSummary" style="padding:12px;background:#f0f5ff;border:1px solid #d6e4ff;border-radius:6px;display:flex;justify-content:space-between;align-items:center;font-size:13px;"></div>';
+    html += '</div>'; // end 价格配置区
+
+    // ========== 3. 关联服务机构列表 ==========
+    html += '<div style="background:#fff;border:1px solid #e8e8e8;border-radius:8px;padding:20px;">';
+    html += '<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;"><h4 style="margin:0;font-size:15px;color:#333;">关联服务机构（' + orgs.length + '）</h4><button class="insurance-list-btn insurance-list-btn-primary insurance-list-btn-sm" onclick="openPsAddOrgModal(' + s.id + ')">+ 添加服务机构</button></div>';
+    if (!orgs.length) {
+        html += '<div style="padding:24px;text-align:center;color:#999;font-size:13px;">该价格体系下暂无服务机构，点击"添加服务机构"将服务机构纳入此体系统一管价</div>';
+    } else {
+        html += '<table class="insurance-list-table" style="width:100%;table-layout:fixed;"><thead><tr><th style="width:60px;">ID</th><th>机构名称</th><th style="width:90px;">地区</th><th style="width:130px;">关联保险机构</th><th style="width:110px;">继承价</th><th style="width:200px;" class="col-action">操作</th></tr></thead><tbody>';
+        orgs.forEach(function(o) {
+            html += '<tr><td>' + o.id + '</td><td>' + o.name + '</td><td>' + o.area + '</td><td>' + (o.relatedInsurance || '-') + '</td>';
+            html += '<td style="color:#f5222d;font-weight:600;">¥' + s.totalPrice + '</td>';
+            html += '<td class="col-action"><button class="insurance-list-btn insurance-list-btn-outline insurance-list-btn-xs" onclick="openPsOrgPriceView(' + o.id + ')">查看价格</button>';
+            html += '<button class="insurance-list-btn insurance-list-btn-gray insurance-list-btn-xs" style="margin-left:4px;" onclick="psRemoveOrg(' + o.id + ')">移除</button></td></tr>';
+        });
+        html += '</tbody></table>';
+    }
+    html += '</div>';
+
+    el.innerHTML = html;
+
+    // 初始化各服务类型的子编辑器（渲染规格、收费项、SKU 表）
+    (s.services || []).forEach(function(svc) { pspeInitEditor(svc.serviceId); });
+    // 渲染汇总
+    _psRenderServiceSummary(s);
+}
+
+function showAddPriceSystemModal() {
+    document.getElementById('priceSystemModalTitle').textContent = '新增价格体系';
+    document.getElementById('priceSystemEditId').value = '';
+    document.getElementById('priceSystemName').value = '';
+    document.getElementById('priceSystemStatus').value = '启用';
+    document.getElementById('priceSystemRemark').value = '';
+    showModal('priceSystemModal');
+}
+
+function showEditPriceSystemModal(id) {
+    var s = priceSystems.find(function(x) { return x.id === id; });
+    if (!s) return;
+    document.getElementById('priceSystemModalTitle').textContent = '编辑价格体系';
+    document.getElementById('priceSystemEditId').value = id;
+    document.getElementById('priceSystemName').value = s.name;
+    document.getElementById('priceSystemStatus').value = s.status;
+    document.getElementById('priceSystemRemark').value = s.remark || '';
+    showModal('priceSystemModal');
+}
+
+function savePriceSystem() {
+    var name = document.getElementById('priceSystemName').value.trim();
+    if (!name) { alert('请填写体系名称'); return; }
+    var id = parseInt(document.getElementById('priceSystemEditId').value);
+    var status = document.getElementById('priceSystemStatus').value;
+    var remark = document.getElementById('priceSystemRemark').value.trim();
+    if (id) {
+        var s = priceSystems.find(function(x) { return x.id === id; });
+        if (s) { s.name = name; s.status = status; s.remark = remark; }
+    } else {
+        var newId = priceSystems.length ? Math.max.apply(null, priceSystems.map(function(x) { return x.id; })) + 1 : 1;
+        priceSystems.push({ id: newId, name: name, status: status, remark: remark });
+        psCurrentSystemId = newId;
+    }
+    closeModal('priceSystemModal');
+    renderPriceSystemList();
+    renderPsSystemDetail();
+}
+
+function deletePriceSystem(id) {
+    if (!confirm('确认删除该价格体系？关联服务机构将自动取消关联。')) return;
+    var idx = priceSystems.findIndex(function(x) { return x.id === id; });
+    if (idx !== -1) priceSystems.splice(idx, 1);
+    serviceOrgData.forEach(function(o) { if (o.priceSystemId === id) o.priceSystemId = ''; });
+    if (psCurrentSystemId === id) psCurrentSystemId = priceSystems.length ? priceSystems[0].id : null;
+    renderPriceSystemList();
+    renderPsSystemDetail();
+}
+
+function openPsAddOrgModal(systemId) {
+    psCurrentSystemId = systemId;
+    _psAddOrgChecked = {};
+    renderPsAddOrgList();
+    showModal('psAddOrgModal');
+}
+
+function renderPsAddOrgList() {
+    var el = document.getElementById('psAddOrgList');
+    if (!el) return;
+    var kw = (document.getElementById('psAddOrgSearch').value || '').trim();
+    var list = serviceOrgData.filter(function(o) {
+        return o.priceSystemId !== psCurrentSystemId && (!kw || o.name.indexOf(kw) >= 0);
+    });
+    if (!list.length) { el.innerHTML = '<div style="padding:20px;text-align:center;color:#999;font-size:13px;">无可添加的服务机构</div>'; return; }
+    var html = '';
+    list.forEach(function(o) {
+        var checked = _psAddOrgChecked[o.id] ? 'checked' : '';
+        html += '<label style="display:flex;align-items:center;gap:10px;padding:10px;border:1px solid #f0f0f0;border-radius:6px;margin-bottom:8px;cursor:pointer;">' +
+            '<input type="checkbox" value="' + o.id + '" ' + checked + ' onchange="psToggleAddOrg(this,' + o.id + ')">' +
+            '<span style="font-size:14px;color:#333;">' + o.name + '</span>' +
+            '<span style="font-size:12px;color:#999;margin-left:auto;">' + o.area + '</span></label>';
+    });
+    el.innerHTML = html;
+}
+
+function psToggleAddOrg(cb, id) {
+    if (cb.checked) _psAddOrgChecked[id] = true; else delete _psAddOrgChecked[id];
+}
+
+function confirmAddOrgsToSystem() {
+    var ids = Object.keys(_psAddOrgChecked).map(Number);
+    ids.forEach(function(oid) {
+        var o = serviceOrgData.find(function(x) { return x.id === oid; });
+        if (o) { o.priceSystemId = psCurrentSystemId; psApplySystemToOrg(oid, psCurrentSystemId); }
+    });
+    closeModal('psAddOrgModal');
+    renderPriceSystemList();
+    renderPsSystemDetail();
+}
+
+function psRemoveOrg(orgId) {
+    var o = serviceOrgData.find(function(x) { return x.id === orgId; });
+    if (!o) return;
+    o.priceSystemId = '';
+    spDataMap[orgId] = { products: [] };
+    renderPriceSystemList();
+    renderPsSystemDetail();
+}
+
+// ==================== 价格体系编辑器（pspe_* 函数集） ====================
+// 按 serviceId 参数化作用域，驱动每个服务类型独立的价格配置（计价模型/规格/收费项/SKU表）
+// 数据源：priceSystems[].services[svcIdx] — 每个服务类型持有 {pricingModel, fixedPrice, specs, subProducts, skuData}
+
+/** 获取当前体系中指定服务类型的配置对象 */
+function _pspeSvc(sid) {
+    var s = priceSystems.find(function(x) { return x.id === psCurrentSystemId; });
+    if (!s) return null;
+    return (s.services || []).find(function(sv) { return sv.serviceId === sid; });
+}
+
+/** 折叠/展开服务类型卡片 */
+function pspeToggleCard(sid) {
+    var body = document.getElementById('pspe_' + sid + '_body');
+    var toggle = document.getElementById('pspe_' + sid + '_toggle');
+    if (body && toggle) {
+        var hidden = (body.style.display === 'none');
+        body.style.display = hidden ? '' : 'none';
+        toggle.textContent = hidden ? '▼ 收起' : '▶ 展开';
+    }
+}
+
+/** 切换某服务类型的计价模型 */
+function pspeSelectModel(sid, model) {
+    var svc = _pspeSvc(sid);
+    if (!svc) return;
+    svc.pricingModel = model;
+    // 如果切换到阶梯价且无规格，自动添加一个默认规格
+    if (model === 'tiered' && (!svc.specs || !svc.specs.length)) {
+        svc.specs = [{ name: '企业营收规模', values: [] }];
+        svc.subProducts = [];
+        svc.skuData = [];
+    }
+    // 更新卡片样式
+    document.querySelectorAll('.pspe-model-card[data-sid="' + sid + '"]').forEach(function(card) {
+        var isSel = (card.getAttribute('data-model') === model);
+        card.style.borderColor = isSel ? '#1890ff' : '#d9d9d9';
+        card.style.background = isSel ? '#e6f7ff' : '#fff';
+    });
+    // 切换面板显隐
+    var fp = document.getElementById('pspe_' + sid + '_fixedPanel');
+    var ip = document.getElementById('pspe_' + sid + '_inquiryPanel');
+    var sp = document.getElementById('pspe_' + sid + '_specArea');
+    if (fp) fp.style.display = (model === 'fixed') ? '' : 'none';
+    if (ip) ip.style.display = (model === 'inquiry') ? '' : 'none';
+    if (sp) sp.style.display = (model === 'tiered') ? '' : 'none';
+    // 阶梯价模式首次进入时初始化子编辑器
+    if (model === 'tiered') {
+        pspeRenderSpecList(sid);
+        pspeRenderSubProductArea(sid);
+        pspeRenderSkuTable(sid);
+    }
+    _psRefreshSystemTotal();
+}
+
+/** 一口价输入变更 */
+function pspeOnFixedPriceChange(sid) {
+    var svc = _pspeSvc(sid);
+    if (!svc) return;
+    var inp = document.getElementById('pspe_' + sid + '_fixedPrice');
+    if (inp) svc.fixedPrice = Number(inp.value) || 0;
+    _psRefreshSystemTotal();
+}
+
+/** 初始化某个服务类型的编辑器（渲染规格、收费项、SKU 表）*/
+function pspeInitEditor(sid) {
+    var svc = _pspeSvc(sid);
+    if (!svc) return;
+    var model = svc.pricingModel || 'fixed';
+    // 仅阶梯价需要渲染子组件
+    if (model === 'tiered') {
+        pspeRenderSpecList(sid);
+        pspeRenderSubProductArea(sid);
+        pspeRenderSkuTable(sid);
+    }
+}
+
+// -------------------- 规格管理 --------------------
+
+function pspeAddSpec(sid) {
+    var svc = _pspeSvc(sid);
+    if (!svc) return;
+    if (!svc.specs) svc.specs = [];
+    svc.specs.push({ name: '企业营收规模', values: [] });
+    pspeRenderSpecList(sid);
+}
+
+function pspeRemoveSpec(sid, idx) {
+    var svc = _pspeSvc(sid);
+    if (!svc || !svc.specs) return;
+    svc.specs.splice(idx, 1);
+    pspeRenderSpecList(sid);
+    pspeRegenerateSkuData(sid);
+}
+
+var _PSPE_PRESETS = ['企业营收规模', '员工人数', '建筑面积', '自定义'];
+
+function pspeRenderSpecList(sid) {
+    var container = document.getElementById('pspe_' + sid + '_specList');
+    if (!container) return;
+    var svc = _pspeSvc(sid);
+    if (!svc || !svc.specs) { container.innerHTML = ''; return; }
+    var html = '';
+    svc.specs.forEach(function(spec, idx) {
+        html += '<div style="margin-bottom:10px;padding:10px;border:1px solid #e8e8e8;border-radius:6px;background:#fafafa;">';
+        html += '<div style="display:flex;align-items:center;gap:6px;margin-bottom:6px;">';
+        html += '<label style="font-size:12px;color:#666;">规格名称：</label>';
+        html += '<select class="insurance-list-form-select" style="width:140px;font-size:12px;" onchange="pspeOnPresetChange(' + sid + ',' + idx + ',this.value)">';
+        _PSPE_PRESETS.forEach(function(p) {
+            var sel = (spec.name === p) ? ' selected' : '';
+            html += '<option value="' + p + '"' + sel + '>' + p + '</option>';
+        });
+        html += '</select>';
+        var isCustom = _PSPE_PRESETS.indexOf(spec.name) < 0;
+        html += '<input type="text" class="insurance-list-form-input" style="width:140px;font-size:12px;' + (isCustom ? '' : 'display:none;') + '" value="' + (isCustom ? spec.name : '') + '" placeholder="自定义规格名" onchange="_pspeSvc(' + sid + ').specs[' + idx + '].name=this.value">';
+        html += '<button class="insurance-list-btn insurance-list-btn-red insurance-list-btn-xs" onclick="pspeRemoveSpec(' + sid + ',' + idx + ')">删除</button>';
+        html += '</div>'; // name row
+        // 规格值标签
+        html += '<div style="display:flex;gap:4px;align-items:center;flex-wrap:wrap;" id="pspe_' + sid + '_specValues_' + idx + '">';
+        if (!spec.values || !spec.values.length) {
+            html += '<span style="font-size:11px;color:#999;">暂无规格值</span>';
+        } else {
+            spec.values.forEach(function(v, vi) {
+                html += '<span style="display:inline-flex;align-items:center;gap:2px;padding:1px 6px;background:#e6f7ff;border:1px solid #91d5ff;border-radius:4px;font-size:11px;color:#1890ff;">' + v;
+                html += '<button onclick="pspeRemoveSpecValue(' + sid + ',' + idx + ',' + vi + ')" style="background:none;border:none;cursor:pointer;color:#999;font-size:11px;margin-left:1px;">&times;</button></span>';
+            });
+        }
+        html += '</div>'; // values
+        html += '<div style="margin-top:4px;display:flex;gap:4px;">';
+        html += '<button class="insurance-list-btn insurance-list-btn-outline insurance-list-btn-xs" style="font-size:11px;" onclick="pspeOpenIntervalGen(' + sid + ',' + idx + ')">区间生成器</button>';
+        html += '<button class="insurance-list-btn insurance-list-btn-outline insurance-list-btn-xs" style="font-size:11px;" onclick="pspeAddManualValue(' + sid + ',' + idx + ')">手动添加值</button>';
+        html += '</div></div>'; // spec card
+    });
+    container.innerHTML = html;
+}
+
+function pspeOnPresetChange(sid, idx, val) {
+    var svc = _pspeSvc(sid);
+    if (!svc) return;
+    svc.specs[idx].name = val;
+    pspeRenderSpecList(sid); // re-render to toggle custom input visibility
+}
+
+function pspeRemoveSpecValue(sid, specIdx, valIdx) {
+    var svc = _pspeSvc(sid);
+    if (!svc || !svc.specs[specIdx]) return;
+    svc.specs[specIdx].values.splice(valIdx, 1);
+    pspeRenderSpecList(sid);
+    pspeRegenerateSkuData(sid);
+}
+
+function pspeAddManualValue(sid, specIdx) {
+    var v = prompt('输入规格值（如：0-10、100以上等）：');
+    if (v && v.trim()) {
+        var svc = _pspeSvc(sid);
+        if (svc && svc.specs[specIdx]) {
+            svc.specs[specIdx].values.push(v.trim());
+            pspeRenderSpecList(sid);
+            pspeRegenerateSkuData(sid);
+        }
+    }
+}
+
+// 区间生成器（复用既有 intervalGenModal，增加 sid 参数）
+var _pspeIntervalTarget = { sid: null, specIdx: 0 };
+
+function pspeOpenIntervalGen(sid, specIdx) {
+    _pspeIntervalTarget.sid = sid;
+    _pspeIntervalTarget.specIdx = specIdx;
+    document.getElementById('intervalStart').value = 0;
+    document.getElementById('intervalEnd').value = 40;
+    document.getElementById('intervalStep').value = 10;
+    previewIntervals();
+    showModal('intervalGenModal');
+}
+
+// 覆盖 confirmIntervalGen 使其支持 pspe 模式
+// （保留原有逻辑不变，仅增加对 _pspeIntervalTarget 的判断）
+
+// -------------------- 收费项目管理 --------------------
+
+var _PSPE_SP_MAX = 15;
+
+function pspeRenderSubProductArea(sid) {
+    var container = document.getElementById('pspe_' + sid + '_subProductArea');
+    if (!container) return;
+    var svc = _pspeSvc(sid);
+    if (!svc) return;
+    var subs = svc.subProducts || [];
+    var html = '<div style="padding:10px;border:1px solid #e8e8e8;border-radius:6px;background:#fafafa;margin-bottom:10px;">';
+    html += '<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;">';
+    html += '<span style="font-size:12px;color:#666;font-weight:600;">收费项目管理</span>';
+    html += '<button class="insurance-list-btn insurance-list-btn-outline insurance-list-btn-xs" onclick="pspeShowAddSub(' + sid + ')" style="font-size:11px;">+ 新增收费项目</button></div>';
+    // 标签区
+    html += '<div id="pspe_' + sid + '_subTags" style="display:flex;flex-wrap:wrap;gap:6px;min-height:24px;">';
+    if (!subs.length) {
+        html += '<span style="font-size:11px;color:#bbb;">暂无收费项目，点击上方按钮添加</span>';
+    } else {
+        subs.forEach(function(sp, idx) {
+            html += '<span style="display:inline-flex;align-items:center;gap:3px;padding:3px 8px;background:#e6f7ff;border:1px solid #91d5ff;border-radius:14px;font-size:12px;color:#1890ff;">';
+            html += '<span ondblclick="pspeEditSub(' + sid + ',' + idx + ')" title="双击编辑">' + sp.name + '</span>';
+            if (sp.unit) html += '<span style="font-size:10px;color:#999;">(' + sp.unit + ')</span>';
+            html += '<span onclick="pspeEditSub(' + sid + ',' + idx + ')" style="cursor:pointer;color:#bbb;font-size:10px;" title="编辑">✏</span>';
+            html += '<span onclick="pspeRemoveSub(' + sid + ',' + idx + ')" style="cursor:pointer;color:#bbb;font-size:12px;" title="删除">&times;</span></span>';
+        });
+    }
+    html += '</div>'; // tags
+
+    // 新增行内表单
+    html += '<div id="pspe_' + sid + '_addSubInline" style="display:none;margin-top:8px;padding:8px;background:#fff;border:1px solid #91d5ff;border-radius:4px;">';
+    html += '<div style="display:flex;gap:6px;align-items:flex-end;flex-wrap:wrap;">';
+    html += '<div><label style="display:block;font-size:11px;color:#666;">名称 <span style="color:#f00">*</span></label>';
+    html += '<input type="text" id="pspe_' + sid + '_newSubName" class="insurance-list-form-input" style="width:120px;font-size:12px;" placeholder="如：线上培训" maxlength="20"></div>';
+    html += '<div><label style="display:block;font-size:11px;color:#666;">单位</label>';
+    html += '<input type="text" id="pspe_' + sid + '_newSubUnit" class="insurance-list-form-input" style="width:80px;font-size:12px;" placeholder="元/次" maxlength="10"></div>';
+    html += '<button class="insurance-list-btn insurance-list-btn-primary insurance-list-btn-xs" onclick="pspeConfirmAddSub(' + sid + ')">确定</button>';
+    html += '<button class="insurance-list-btn insurance-list-btn-gray insurance-list-btn-xs" onclick="document.getElementById(\'pspe_' + sid + '_addSubInline\').style.display=\'none\'">取消</button>';
+    html += '</div></div>';
+
+    // 编辑行内表单
+    html += '<div id="pspe_' + sid + '_editSubInline" style="display:none;margin-top:8px;padding:8px;background:#fff;border:1px solid #faad14;border-radius:4px;">';
+    html += '<input type="hidden" id="pspe_' + sid + '_editSubIdx">';
+    html += '<div style="display:flex;gap:6px;align-items:flex-end;flex-wrap:wrap;">';
+    html += '<div><label style="display:block;font-size:11px;color:#666;">名称</label>';
+    html += '<input type="text" id="pspe_' + sid + '_editSubName" class="insurance-list-form-input" style="width:120px;font-size:12px;" maxlength="20"></div>';
+    html += '<div><label style="display:block;font-size:11px;color:#666;">单位</label>';
+    html += '<input type="text" id="pspe_' + sid + '_editSubUnit" class="insurance-list-form-input" style="width:80px;font-size:12px;" maxlength="10"></div>';
+    html += '<button class="insurance-list-btn insurance-list-btn-primary insurance-list-btn-xs" onclick="pspeConfirmEditSub(' + sid + ')">保存</button>';
+    html += '<button class="insurance-list-btn insurance-list-btn-gray insurance-list-btn-xs" onclick="document.getElementById(\'pspe_' + sid + '_editSubInline\').style.display=\'none\'">取消</button>';
+    html += '</div></div>';
+
+    html += '</div>'; // outer
+    container.innerHTML = html;
+}
+
+function pspeShowAddSub(sid) {
+    var svc = _pspeSvc(sid);
+    if (!svc || (svc.subProducts && svc.subProducts.length >= _PSPE_SP_MAX)) {
+        alert('最多添加' + _PSPE_SP_MAX + '个收费项目'); return;
+    }
+    document.getElementById('pspe_' + sid + '_addSubInline').style.display = '';
+    document.getElementById('pspe_' + sid + '_editSubInline').style.display = 'none';
+    document.getElementById('pspe_' + sid + '_newSubName').value = '';
+    document.getElementById('pspe_' + sid + '_newSubUnit').value = '';
+    document.getElementById('pspe_' + sid + '_newSubName').focus();
+}
+
+function pspeConfirmAddSub(sid) {
+    var svc = _pspeSvc(sid);
+    if (!svc) return;
+    if (!svc.subProducts) svc.subProducts = [];
+    var name = document.getElementById('pspe_' + sid + '_newSubName').value.trim();
+    var unit = document.getElementById('pspe_' + sid + '_newSubUnit').value.trim();
+    if (!name) { alert('请输入项目名称'); return; }
+    var dup = svc.subProducts.some(function(sp) { return sp.name === name; });
+    if (dup) { alert('该项目已存在'); return; }
+    var key = 'sp_' + Date.now() + '_' + Math.floor(Math.random()*1000);
+    svc.subProducts.push({ key: key, name: name, unit: unit || '元' });
+    // 为已有 SKU 行新增此列
+    pspeAddSkuColumn(sid, key);
+    document.getElementById('pspe_' + sid + '_addSubInline').style.display = 'none';
+    pspeRenderSubProductArea(sid);
+    pspeRenderSkuTable(sid);
+}
+
+function pspeRemoveSub(sid, idx) {
+    var svc = _pspeSvc(sid);
+    if (!svc || !svc.subProducts[idx]) return;
+    if (!confirm('删除该项目将清空表格中对应的所有价格数据，是否继续？')) return;
+    var key = svc.subProducts[idx].key;
+    if (svc.skuData) svc.skuData.forEach(function(row) { if (row.items[key]) delete row.items[key]; });
+    svc.subProducts.splice(idx, 1);
+    pspeRenderSubProductArea(sid);
+    pspeRenderSkuTable(sid);
+}
+
+function pspeEditSub(sid, idx) {
+    var svc = _pspeSvc(sid);
+    if (!svc || !svc.subProducts[idx]) return;
+    var sp = svc.subProducts[idx];
+    document.getElementById('pspe_' + sid + '_editSubInline').style.display = '';
+    document.getElementById('pspe_' + sid + '_addSubInline').style.display = 'none';
+    document.getElementById('pspe_' + sid + '_editSubIdx').value = idx;
+    document.getElementById('pspe_' + sid + '_editSubName').value = sp.name;
+    document.getElementById('pspe_' + sid + '_editSubUnit').value = sp.unit || '';
+    document.getElementById('pspe_' + sid + '_editSubName').focus();
+}
+
+function pspeConfirmEditSub(sid) {
+    var svc = _pspeSvc(sid);
+    if (!svc) return;
+    var idx = Number(document.getElementById('pspe_' + sid + '_editSubIdx').value);
+    var name = document.getElementById('pspe_' + sid + '_editSubName').value.trim();
+    var unit = document.getElementById('pspe_' + sid + '_editSubUnit').value.trim();
+    if (!name) { alert('名称不能为空'); return; }
+    var dup = svc.subProducts.some(function(sp, i) { return i !== idx && sp.name === name; });
+    if (dup) { alert('该名称已被使用'); return; }
+    svc.subProducts[idx].name = name;
+    svc.subProducts[idx].unit = unit || '元';
+    document.getElementById('pspe_' + sid + '_editSubInline').style.display = 'none';
+    pspeRenderSubProductArea(sid);
+    pspeRenderSkuTable(sid);
+}
+
+// -------------------- SKU 表格 --------------------
+
+function pspeRegenerateSkuData(sid) {
+    var svc = _pspeSvc(sid);
+    if (!svc) return;
+    if (!svc.specs || !svc.specs.length || !svc.specs[0].values || !svc.specs[0].values.length) {
+        svc.skuData = []; pspeRenderSkuTable(sid); return;
+    }
+    var subs = svc.subProducts || [];
+    var newRows = [];
+    svc.specs[0].values.forEach(function(val, idx) {
+        var existing = (svc.skuData || []).find(function(r) { return r.specValue === val; });
+        var row = { specValue: val, items: {} };
+        subs.forEach(function(sp) {
+            if (existing && existing.items[sp.key]) {
+                row.items[sp.key] = Object.assign({}, existing.items[sp.key]);
+            } else {
+                var basePrices = { online: 95, offline_small: 3325, offline_large: 4275, manual: 28.5 };
+                row.items[sp.key] = { marketPrice: '', sellPrice: basePrices[sp.key] || 0, stock: 9999, code: 'AUTO-' + String(idx+1).padStart(3,'0') };
+            }
+        });
+        newRows.push(row);
+    });
+    svc.skuData = newRows;
+    pspeRenderSkuTable(sid);
+}
+
+function pspeAddSkuColumn(sid, key) {
+    var svc = _pspeSvc(sid);
+    if (!svc || !svc.skuData) return;
+    svc.skuData.forEach(function(row, idx) {
+        row.items[key] = { marketPrice: '', sellPrice: 0, stock: 9999, code: 'AUTO-' + String(idx+1).padStart(3,'0') };
+    });
+}
+
+function pspeRenderSkuTable(sid) {
+    var thead = document.getElementById('pspe_' + sid + '_skuThead');
+    var tbody = document.getElementById('pspe_' + sid + '_skuTbody');
+    if (!thead || !tbody) return;
+    var svc = _pspeSvc(sid);
+    if (!svc) return;
+    var specs = svc.specs || [];
+    var subs = svc.subProducts || [];
+
+    // 表头
+    var thtml = '<tr>';
+    specs.forEach(function(spc) { thtml += '<th style="min-width:90px;font-size:12px;">' + spc.name + '</th>'; });
+    subs.forEach(function(sp) {
+        thtml += '<th style="min-width:100px;font-size:12px;">' + sp.name + '<br><span style="font-weight:normal;font-size:10px;color:#999;">(' + sp.unit + ')</span></th>';
+    });
+    thtml += '<th style="min-width:70px;font-size:12px;">操作</th></tr>';
+    thead.innerHTML = thtml;
+
+    // 表体
+    var bhtml = '';
+    var rows = svc.skuData || [];
+    rows.forEach(function(row, rIdx) {
+        bhtml += '<tr>';
+        specs.forEach(function(_, sIdx) {
+            if (sIdx === 0) bhtml += '<td style="font-weight:600;font-size:12px;">' + row.specValue + '</td>';
+        });
+        subs.forEach(function(sp) {
+            var item = (row.items && row.items[sp.key]) || { sellPrice: 0 };
+            bhtml += '<td><input type="number" value="' + item.sellPrice + '" style="width:80px;padding:2px 4px;border:1px solid #d9d9d9;border-radius:3px;font-size:12px;" onchange="pspeUpdateSku(' + sid + ',' + rIdx + ',\'' + sp.key + '\',this.value)"></td>';
+        });
+        // 操作列
+        bhtml += '<td>';
+        if (rIdx > 0) bhtml += '<button class="insurance-list-btn insurance-list-btn-outline insurance-list-btn-xs" style="font-size:10px;" onclick="pspeCopyFromPrev(' + sid + ',' + rIdx + ')">复制上行</button>';
+        if (rIdx < rows.length - 1) bhtml += '<button class="insurance-list-btn insurance-list-btn-outline insurance-list-btn-xs" style="font-size:10px;margin-left:2px;" onclick="pspeCopyToNext(' + sid + ',' + rIdx + ')">复制下行</button>';
+        bhtml += '<button class="insurance-list-btn insurance-list-btn-red insurance-list-btn-xs" style="font-size:10px;margin-left:2px;" onclick="pspeClearRow(' + sid + ',' + rIdx + ')">清空</button>';
+        bhtml += '</td></tr>';
+    });
+    tbody.innerHTML = bhtml;
+}
+
+function pspeUpdateSku(sid, rowIdx, itemKey, value) {
+    var svc = _pspeSvc(sid);
+    if (!svc || !svc.skuData[rowIdx] || !svc.skuData[rowIdx].items[itemKey]) return;
+    svc.skuData[rowIdx].items[itemKey].sellPrice = value;
+    _psRefreshSystemTotal();
+}
+
+function pspeCopyFromPrev(sid, rowIdx) {
+    var svc = _pspeSvc(sid);
+    if (!svc || rowIdx <= 0) return;
+    var prev = svc.skuData[rowIdx - 1], curr = svc.skuData[rowIdx];
+    Object.keys(prev.items || {}).forEach(function(k) {
+        if (curr.items[k]) { curr.items[k].sellPrice = prev.items[k].sellPrice; }
+    });
+    pspeRenderSkuTable(sid);
+}
+
+function pspeCopyToNext(sid, rowIdx) {
+    var svc = _pspeSvc(sid);
+    if (!svc || rowIdx >= svc.skuData.length - 1) return;
+    var curr = svc.skuData[rowIdx], next = svc.skuData[rowIdx + 1];
+    Object.keys(curr.items || {}).forEach(function(k) {
+        if (next.items[k]) { next.items[k].sellPrice = curr.items[k].sellPrice; }
+    });
+    pspeRenderSkuTable(sid);
+}
+
+function pspeClearRow(sid, rowIdx) {
+    var svc = _pspeSvc(sid);
+    if (!svc || !svc.skuData[rowIdx]) return;
+    Object.keys(svc.skuData[rowIdx].items || {}).forEach(function(k) {
+        svc.skuData[rowIdx].items[k].sellPrice = 0;
+    });
+    pspeRenderSkuTable(sid);
+}
+
+// -------------------- 公式 / Excel 工具 --------------------
+
+function pspeApplyFormula(sid) {
+    _pspeFormulaSid = sid;
+    document.getElementById('formulaBasePrice').value = '';
+    document.getElementById('formulaRate').value = '';
+    showModal('formulaModal');
+}
+var _pspeFormulaSid = null;
+
+// 覆盖 confirmFormula：如果 _pspeFormulaSid 有值则作用于指定服务
+var _origConfirmFormula = typeof confirmFormula === 'function';
+
+function pspePasteExcel(sid) {
+    _pspePasteSid = sid;
+    var sel = document.getElementById('pasteExcelColumn');
+    var opts = '';
+    var svc = _pspeSvc(sid);
+    if (svc && svc.subProducts && svc.subProducts.length) {
+        svc.subProducts.forEach(function(sp) { opts += '<option value="' + sp.key + '">' + sp.name + '</option>'; });
+    } else { opts = '<option value="_default">默认</option>'; }
+    sel.innerHTML = opts;
+    document.getElementById('pasteExcelData').value = '';
+    showModal('pasteExcelModal');
+}
+var _pspePasteSid = null;
+
+// -------------------- 保存 / 总价 / 查看 --------------------
+
+/** 保存全部服务类型的配置到体系数据 */
+function saveSystemPrice() {
+    var s = priceSystems.find(function(x) { return x.id === psCurrentSystemId; });
+    if (!s) return;
+    // 从各编辑器的 DOM 状态回读到 services[]
+    (s.services || []).forEach(function(svc) {
+        var sid = svc.serviceId;
+        // 一口价：读取 input
+        if (svc.pricingModel === 'fixed') {
+            var inp = document.getElementById('pspe_' + sid + '_fixedPrice');
+            if (inp) svc.fixedPrice = Number(inp.value) || 0;
+        }
+        // 阶梯价：SKU 数据已通过 onchange 实时回写，无需额外读取
+        // 规格和收费项也已在各自操作函数中实时更新
+    });
+    // 重算总价
+    s.totalPrice = _psComputeSystemTotal(s);
+    // 同步到关联机构
+    psSyncSystemToOrgs(s.id);
+    renderPriceSystemList();
+    renderPsSystemDetail();
+    var cnt = serviceOrgData.filter(function(o) { return o.priceSystemId === s.id; }).length;
+    alert('价格体系已保存，并应用到 ' + cnt + ' 家关联机构');
+}
+
+/** 刷新体系总价格显示（实时） */
+function _psRefreshSystemTotal() {
+    var s = priceSystems.find(function(x) { return x.id === psCurrentSystemId; });
+    if (!s) return;
+    s.totalPrice = _psComputeSystemTotal(s);
+    var el = document.getElementById('psSystemTotalDisplay');
+    if (el) el.textContent = '¥' + s.totalPrice;
+    // 同时刷新左侧列表
+    var listEl = document.getElementById('psSystemCount');
+    _psRenderServiceSummary(s);
+}
+
+/** 渲染各服务类型价格小计汇总 */
+function _psRenderServiceSummary(s) {
+    var el = document.getElementById('psServiceSummary');
+    if (!el) return;
+    var html = '<span>各服务类型定价：</span>';
+    (s.services || []).forEach(function(svc) {
+        var modelTag = svc.pricingModel === 'fixed' ? '一口价' : (svc.pricingModel === 'tiered' ? '阶梯价' : '询价');
+        var priceStr = '';
+        if (svc.pricingModel === 'fixed') {
+            priceStr = '¥' + (svc.fixedPrice || 0);
+        } else if (svc.pricingModel === 'tiered' && svc.skuData && svc.skuData.length) {
+            var min = Infinity;
+            svc.skuData.forEach(function(row) { Object.keys(row.items||{}).forEach(function(k){ var v=Number((row.items[k]||{}).sellPrice)||0; if(v>0&&v<min)min=v; }); });
+            priceStr = (min !== Infinity) ? ('¥' + min + ' 起') : '未填';
+        } else {
+            priceStr = '—';
+        }
+        html += '<span style="margin-left:12px;padding:2px 8px;background:#fff;border-radius:4px;font-size:12px;">' + (svc.icon||'') + ' ' + svc.name + '：<b>' + priceStr + '</b> <span style="color:#999;">[' + modelTag + ']</span></span>';
+    });
+    el.innerHTML = html;
+}
+
+/** 查看某机构继承的价格明细（只读） */
+function openPsOrgPriceView(orgId) {
+    var o = serviceOrgData.find(function(x) { return x.id === orgId; });
+    if (!o) return;
+    var s = priceSystems.find(function(x) { return x.id === o.priceSystemId; });
+    var body = document.getElementById('psOrgPriceBody');
+    if (!body) return;
+    if (!s) {
+        body.innerHTML = '<div style="padding:20px;text-align:center;color:#999;">该机构未关联价格体系</div>';
+    } else {
+        var html = '<div style="margin-bottom:12px;font-size:14px;color:#333;">机构：<b>' + o.name + '</b> ｜ 继承价格体系：<b>' + s.name + '</b></div>';
+        html += '<table class="insurance-list-table" style="width:100%;"><thead><tr><th>服务类型</th><th>计价模型</th><th>价格说明</th></tr></thead><tbody>';
+        (s.services || []).forEach(function(svc) {
+            var modelLabel = svc.pricingModel === 'fixed' ? '一口价' : (svc.pricingModel === 'tiered' ? '多规格阶梯价' : '需询价');
+            var detail = '';
+            if (svc.pricingModel === 'fixed') {
+                detail = '<span style="color:#f5222d;font-weight:600;">¥' + (svc.fixedPrice || 0) + '</span>';
+            } else if (svc.pricingModel === 'tiered') {
+                if (svc.skuData && svc.skuData.length && svc.subProducts && svc.subProducts.length) {
+                    detail = '<div style="font-size:12px;">';
+                    // 展开前几行 SKU 作为预览
+                    var previewRows = svc.skuData.slice(0, 3);
+                    previewRows.forEach(function(row) {
+                        detail += '<div style="margin-bottom:4px;"><b>' + row.specValue + '</b>：';
+                        (svc.subProducts || []).forEach(function(sp) {
+                            var item = (row.items || {})[sp.key];
+                            var p = item ? (item.sellPrice || 0) : 0;
+                            detail += ' <span style="color:#666;">' + sp.name + '=¥' + p + '</span>';
+                        });
+                        detail += '</div>';
+                    });
+                    if (svc.skuData.length > 3) detail += '<div style="color:#999;font-size:11px;">... 共 ' + svc.skuData.length + ' 个规格档位</div>';
+                    detail += '</div>';
+                } else {
+                    detail = '<span style="color:#999;">尚未配置</span>';
+                }
+            } else {
+                detail = '<span style="color:#fa8c16;">引导询价，不展示价格</span>';
+            }
+            html += '<tr><td>' + (svc.icon || '') + ' ' + svc.name + '</td><td><span style="font-size:12px;">' + modelLabel + '</span></td><td>' + detail + '</td></tr>';
+        });
+        html += '</tbody></table>';
+        html += '<div style="text-align:right;margin-top:12px;font-size:14px;color:#333;">体系总价格：<span style="font-size:18px;font-weight:700;color:#f5222d;">¥' + s.totalPrice + '</span></div>';
+        body.innerHTML = html;
+    }
+    showModal('psOrgPriceModal');
 }
 
 function renderSPTable() {
@@ -58141,9 +60051,20 @@ function confirmIntervalGen() {
         values.push(i + '-' + next);
     }
     if (end > start) values.push(end + '以上');
-    speSpecs[intervalTargetSpecIdx].values = values;
-    renderSpecList();
-    regenerateSkuData();
+    // pspe 模式：写入指定服务类型的 specs
+    if (_pspeIntervalTarget.sid !== null && _pspeIntervalTarget.sid !== undefined) {
+        var svc = _pspeSvc(_pspeIntervalTarget.sid);
+        if (svc && svc.specs[_pspeIntervalTarget.specIdx]) {
+            svc.specs[_pspeIntervalTarget.specIdx].values = values;
+            pspeRenderSpecList(_pspeIntervalTarget.sid);
+            pspeRegenerateSkuData(_pspeIntervalTarget.sid);
+        }
+    } else {
+        // 原有 spe 模式
+        speSpecs[intervalTargetSpecIdx].values = values;
+        renderSpecList();
+        regenerateSkuData();
+    }
     closeIntervalGenModal();
 }
 
@@ -58492,13 +60413,24 @@ function confirmFormula() {
     var base = Number(document.getElementById('formulaBasePrice').value);
     var rate = Number(document.getElementById('formulaRate').value);
     if (!base || !rate) { alert('请输入基础价格和递增比例'); return; }
-    speSkuData.forEach(function(row, idx) {
-        var price = Math.round(base * Math.pow(1 + rate / 100, idx) * 100) / 100;
-        Object.keys(row.items).forEach(function(key) {
-            row.items[key].sellPrice = price;
+    // pspe 模式
+    if (_pspeFormulaSid !== null && _pspeFormulaSid !== undefined) {
+        var svc = _pspeSvc(_pspeFormulaSid);
+        if (svc && svc.skuData) {
+            svc.skuData.forEach(function(row, idx) {
+                var price = Math.round(base * Math.pow(1 + rate / 100, idx) * 100) / 100;
+                Object.keys(row.items || {}).forEach(function(key) { row.items[key].sellPrice = price; });
+            });
+            pspeRenderSkuTable(_pspeFormulaSid);
+        }
+    } else {
+        // 原有 spe 模式
+        speSkuData.forEach(function(row, idx) {
+            var price = Math.round(base * Math.pow(1 + rate / 100, idx) * 100) / 100;
+            Object.keys(row.items).forEach(function(key) { row.items[key].sellPrice = price; });
         });
-    });
-    renderSkuTable();
+        renderSkuTable();
+    }
     closeFormulaModal();
 }
 
@@ -58525,14 +60457,26 @@ function confirmPasteExcel() {
     var raw = document.getElementById('pasteExcelData').value;
     if (!raw.trim()) { alert('请粘贴数据'); return; }
     var lines = raw.trim().split(/[\n\r]+/);
-    var count = Math.min(lines.length, speSkuData.length);
-    for (var i = 0; i < count; i++) {
-        var val = lines[i].trim().replace(/[^\d.]/g, '');
-        if (val && speSkuData[i].items[colKey]) {
-            speSkuData[i].items[colKey].sellPrice = Number(val);
+    // pspe 模式
+    if (_pspePasteSid !== null && _pspePasteSid !== undefined) {
+        var svc = _pspeSvc(_pspePasteSid);
+        if (svc && svc.skuData) {
+            var count2 = Math.min(lines.length, svc.skuData.length);
+            for (var i2 = 0; i2 < count2; i2++) {
+                var val2 = lines[i2].trim().replace(/[^\d.]/g, '');
+                if (val2 && svc.skuData[i2].items[colKey]) svc.skuData[i2].items[colKey].sellPrice = Number(val2);
+            }
+            pspeRenderSkuTable(_pspePasteSid);
         }
+    } else {
+        // 原有 spe 模式
+        var count = Math.min(lines.length, speSkuData.length);
+        for (var i = 0; i < count; i++) {
+            var val = lines[i].trim().replace(/[^\d.]/g, '');
+            if (val && speSkuData[i].items[colKey]) speSkuData[i].items[colKey].sellPrice = Number(val);
+        }
+        renderSkuTable();
     }
-    renderSkuTable();
     closePasteExcelModal();
 }
 
@@ -58732,6 +60676,8 @@ function confirmImportPrice() {
             html += '<div><div style="font-size:12px;color:#999;margin-bottom:2px;">创建日期</div><div style="font-size:14px;color:#333;">' + item.createDate + '</div></div>';
             html += '<div style="grid-column:1/-1;"><div style="font-size:12px;color:#999;margin-bottom:2px;">实际经营地址</div><div style="font-size:14px;color:#333;">' + item.address + '</div></div>';
             html += '<div><div style="font-size:12px;color:#999;margin-bottom:2px;">状态</div><div style="font-size:14px;"><span class="insurance-list-tag insurance-list-tag-green">' + item.status + '</span></div></div>';
+            var _psName = (item.priceSystemId != null && item.priceSystemId !== '') ? (function(){ var s = priceSystems.find(function(x){ return x.id === item.priceSystemId; }); return s ? s.name : '（已失效）'; })() : '未关联';
+            html += '<div><div style="font-size:12px;color:#999;margin-bottom:2px;">关联价格体系</div><div style="font-size:14px;color:#333;">' + _psName + '</div></div>';
             html += '</div>';
             html += '</div>';
 
@@ -59041,6 +60987,8 @@ function confirmImportPrice() {
             document.getElementById('editSOCreateDate').value = '';
             document.getElementById('editSOStatus').value = '启用';
             document.getElementById('editSOAddress').value = '';
+            document.getElementById('editSOPriceSystem').innerHTML = (typeof psSystemOptions === 'function') ? psSystemOptions('') : '';
+            document.getElementById('editSOPriceSystemName').value = '';
             _renderSORelations([]);
             showModal('editServiceOrgModal');
         }
@@ -59057,6 +61005,8 @@ function confirmImportPrice() {
             document.getElementById('editSOCreateDate').value = item.createDate;
             document.getElementById('editSOStatus').value = item.status;
             document.getElementById('editSOAddress').value = item.address;
+            document.getElementById('editSOPriceSystem').innerHTML = (typeof psSystemOptions === 'function') ? psSystemOptions(item.priceSystemId || '') : '';
+            document.getElementById('editSOPriceSystemName').value = (item.priceSystemId != null && item.priceSystemId !== '') ? (function(){ var s = priceSystems.find(function(x){ return x.id === item.priceSystemId; }); return s ? s.name : ''; })() : '';
 
             // Render existing relations
             var relations = item.relations || [];
@@ -59079,6 +61029,10 @@ function confirmImportPrice() {
             item.createDate = document.getElementById('editSOCreateDate').value;
             item.status = document.getElementById('editSOStatus').value;
             item.address = document.getElementById('editSOAddress').value;
+            var _psId = document.getElementById('editSOPriceSystem').value;
+            item.priceSystemId = _psId ? Number(_psId) : '';
+            if (_psId) { psApplySystemToOrg(item.id, Number(_psId)); }
+            else { spDataMap[item.id] = { products: [] }; }
 
             // Collect relations
             var relations = _collectSORelations();
@@ -70989,6 +72943,93 @@ function confirmImportPrice() {
         </div>
     </div>
 
+    <style id="sqe-style">
+    /* ===== 服务质量评价：评分标准 + 配置中心 ===== */
+    .eval-score-standard{
+        display:block;
+        background:#f0f5ff;
+        border:1px solid #d6e4ff;
+        border-radius:6px;
+        padding:8px 10px;
+        font-size:12px;
+        color:#3a4a5a;
+        line-height:1.7;
+        margin-bottom:10px;
+    }
+    .eval-score-standard-label{
+        display:inline-block;
+        font-weight:600;
+        color:#1d39c4;
+        margin-right:6px;
+    }
+    .eval-score-parent-sum{
+        font-size:12px;
+        color:#595959;
+        padding:7px 10px;
+        background:#fafafa;
+        border:1px dashed #d9d9d9;
+        border-radius:6px;
+        margin-bottom:8px;
+    }
+    .eval-score-parent-sum b{ color:#1890ff; font-size:14px; }
+    .eval-score-children{ margin-top:4px; }
+    .eval-score-children .eval-score-dim{ margin-bottom:10px; border-color:#eef0f3; }
+    .eval-score-children .eval-score-dim-body{ padding:10px; }
+    .eval-score-dim.is-parent > .eval-score-dim-header{ background:#f0f7ff; }
+    .eval-score-dim.is-parent > .eval-score-dim-header:hover{ background:#e6f0ff; }
+
+    /* 配置中心 */
+    .sqc-header{ display:flex; justify-content:space-between; align-items:flex-start; gap:16px; margin-bottom:16px; }
+    .sqc-header h3{ font-size:16px; font-weight:600; color:#1d2129; margin:0 0 6px; }
+    .sqc-header p{ font-size:12px; color:#8c8c8c; margin:0; max-width:680px; line-height:1.6; }
+    .sqc-header-actions{ display:flex; gap:8px; flex-shrink:0; }
+    .sqc-btn{ padding:7px 14px; border-radius:6px; border:1px solid #d9d9d9; background:#fff; color:#595959; font-size:13px; cursor:pointer; transition:all .15s; }
+    .sqc-btn:hover{ border-color:#1890ff; color:#1890ff; }
+    .sqc-btn-primary{ background:linear-gradient(135deg,#1a4fdb,#1890ff); color:#fff; border:none; }
+    .sqc-btn-primary:hover{ background:linear-gradient(135deg,#1041c2,#096dd9); color:#fff; }
+    .sqc-tabs{ display:flex; gap:8px; margin-bottom:14px; border-bottom:1px solid #f0f0f0; }
+    .sqc-tab{ padding:8px 16px; font-size:13px; color:#595959; cursor:pointer; border-bottom:2px solid transparent; display:flex; align-items:center; gap:6px; }
+    .sqc-tab:hover{ color:#1890ff; }
+    .sqc-tab.active{ color:#1890ff; border-bottom-color:#1890ff; font-weight:600; }
+    .sqc-tab-max{ font-size:11px; color:#8c8c8c; background:#f5f5f5; padding:1px 6px; border-radius:10px; }
+    .sqc-toolbar{ display:flex; align-items:center; gap:12px; margin-bottom:12px; }
+    .sqc-tip{ font-size:12px; color:#8c8c8c; }
+    .sqc-tree{ background:#fff; border:1px solid #e8e8e8; border-radius:10px; padding:12px; }
+    .sqc-empty{ padding:30px; text-align:center; color:#8c8c8c; font-size:13px; }
+    .sqc-node{ margin-bottom:8px; }
+    .sqc-node-row{ display:flex; align-items:center; gap:10px; padding:10px 12px; background:#fafafa; border:1px solid #f0f0f0; border-radius:8px; flex-wrap:wrap; }
+    .sqc-node-row.is-parent{ background:#f0f7ff; border-color:#d6e4ff; }
+    .sqc-level{ font-size:11px; color:#fff; background:#1890ff; border-radius:4px; padding:1px 6px; flex-shrink:0; }
+    .sqc-node-name{ font-size:13px; font-weight:600; color:#1d2129; min-width:90px; }
+    .sqc-node-max{ font-size:12px; color:#1890ff; font-weight:600; flex-shrink:0; }
+    .sqc-node-standard{ font-size:12px; color:#8c8c8c; flex:1; min-width:160px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+    .sqc-node-actions{ display:flex; gap:6px; flex-shrink:0; }
+    .sqc-link-btn{ font-size:12px; color:#1890ff; background:#e6f0ff; border:1px solid #bae0ff; border-radius:5px; padding:3px 10px; cursor:pointer; transition:all .15s; }
+    .sqc-link-btn:hover{ background:#1890ff; color:#fff; }
+    .sqc-link-btn.sqc-danger{ color:#ff4d4f; background:#fff1f0; border-color:#ffccc7; }
+    .sqc-link-btn.sqc-danger:hover{ background:#ff4d4f; color:#fff; }
+    .sqc-node-children{ margin-top:6px; padding-left:0; }
+
+    /* 配置弹窗 */
+    .sqc-modal{ position:fixed; inset:0; z-index:3000; display:none; align-items:center; justify-content:center; }
+    .sqc-modal.show{ display:flex; }
+    .sqc-modal-mask{ position:absolute; inset:0; background:rgba(0,0,0,.45); }
+    .sqc-modal-box{ position:relative; width:460px; max-width:92vw; background:#fff; border-radius:12px; overflow:hidden; box-shadow:0 12px 40px rgba(0,0,0,.2); }
+    .sqc-modal-header{ display:flex; align-items:center; justify-content:space-between; padding:14px 18px; border-bottom:1px solid #f0f0f0; }
+    .sqc-modal-header h3{ margin:0; font-size:15px; color:#1d2129; }
+    .sqc-modal-header button{ border:none; background:none; font-size:20px; color:#8c8c8c; cursor:pointer; line-height:1; }
+    .sqc-modal-body{ padding:18px; }
+    .sqc-form-group{ margin-bottom:14px; }
+    .sqc-form-group label{ display:block; font-size:12px; color:#595959; margin-bottom:6px; }
+    .sqc-form-group input, .sqc-form-group textarea{ width:100%; padding:8px 10px; border:1px solid #d9d9d9; border-radius:6px; font-size:13px; outline:none; box-sizing:border-box; font-family:inherit; }
+    .sqc-form-group input:focus, .sqc-form-group textarea:focus{ border-color:#1890ff; box-shadow:0 0 0 2px rgba(24,144,255,.15); }
+    .sqc-form-group textarea{ resize:vertical; min-height:80px; }
+    .sqc-modal-hint{ display:none; font-size:12px; color:#fa8c16; background:#fff7e6; border:1px solid #ffd591; border-radius:6px; padding:8px 10px; margin-top:4px; }
+    .sqc-modal-footer{ display:flex; justify-content:flex-end; gap:8px; padding:14px 18px; border-top:1px solid #f0f0f0; }
+    .sqc-toast{ position:fixed; left:50%; top:24px; transform:translateX(-50%) translateY(-20px); background:#1d2129; color:#fff; padding:10px 18px; border-radius:8px; font-size:13px; z-index:4000; opacity:0; transition:all .25s; pointer-events:none; }
+    .sqc-toast.show{ opacity:1; transform:translateX(-50%) translateY(0); }
+    </style>
+
     <!-- ============================================================
          评价页面A：保险机构评价（保险列表入口）
          侧重：配合度与投诉处理
@@ -71242,9 +73283,9 @@ function confirmImportPrice() {
                         </div>
                         <div style="margin-bottom:10px;">
                             <div style="display:flex;justify-content:space-between;font-size:11px;color:#8c8c8c;margin-bottom:4px;">
-                                <span>完成度</span><span>73%</span>
+                                <span>完成度</span><span id="insProgressPct">73%</span>
                             </div>
-                            <div class="eval-progress-bar"><div class="eval-progress-fill" style="width:73%"></div></div>
+                            <div class="eval-progress-bar"><div class="eval-progress-fill" id="insProgressBar" style="width:73%"></div></div>
                         </div>
                         <div class="eval-footer-btns">
                             <button class="eval-btn-draft" onclick="saveInsEvalDraft()">💾 暂存草稿</button>
@@ -71388,7 +73429,7 @@ function confirmImportPrice() {
                         <div class="eval-score-panel-title">📝 评分决策面板</div>
                         <div class="eval-score-panel-sub">点击左侧项目自动定位评分 · 扣分快捷填入</div>
                     </div>
-                    <div class="eval-score-panel-body">
+                    <div class="eval-score-panel-body" id="govScoreBody">
                         <div style="padding:8px 10px;background:#e6f7ff;border-radius:6px;font-size:12px;color:#1890ff;margin-bottom:12px;" id="govLinkedProject">
                             📎 未选择项目 · 点击左侧项目联动定位
                         </div>
@@ -71586,7 +73627,7 @@ function confirmImportPrice() {
                         <div class="eval-score-panel-title">📝 评分决策面板</div>
                         <div class="eval-score-panel-sub">系统自动算分 · 支持人工微调</div>
                     </div>
-                    <div class="eval-score-panel-body">
+                    <div class="eval-score-panel-body" id="svcScoreBody">
                         <!-- 维度1：整改率 -->
                         <div class="eval-score-dim">
                             <div class="eval-score-dim-header" onclick="toggleEvalDim(this)">
@@ -71984,6 +74025,358 @@ function confirmImportPrice() {
         window.updateEvalBtnState = updateEvalBtnState;
         window._evalHasTodo = evalHasTodo;
         window._evalIsUrgent = evalIsUrgent;
+    })();
+    </script>
+
+    <!-- ============================================================
+         服务质量评价：评分标准字段 + 服务质量评价配置中心
+         （评价页面A/B/C 的评分决策面板 + 配置管理二级菜单）
+         ============================================================ -->
+    <script>
+    (function(){
+        'use strict';
+
+        /* ---------- 默认配置（含四级细分示例：保险机构评价-能力评估） ---------- */
+        var SQE_DEFAULT = {
+            insurance: { key:'insurance', name:'保险机构评价', dims:[
+                { id:'ins_d1', name:'配合度', icon:'🤝', max:10, standard:'依据服务时效与配合主动性评分：按时完成服务项得满分，每超时 1 次按比例扣分（参考左侧超时统计）。', children:[
+                    { id:'ins_d1_1', name:'服务时效', max:5, standard:'按时完成保单录入、报告提交等服务项；超时按比例扣分。' },
+                    { id:'ins_d1_2', name:'配合主动性', max:5, standard:'主动对接、积极响应调度与整改要求的程度。' }
+                ]},
+                { id:'ins_d2', name:'企业投诉反馈', icon:'📋', max:5, standard:'根据客诉处理结果评分，存在争议/未解决工单酌情扣分。', children:[
+                    { id:'ins_d2_1', name:'投诉处理时效', max:3, standard:'平均响应 ≤4h、平均结案 ≤3 天得满分。' },
+                    { id:'ins_d2_2', name:'结案满意度', max:2, standard:'已解决工单占比高得满分，争议中工单扣分。' }
+                ]},
+                { id:'ins_d3', name:'服务质量整体', icon:'⭐', max:15, standard:'综合服务态度、专业性与整体配合度进行整体评价。' },
+                { id:'ins_d4', name:'能力评估', icon:'🏅', max:12, standard:'对机构综合服务能力的评估，由五项二级指标累计得出（可继续细分至四级）。', children:[
+                    { id:'ins_d4_1', name:'（一）经营诚信', max:2, standard:'经营行为规范、诚信履约情况。' },
+                    { id:'ins_d4_2', name:'（二）业绩规模', max:2, standard:'服务业绩与业务规模达成情况。' },
+                    { id:'ins_d4_3', name:'（三）偿付能力', max:2, standard:'风险偿付能力与财务稳健性。' },
+                    { id:'ins_d4_4', name:'（四）理赔情况', max:3, standard:'理赔时效与理赔质量。' },
+                    { id:'ins_d4_5', name:'（五）制度建设', max:3, standard:'内部管理制度健全程度。' }
+                ]}
+            ]},
+            gov: { key:'gov', name:'政府评价', dims:[
+                { id:'gov_d1', name:'真实性', icon:'🎯', max:10, standard:'报告数据真实、无雷同/抄袭，发现雷同章节扣 3 分。' },
+                { id:'gov_d2', name:'达标性', icon:'✅', max:25, standard:'报告内容达标、要素齐全，数据缺失按比例扣分。' },
+                { id:'gov_d3', name:'针对性', icon:'🔍', max:15, standard:'报告针对企业实际风险提出有效整改建议。' }
+            ]},
+            service: { key:'service', name:'服务中心评价', dims:[
+                { id:'svc_d1', name:'整改率', icon:'📊', max:10, standard:'整改完成率：≥90%→10 分，80%-89%→8 分，70%-79%→6 分，<70% 按比例。' },
+                { id:'svc_d2', name:'隐患发现质量', icon:'🔎', max:10, standard:'隐患识别准确性与重大隐患捕获能力。' },
+                { id:'svc_d3', name:'服务及时性', icon:'⏰', max:10, standard:'服务响应与整改反馈及时程度。' }
+            ]}
+        };
+
+        var LS_KEY = 'sqe_config_v1';
+        function deepClone(o){ return JSON.parse(JSON.stringify(o)); }
+        function sqeGetConfig(){
+            try { var s = localStorage.getItem(LS_KEY); if(s) return JSON.parse(s); } catch(e){}
+            return deepClone(SQE_DEFAULT);
+        }
+        function sqeSaveConfig(cfg){ try { localStorage.setItem(LS_KEY, JSON.stringify(cfg)); } catch(e){} }
+        function sqeNodeMax(node){
+            if(node.children && node.children.length){ var m=0; node.children.forEach(function(c){ m+=sqeNodeMax(c); }); return m; }
+            return node.max || 0;
+        }
+        function escapeHtml(s){
+            return String(s == null ? '' : s).replace(/[&<>"']/g, function(c){
+                return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c];
+            });
+        }
+        function truncate(s, n){ s = s || ''; return s.length > n ? s.slice(0, n) + '…' : s; }
+        function genId(){ return 'n_' + Date.now().toString(36) + Math.random().toString(36).slice(2, 6); }
+
+        /* ---------- 评价页面：渲染评分决策面板（含评分标准 + 手动算分） ---------- */
+        function buildDimNode(type, node, level){
+            var isParent = node.children && node.children.length;
+            var dim = document.createElement('div');
+            dim.className = 'eval-score-dim' + (isParent ? ' is-parent' : '');
+            var icon = node.icon || (isParent ? '📂' : '📋');
+            var max = sqeNodeMax(node);
+
+            var header = document.createElement('div');
+            header.className = 'eval-score-dim-header';
+            header.setAttribute('onclick', 'toggleEvalDim(this)');
+            header.innerHTML =
+                '<div class="eval-score-dim-name">' + icon + ' ' + escapeHtml(node.name) + '</div>' +
+                '<div style="display:flex;align-items:center;gap:8px;">' +
+                    '<div class="eval-score-dim-max">' + (isParent ? ('满分 ' + max + ' 分（' + node.children.length + ' 项累计）') : ('满分 ' + max + ' 分')) + '</div>' +
+                    '<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#8c8c8c" stroke-width="2"><polyline points="6 9 12 15 18 9"></polyline></svg>' +
+                '</div>';
+            dim.appendChild(header);
+
+            var bodyEl = document.createElement('div');
+            bodyEl.className = 'eval-score-dim-body';
+
+            var std = document.createElement('div');
+            std.className = 'eval-score-standard';
+            std.innerHTML = '<span class="eval-score-standard-label">📐 评分标准</span>' + escapeHtml(node.standard || '（未配置评分标准）');
+            bodyEl.appendChild(std);
+
+            if(isParent){
+                var sum = document.createElement('div');
+                sum.className = 'eval-score-parent-sum';
+                sum.innerHTML = '当前累计得分：<b id="pscore_' + type + '_' + node.id + '">0</b> / ' + max + ' 分（由子项自动汇总）';
+                bodyEl.appendChild(sum);
+                var kids = document.createElement('div');
+                kids.className = 'eval-score-children';
+                node.children.forEach(function(c){ kids.appendChild(buildDimNode(type, c, level + 1)); });
+                bodyEl.appendChild(kids);
+            } else {
+                var row = document.createElement('div');
+                row.className = 'eval-score-input-row';
+                row.innerHTML =
+                    '<label>实际得分</label>' +
+                    '<input type="number" class="eval-score-input" id="score_' + type + '_' + node.id + '" value="" min="0" max="' + max + '" oninput="recalcEvalScore(\'' + type + '\')">' +
+                    '<span class="eval-score-suggest">满分 ' + max + ' 分</span>';
+                bodyEl.appendChild(row);
+                var hint = document.createElement('div');
+                hint.style.cssText = 'font-size:11px;color:#8c8c8c;margin:-2px 0 8px;';
+                hint.textContent = '↑ 请对照上方标准手动算分';
+                bodyEl.appendChild(hint);
+                var ta = document.createElement('textarea');
+                ta.className = 'eval-score-remark';
+                ta.id = 'remark_' + type + '_' + node.id;
+                ta.placeholder = '评分备注（低分时必填）';
+                bodyEl.appendChild(ta);
+            }
+            dim.appendChild(bodyEl);
+            return dim;
+        }
+
+        function renderEvalScorePanel(type){
+            var cfg = sqeGetConfig()[type];
+            var body = document.getElementById(type + 'ScoreBody');
+            if(!body) return;
+            body.innerHTML = '';
+            cfg.dims.forEach(function(d){ body.appendChild(buildDimNode(type, d, 1)); });
+            recalcEvalScore(type);
+        }
+
+        function recalcEvalScore(type){
+            var cfg = sqeGetConfig()[type];
+            var total = 0, totalMax = 0;
+            function walk(node){
+                if(node.children && node.children.length){
+                    var s = 0;
+                    node.children.forEach(function(c){ s += walk(c); });
+                    var pEl = document.getElementById('pscore_' + type + '_' + node.id);
+                    if(pEl) pEl.textContent = s;
+                    return s;
+                } else {
+                    var input = document.getElementById('score_' + type + '_' + node.id);
+                    var v = input ? (parseFloat(input.value) || 0) : 0;
+                    var m = node.max || 0;
+                    if(v > m) v = m; if(v < 0) v = 0;
+                    var ta = document.getElementById('remark_' + type + '_' + node.id);
+                    if(ta){
+                        if(v < m * 0.6){ ta.classList.add('required'); ta.placeholder = '⚠️ 低分必填：请说明扣分原因及依据'; }
+                        else { ta.classList.remove('required'); ta.placeholder = '评分备注（低分时必填）'; }
+                    }
+                    total += v; totalMax += m;
+                    return v;
+                }
+            }
+            cfg.dims.forEach(walk);
+            var totalEl = document.getElementById(type + 'TotalScore');
+            if(totalEl) totalEl.innerHTML = total + ' <span>/ ' + totalMax + ' 分</span>';
+            var pct = totalMax ? Math.round(total / totalMax * 100) : 0;
+            var pctEl = document.getElementById(type + 'ProgressPct');
+            var barEl = document.getElementById(type + 'ProgressBar');
+            if(pctEl) pctEl.textContent = pct + '%';
+            if(barEl) barEl.style.width = pct + '%';
+        }
+
+        /* ---------- 提交确认弹窗（通用，按配置生成扣分项） ---------- */
+        function buildEvalConfirm(type){
+            var cfg = sqeGetConfig()[type];
+            var total = 0, totalMax = 0, deductHtml = '';
+            function walk(node){
+                if(node.children && node.children.length){ node.children.forEach(walk); return; }
+                var input = document.getElementById('score_' + type + '_' + node.id);
+                var v = input ? (parseFloat(input.value) || 0) : 0;
+                var m = node.max || 0;
+                total += v; totalMax += m;
+                if(v < m) deductHtml += '<div class="eval-confirm-deduct-item"><span>' + escapeHtml(node.name) + '</span><span class="deduct-val">-' + (m - v) + '分</span></div>';
+            }
+            cfg.dims.forEach(walk);
+            var list = document.getElementById('evalConfirmDeductList');
+            if(list) list.innerHTML = deductHtml || '<div style="text-align:center;color:#52c41a;padding:8px;">✅ 无扣分项，满分提交</div>';
+            var desc = document.getElementById('evalConfirmDesc');
+            if(desc) desc.textContent = '您的最终得分为 ' + total + ' / ' + totalMax + ' 分，确认无误后提交。';
+            var modal = document.getElementById('evalConfirmModal');
+            if(modal) modal.classList.add('show');
+        }
+        window.showInsEvalConfirm = function(){ buildEvalConfirm('insurance'); };
+        window.showGovEvalConfirm = function(){ buildEvalConfirm('gov'); };
+        window.showSvcEvalConfirm = function(){ buildEvalConfirm('service'); };
+
+        /* ---------- 覆盖 markReport（联动扣分填入新控件） ---------- */
+        window.markReport = function(id, type){
+            if(type === 'warn'){
+                var el = document.getElementById('score_gov_gov_d1');
+                if(el){ el.value = 7; var r = document.getElementById('remark_gov_gov_d1'); if(r && !r.value) r.value = '发现雷同章节，扣 3 分。'; recalcEvalScore('gov'); }
+            } else if(type === 'err'){
+                var el2 = document.getElementById('score_gov_gov_d2');
+                if(el2){ el2.value = 18; var r2 = document.getElementById('remark_gov_gov_d2'); if(r2 && !r2.value) r2.value = '报告数据存在缺失，扣 7 分。'; recalcEvalScore('gov'); }
+            }
+        };
+
+        /* ---------- 打开评价页时渲染对应面板 ---------- */
+        var _openEvalPage = window.openEvalPage;
+        window.openEvalPage = function(pageId){
+            if(_openEvalPage) _openEvalPage(pageId);
+            if(pageId === 'evalPageInsurance') renderEvalScorePanel('insurance');
+            else if(pageId === 'evalPageGov') renderEvalScorePanel('gov');
+            else if(pageId === 'evalPageService') renderEvalScorePanel('service');
+        };
+
+        /* ============================================================
+           服务质量评价配置中心（二级菜单页面逻辑）
+           ============================================================ */
+        var SQE_WORK = null;
+        var SQE_TYPE = 'insurance';
+        var SQE_EDIT = null;
+
+        function sqcFindNode(list, id){
+            for(var i=0;i<list.length;i++){
+                if(list[i].id === id) return list[i];
+                if(list[i].children){ var f = sqcFindNode(list[i].children, id); if(f) return f; }
+            }
+            return null;
+        }
+        function sqcInit(){ SQE_WORK = sqeGetConfig(); sqcSwitchType('insurance'); }
+        function sqcSwitchType(t){
+            SQE_TYPE = t;
+            var tabs = document.querySelectorAll('#sqcTabs .sqc-tab');
+            tabs.forEach(function(x){ x.classList.toggle('active', x.getAttribute('data-type') === t); });
+            sqcRenderTree();
+        }
+        function sqcRenderTree(){
+            var cfg = SQE_WORK[SQE_TYPE];
+            var tree = document.getElementById('sqcTree');
+            if(!tree) return;
+            tree.innerHTML = '';
+            if(!cfg.dims.length){ tree.innerHTML = '<div class="sqc-empty">暂无评分项，点击「新增一级评分项」开始配置。</div>'; }
+            cfg.dims.forEach(function(d){ tree.appendChild(sqcBuildNode(d, 1)); });
+            ['insurance','gov','service'].forEach(function(t){
+                var el = document.getElementById('sqcMax' + t.charAt(0).toUpperCase() + t.slice(1));
+                if(el){ var m = 0; SQE_WORK[t].dims.forEach(function(d){ m += sqeNodeMax(d); }); el.textContent = '满分 ' + m + ' 分'; }
+            });
+        }
+        function sqcBuildNode(node, level){
+            var wrap = document.createElement('div');
+            wrap.className = 'sqc-node';
+            wrap.style.marginLeft = ((level - 1) * 26) + 'px';
+            var hasKids = node.children && node.children.length;
+            var row = document.createElement('div');
+            row.className = 'sqc-node-row' + (hasKids ? ' is-parent' : '');
+            var stdTxt = node.standard ? truncate(node.standard, 36) : '—';
+            row.innerHTML =
+                '<span class="sqc-level">L' + level + '</span>' +
+                '<span class="sqc-node-name">' + escapeHtml(node.name) + '</span>' +
+                '<span class="sqc-node-max">' + (hasKids ? '合计 ' : '满分 ') + sqeNodeMax(node) + ' 分</span>' +
+                '<span class="sqc-node-standard" title="' + escapeHtml(node.standard || '') + '">标准：' + escapeHtml(stdTxt) + '</span>' +
+                '<div class="sqc-node-actions">' +
+                    (level < 4 ? '<button class="sqc-link-btn" onclick="sqcAddChild(\'' + node.id + '\')">+ 子项</button>' : '') +
+                    '<button class="sqc-link-btn" onclick="sqcEditNode(\'' + node.id + '\')">编辑</button>' +
+                    '<button class="sqc-link-btn sqc-danger" onclick="sqcDeleteNode(\'' + node.id + '\')">删除</button>' +
+                '</div>';
+            wrap.appendChild(row);
+            if(hasKids){
+                var kids = document.createElement('div');
+                kids.className = 'sqc-node-children';
+                node.children.forEach(function(c){ kids.appendChild(sqcBuildNode(c, level + 1)); });
+                wrap.appendChild(kids);
+            }
+            return wrap;
+        }
+        function sqcAddRoot(){
+            SQE_WORK[SQE_TYPE].dims.push({ id: genId(), name: '新评分项', max: 5, standard: '' });
+            sqcRenderTree();
+        }
+        function sqcAddChild(id){
+            var node = sqcFindNode(SQE_WORK[SQE_TYPE].dims, id);
+            if(!node) return;
+            if(!node.children) node.children = [];
+            node.children.push({ id: genId(), name: '新子项', max: 2, standard: '' });
+            sqcRenderTree();
+        }
+        function sqcEditNode(id){
+            var node = sqcFindNode(SQE_WORK[SQE_TYPE].dims, id);
+            if(!node) return;
+            SQE_EDIT = node;
+            var hasKids = node.children && node.children.length;
+            document.getElementById('sqcModalTitle').textContent = hasKids ? '编辑评分项（含子项，分值自动累加）' : '编辑评分项';
+            document.getElementById('sqcEditName').value = node.name || '';
+            document.getElementById('sqcEditMax').value = node.max != null ? node.max : '';
+            document.getElementById('sqcEditStandard').value = node.standard || '';
+            var maxGroup = document.getElementById('sqcMaxGroup');
+            if(maxGroup) maxGroup.style.display = hasKids ? 'none' : '';
+            var hint = document.getElementById('sqcModalHint');
+            if(hint) hint.style.display = hasKids ? '' : 'none';
+            document.getElementById('sqcModal').classList.add('show');
+        }
+        function sqcSaveNode(){
+            if(!SQE_EDIT) return;
+            SQE_EDIT.name = document.getElementById('sqcEditName').value.trim() || '未命名';
+            var maxVal = parseFloat(document.getElementById('sqcEditMax').value);
+            if(!(SQE_EDIT.children && SQE_EDIT.children.length)) SQE_EDIT.max = isNaN(maxVal) ? 0 : maxVal;
+            SQE_EDIT.standard = document.getElementById('sqcEditStandard').value;
+            sqcCloseModal();
+            sqcRenderTree();
+        }
+        function sqcDeleteNode(id){
+            var list = SQE_WORK[SQE_TYPE].dims;
+            function remove(arr){
+                for(var i=0;i<arr.length;i++){
+                    if(arr[i].id === id){ arr.splice(i, 1); return true; }
+                    if(arr[i].children && remove(arr[i].children)) return true;
+                }
+                return false;
+            }
+            remove(list);
+            sqcRenderTree();
+        }
+        function sqcCloseModal(){ var m = document.getElementById('sqcModal'); if(m) m.classList.remove('show'); SQE_EDIT = null; }
+        function sqcSaveConfig(){
+            sqeSaveConfig(SQE_WORK);
+            sqcToast('✅ 配置已保存，评价页面将使用最新维度与标准');
+        }
+        function sqcResetDefault(){
+            if(!confirm('确定恢复为系统默认配置？当前未保存的修改将丢失。')) return;
+            SQE_WORK = deepClone(SQE_DEFAULT);
+            sqeSaveConfig(SQE_WORK);
+            sqcRenderTree();
+            sqcToast('已恢复默认配置');
+        }
+        function sqcToast(msg){
+            var t = document.getElementById('sqcToast');
+            if(!t){ t = document.createElement('div'); t.id = 'sqcToast'; t.className = 'sqc-toast'; document.body.appendChild(t); }
+            t.textContent = msg; t.classList.add('show');
+            setTimeout(function(){ t.classList.remove('show'); }, 2600);
+        }
+
+        /* 暴露给内联事件 */
+        window.sqcInit = sqcInit;
+        window.sqcSwitchType = sqcSwitchType;
+        window.sqcRenderTree = sqcRenderTree;
+        window.sqcAddRoot = sqcAddRoot;
+        window.sqcAddChild = sqcAddChild;
+        window.sqcEditNode = sqcEditNode;
+        window.sqcSaveNode = sqcSaveNode;
+        window.sqcDeleteNode = sqcDeleteNode;
+        window.sqcCloseModal = sqcCloseModal;
+        window.sqcSaveConfig = sqcSaveConfig;
+        window.sqcResetDefault = sqcResetDefault;
+        window.recalcEvalScore = recalcEvalScore;
+        window.renderEvalScorePanel = renderEvalScorePanel;
+
+        /* 预渲染（确保页脚总分正确，且配置可实时同步） */
+        document.addEventListener('DOMContentLoaded', function(){
+            ['insurance','gov','service'].forEach(function(t){ renderEvalScorePanel(t); });
+        });
     })();
     </script>
 
