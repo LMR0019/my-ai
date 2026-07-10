@@ -4708,6 +4708,64 @@
             padding: 0;
             background: #f0f2f5;
         }
+
+        /* 服务方案制作页面：锁定在一屏高度内，内部区域各自独立滚动 */
+        #planMakeContent.pc-page-content {
+            display: flex;
+            flex-direction: column;
+            flex: 1 1 0%;
+            min-height: 0;
+            overflow: hidden;
+            padding: 0;
+        }
+        /* 关键修复：把主容器在方案制作页激活时 strict 锁定为 100vh，
+           避免 min-height:flex 布局被长内容撑开导致整页滚动 */
+        .pc-main-content.plan-make-viewport-locked {
+            height: 100vh;
+            min-height: 100vh;
+            max-height: 100vh;
+            overflow: hidden;
+        }
+        /* 顶部固定区（筛选/工具栏/Tab栏）不收缩，保证始终可见 */
+        #planMakeContent .insurance-list-filter,
+        #planMakeContent .insurance-list-toolbar,
+        #planMakeContent .planMakeTabbar {
+            flex: 0 0 auto;
+        }
+        /* 数据表区域：占满剩余空间并在内部滚动 */
+        #planMakeContent #planMakeDataTableWrap {
+            flex: 1 1 0%;
+            min-height: 0;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+        #planMakeContent #planMakeDataTableWrap .insurance-list-table-scroll {
+            flex: 1 1 0%;
+            min-height: 0;
+            max-height: none;
+        }
+        /* 待制作清单区域：占满剩余空间并在内部滚动 */
+        #planMakeContent #planMakePendingWrap {
+            flex: 1 1 0%;
+            min-height: 0;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+        #planMakeContent #planMakePendingWrap #planMakePendingTableWrap {
+            flex: 1 1 0%;
+            min-height: 0;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+        #planMakeContent #planMakePendingWrap #pendingTableScrollWrap {
+            flex: 1 1 0%;
+            min-height: 0;
+            max-height: none;
+            overflow: auto;
+        }
         
         /* 操作按钮栏：1+3+1+N 布局 */
         .insurance-list-toolbar {
@@ -6347,6 +6405,64 @@
         #planMakePendingTable tbody td:last-child {
             border-right: none;
         }
+
+        /* 待制作清单 - 冻结列视觉强化（右侧阴影，明确"冻结"边界） */
+        #planMakePendingTable td[style*="position:sticky"],
+        #planMakePendingTable th[style*="position:sticky"] {
+            box-shadow: 4px 0 8px -6px rgba(0,0,0,0.22);
+        }
+        #planMakePendingTable thead th[style*="position:sticky"] {
+            z-index: 7 !important;
+        }
+        #planMakePendingTable tbody td[style*="position:sticky"] {
+            z-index: 3 !important;
+        }
+
+        /* 关键：此表必须用 separate 边框模型，否则 td/th 上的 position:sticky（横向冻结基础信息列）在 border-collapse 下完全失效 */
+        #planMakePendingTable {
+            border-collapse: separate !important;
+            border-spacing: 0;
+        }
+
+        /* 待制作清单 - 横向拖拽条（左右移动） */
+        .pending-hscroll {
+            position: relative;
+            height: 14px;
+            margin: 8px 2px 2px;
+            background: #f0f0f0;
+            border-radius: 7px;
+            cursor: pointer;
+            user-select: none;
+            -webkit-user-select: none;
+            touch-action: none;
+        }
+        .pending-hscroll-thumb {
+            position: absolute;
+            top: 2px;
+            left: 0;
+            height: 10px;
+            min-width: 44px;
+            background: #91d5ff;
+            border-radius: 5px;
+            cursor: grab;
+            transition: background 0.15s;
+        }
+        .pending-hscroll-thumb:hover { background: #69c0ff; }
+        .pending-hscroll-thumb.dragging { background: #1890ff; cursor: grabbing; }
+        .pending-hscroll.disabled { opacity: 0.6; cursor: default; }
+        .pending-hscroll.disabled .pending-hscroll-thumb { cursor: default; }
+
+        /* 待制作清单 - 服务费用超出剩余金额提示 */
+        .pm-fee-over-warn {
+            font-size: 10px;
+            color: #ff4d4f;
+            margin-top: 2px;
+            display: flex;
+            align-items: center;
+            gap: 2px;
+            line-height: 1.3;
+        }
+        .pm-fee-over-warn svg { flex-shrink: 0; }
 
         /* 单元格省略+hover展开详情 */
         .insurance-list-cell {
@@ -17583,7 +17699,89 @@
 }
 .report-right-empty .ai-icon { font-size: 36px; margin-bottom: 8px; }
 
-/* AI面板按钮 */
+/* ===== 退回提示横幅 ===== */
+.report-returned-banner {
+    display: none; align-items: center; gap: 8px; flex-shrink: 0;
+    background: #fffbe6; border-bottom: 1px solid #ffe58f;
+    color: #ad6800; padding: 10px 16px; font-size: 13px; font-weight: 500;
+}
+.report-returned-banner b { color: #d4380d; font-size: 14px; }
+
+/* ===== 审核批注（退回处理）模块 ===== */
+.review-todo-section {
+    background: #fff5f5; border-bottom: 1px solid #ffccc7;
+}
+.review-todo-header {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 10px 14px; background: #fff1f0; border: 1px solid #ffccc7;
+    border-radius: 6px; cursor: pointer; user-select: none; margin-bottom: 10px;
+}
+.review-todo-header:hover { background: #ffe7e3; }
+.review-todo-title {
+    font-size: 14px; font-weight: 700; color: #cf1322; display: flex; align-items: center; gap: 6px;
+}
+.review-todo-count {
+    display: inline-flex; align-items: center; justify-content: center;
+    min-width: 20px; height: 20px; padding: 0 6px; border-radius: 10px;
+    background: #ff4d4f; color: #fff; font-size: 12px; font-weight: 700; line-height: 1;
+}
+.review-todo-collapse { color: #cf1322; font-size: 12px; }
+.review-todo-section.collapsed .review-todo-list { display: none; }
+/* 情况B：批注多 -> 固定高度 + 内部独立滚动，避免整页出现双滚动条 */
+.review-todo-list {
+    max-height: 50vh; overflow-y: auto; padding-right: 2px;
+}
+.review-todo-list::-webkit-scrollbar { width: 6px; }
+.review-todo-list::-webkit-scrollbar-thumb { background: #ffccc7; border-radius: 3px; }
+.review-todo-empty { font-size: 13px; color: #bbb; text-align: center; padding: 20px; }
+
+.review-todo-card {
+    background: #fff; border: 1px solid #ffd6d6; border-radius: 8px;
+    padding: 10px 12px; margin-bottom: 10px; transition: all .2s;
+}
+.review-todo-card.active {
+    border-color: #ff4d4f; box-shadow: 0 0 0 2px rgba(255,77,79,.18);
+}
+.review-todo-card.resolved {
+    opacity: .55; background: #fafafa; border-color: #e8e8e8;
+}
+.review-todo-card.resolved .rtc-text { text-decoration: line-through; }
+.rtc-top { display: flex; align-items: center; gap: 6px; margin-bottom: 6px; }
+.rtc-avatar {
+    width: 22px; height: 22px; border-radius: 50%; background: #ff7875; color: #fff;
+    font-size: 12px; display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+}
+.rtc-reviewer { font-size: 12px; font-weight: 600; color: #333; }
+.rtc-role { font-size: 11px; padding: 1px 6px; border-radius: 4px; margin-left: auto; }
+.rtc-role-保险机构 { background: #e6f7ff; color: #1890ff; }
+.rtc-role-服务机构 { background: #f6ffed; color: #52c41a; }
+.rtc-text { font-size: 13px; color: #333; line-height: 1.6; margin-bottom: 6px; }
+.rtc-quote {
+    font-size: 12px; color: #999; background: #f5f5f5; border-left: 3px solid #d9d9d9;
+    padding: 4px 8px; margin-bottom: 8px; border-radius: 0 4px 4px 0;
+}
+.rtc-actions { display: flex; justify-content: flex-end; gap: 8px; }
+.rtc-btn {
+    border: none; border-radius: 6px; padding: 6px 14px; font-size: 13px;
+    cursor: pointer; transition: all .15s; font-weight: 500;
+}
+.rtc-btn-locate { background: #1890ff; color: #fff; }
+.rtc-btn-locate:hover { background: #40a9ff; }
+.rtc-btn-resolve { background: #fff; color: #52c41a; border: 1px solid #b7eb8f; }
+.rtc-btn-resolve:hover { background: #f6ffed; }
+.rtc-btn-resolve.done { background: #52c41a; color: #fff; border-color: #52c41a; cursor: default; }
+
+/* 正文：审核批注高亮（红色虚线 + 闪烁两下后常亮） */
+.report-block.highlight-error {
+    outline: 2px dashed #ff4d4f; outline-offset: 4px;
+    background: #fff1f0 !important; border-radius: 6px;
+    animation: reviewBlink 0.7s ease 2;
+}
+@keyframes reviewBlink {
+    0%, 100% { background: #fff1f0; }
+    50% { background: #ffe0db; }
+}
+
 .ai-action-btn {
     display: flex; align-items: center; gap: 8px; width: 100%;
     padding: 10px 14px; border: 1px solid #e8e8e8; border-radius: 6px;
@@ -20012,6 +20210,18 @@
 }
 .hazard-card .hc-meta { font-size: 12px; color: #999; display: flex; gap: 12px; flex-wrap: wrap; }
 .hazard-card .hc-meta-item { display: flex; align-items: center; gap: 4px; }
+/* 整改后情况（照片 + 描述） */
+.hazard-card .hc-rectify { margin-top: 10px; padding-top: 10px; border-top: 1px dashed #f0f0f0; }
+.hazard-card .hc-rectify-title { font-size: 13px; font-weight: 600; color: #1890ff; margin-bottom: 8px; display: flex; align-items: center; gap: 4px; }
+.hazard-card .hc-rectify-photos { display: grid; grid-template-columns: repeat(3,1fr); gap: 8px; width: 100%; margin-bottom: 8px; }
+.hazard-card .hc-rectify-desc { font-size: 13px; color: #595959; line-height: 1.8; background: #f6ffed; border-left: 3px solid #52c41a; padding: 6px 10px; border-radius: 0 4px 4px 0; margin-top: 4px; }
+/* 设置弹窗 - 整改后照片编辑器 */
+.rectify-photo-list { display: flex; flex-wrap: wrap; gap: 8px; }
+.rectify-photo-item { position: relative; width: 70px; height: 52px; background: #f5f5f5; border: 1px solid #e8e8e8; border-radius: 4px; display: flex; align-items: center; justify-content: center; font-size: 22px; color: #bbb; overflow: hidden; }
+.rectify-photo-add { cursor: pointer; border-style: dashed; color: #1890ff; font-size: 24px; border-color: #91d5ff; }
+.rectify-photo-add:hover { background: #e6f7ff; }
+.rectify-photo-del { position: absolute; top: -7px; right: -7px; width: 18px; height: 18px; border-radius: 50%; background: #ff4d4f; color: #fff; border: none; font-size: 12px; line-height: 1; cursor: pointer; display: flex; align-items: center; justify-content: center; padding: 0; box-shadow: 0 1px 3px rgba(0,0,0,0.2); }
+.rectify-photo-del:hover { background: #ff7875; }
 .hazard-card .hc-actions {
     display: flex; gap: 6px; margin-top: 10px; padding-top: 10px; border-top: 1px solid #f0f0f0;
 }
@@ -22791,7 +23001,7 @@
                     </div>
 
                     <!-- Tab切换 + 状态栏 -->
-                    <div style="margin-bottom:0;">
+                    <div class="planMakeTabbar" style="margin-bottom:0;">
                         <div style="display:flex;align-items:center;justify-content:space-between;border-bottom:2px solid #f0f0f0;padding:0 4px;">
                             <div style="display:flex;gap:0;">
                                 <div id="planMakeTabDataTable" onclick="switchPlanMakeTab('dataTable')" style="padding:10px 24px;cursor:pointer;font-size:14px;font-weight:500;color:#1890ff;border-bottom:2px solid #1890ff;margin-bottom:-2px;transition:all 0.2s;">数据表</div>
@@ -22864,17 +23074,9 @@
                                 <div style="font-size:13px;color:#666;">共 <strong id="planMakePendingTotal" style="color:#1890ff;">0</strong> 条</div>
                             </div>
                             <!-- 待制作清单表格 - 统一表格 + 基础信息列sticky固定 -->
-                            <div id="pendingTableScrollWrap" style="max-height:500px;overflow:auto;border:1px solid #e8e8e8;border-radius:4px;">
+                            <div id="pendingTableScrollWrap" style="overflow:auto;border:1px solid #e8e8e8;border-radius:4px;">
                                 <table class="insurance-list-table" style="width:100%;table-layout:fixed;min-width:1860px;" id="planMakePendingTable">
                                     <thead style="position:sticky;top:0;z-index:4;">
-                                        <tr>
-                                            <!-- 基础信息区 -->
-                                            <th colspan="7" style="background:#F5F7FA;color:#8c8c8c;font-size:12px;border-bottom:2px solid #e8e8e8;text-align:center;position:sticky;left:0;z-index:5;">基础信息（只读）</th>
-                                            <!-- 核心配置区 -->
-                                            <th colspan="5" style="background:#fff;color:#333;font-size:12px;border-bottom:2px solid #1890ff;text-align:center;">核心配置</th>
-                                            <!-- 操作区 -->
-                                            <th style="background:#fff;color:#333;font-size:12px;border-bottom:2px solid #e8e8e8;text-align:center;width:60px;">操作</th>
-                                        </tr>
                                         <tr>
                                             <th style="width:130px;background:#F5F7FA;position:sticky;left:0;z-index:5;">保单编号</th>
                                             <th style="width:160px;background:#F5F7FA;position:sticky;left:130px;z-index:5;">保险机构</th>
@@ -22894,6 +23096,10 @@
                                     <tbody id="planMakePendingTableBody">
                                     </tbody>
                                 </table>
+                            </div>
+                            <!-- 左右移动拖拽条 -->
+                            <div id="pendingTableHScroll" class="pending-hscroll" title="拖动滑块左右查看全部核心配置内容">
+                                <div id="pendingTableHThumb" class="pending-hscroll-thumb"></div>
                             </div>
                         </div>
                     </div>
@@ -36355,6 +36561,10 @@ function showPcPortalSelector() {
             
             const subText = submenuItem.textContent.trim();
             
+            // 主容器视口锁定：仅服务方案制作页面需要 strict 100vh
+            const pcMainContent = document.querySelector('.pc-main-content');
+            if (pcMainContent) pcMainContent.classList.remove('plan-make-viewport-locked');
+            
             // 隐藏所有内容页面
             const dashboard = document.getElementById('pcDashboardContent');
             const insuranceList = document.getElementById('insuranceListContent');
@@ -36557,6 +36767,7 @@ function showPcPortalSelector() {
                 }
             } else if (subText === '服务方案制作') {
                 updatePcBreadcrumb([parentText, '服务方案制作']);
+                if (pcMainContent) pcMainContent.classList.add('plan-make-viewport-locked');
                 if (planMakeContent) {
                     planMakeContent.style.display = '';
                     renderPlanMakeTable();
@@ -40806,11 +41017,22 @@ function showPcPortalSelector() {
                 // 服务费用明细（第三列 - 内嵌动态列表）
                 html += '<td style="vertical-align:top;">' + feeDetailHtml + '</td>';
                 // 服务费用（第四列 - 可编辑，自动汇总但支持手动改）
+                var pmRemaining = entry.remainingAmount || 0;
+                var pmFeeVal = parseFloat(entry.serviceFee || autoTotal || '0') || 0;
+                var pmOver = (pmRemaining > 0 && pmFeeVal > pmRemaining);
+                var pmFeeWarn = '';
+                if (pmOver) {
+                    var pmOverNum = pmFeeVal - pmRemaining;
+                    pmFeeWarn = '<div class="pm-fee-over-warn">'
+                        + '<svg viewBox="0 0 24 24" fill="none" stroke="#ff4d4f" stroke-width="2" width="11" height="11"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path><line x1="12" y1="9" x2="12" y2="13"></line><line x1="12" y1="17" x2="12.01" y2="17"></line></svg>'
+                        + '<span>已超出剩余服务金额 ¥' + pmOverNum.toFixed(2) + '</span></div>';
+                }
                 html += '<td>'
                     + '<div style="display:flex;align-items:center;gap:4px;">'
-                    + '<input type="number" value="' + feeDisplay + '" placeholder="自动计算" onchange="updatePendingField(' + entry.uid + ',\'serviceFee\',this.value)" style="width:100%;height:30px;border:1px solid #d9d9d9;border-radius:4px;padding:0 8px;font-size:12px;text-align:right;" min="0">'
+                    + '<input type="number" value="' + feeDisplay + '" placeholder="自动计算" onchange="updatePendingField(' + entry.uid + ',\'serviceFee\',this.value)" style="width:100%;height:30px;border:1px solid ' + (pmOver ? '#ffccc7' : '#d9d9d9') + ';border-radius:4px;padding:0 8px;font-size:12px;text-align:right;' + (pmOver ? 'background:#fff1f0;' : '') + '" min="0">'
                     + '</div>'
                     + (autoTotal > 0 ? '<div style="font-size:10px;color:#999;margin-top:2px;">自动汇总: ¥' + autoTotal.toFixed(2) + '</div>' : '')
+                    + pmFeeWarn
                     + '</td>';
                 // 计划执行时间
                 html += '<td><input type="date" value="' + entry.planDate + '" onchange="updatePendingField(' + entry.uid + ',\'planDate\',this.value)" style="width:100%;height:30px;border:1px solid #d9d9d9;border-radius:4px;padding:0 8px;font-size:12px;"></td>';
@@ -40819,6 +41041,89 @@ function showPcPortalSelector() {
                 html += '</tr>';
             });
             body.innerHTML = html;
+            // 同步横向拖拽条（仅待制作清单激活时）；用 rAF 延迟到布局完成后，
+            // 避免刚写入 innerHTML 时 scrollWidth 计算过早导致误判为“无溢出”而隐藏滚动条
+            if (planMakeState.activeTab === 'pending') {
+                initPendingHScroll();
+                requestAnimationFrame(function() { syncPendingHScroll(); });
+            }
+        }
+
+        // ===== 待制作清单 - 横向拖拽条（左右移动，方便查看全部核心配置） =====
+        var pendingHScrollReady = false;
+        function initPendingHScroll() {
+            var scroller = document.getElementById('pendingTableScrollWrap');
+            var track = document.getElementById('pendingTableHScroll');
+            var thumb = document.getElementById('pendingTableHThumb');
+            if (!scroller || !track || !thumb) return;
+            if (pendingHScrollReady) { syncPendingHScroll(); return; }
+            pendingHScrollReady = true;
+
+            scroller.addEventListener('scroll', syncPendingHScroll);
+            window.addEventListener('resize', syncPendingHScroll);
+
+            var dragging = false;
+            function posFromX(clientX) {
+                var rect = track.getBoundingClientRect();
+                var thumbW = thumb.offsetWidth;
+                var x = clientX - rect.left - thumbW / 2;
+                x = Math.max(0, Math.min(x, rect.width - thumbW));
+                return x;
+            }
+            function scrollToX(x) {
+                var rect = track.getBoundingClientRect();
+                var thumbW = thumb.offsetWidth;
+                var ratio = rect.width > thumbW ? x / (rect.width - thumbW) : 0;
+                var maxScroll = scroller.scrollWidth - scroller.clientWidth;
+                scroller.scrollLeft = ratio * maxScroll;
+            }
+            // 拖动滑块
+            thumb.addEventListener('pointerdown', function(e) {
+                e.preventDefault();
+                dragging = true;
+                thumb.classList.add('dragging');
+                try { thumb.setPointerCapture(e.pointerId); } catch (err) {}
+            });
+            thumb.addEventListener('pointermove', function(e) {
+                if (dragging) scrollToX(posFromX(e.clientX));
+            });
+            thumb.addEventListener('pointerup', function(e) {
+                dragging = false;
+                thumb.classList.remove('dragging');
+            });
+            thumb.addEventListener('pointercancel', function() {
+                dragging = false;
+                thumb.classList.remove('dragging');
+            });
+            // 点击轨道跳转
+            track.addEventListener('pointerdown', function(e) {
+                if (e.target === thumb) return;
+                scrollToX(posFromX(e.clientX));
+            });
+        }
+        function syncPendingHScroll() {
+            var scroller = document.getElementById('pendingTableScrollWrap');
+            var track = document.getElementById('pendingTableHScroll');
+            var thumb = document.getElementById('pendingTableHThumb');
+            if (!scroller || !track || !thumb) return;
+            var maxScroll = scroller.scrollWidth - scroller.clientWidth;
+            if (maxScroll <= 2) {
+                // 内容未溢出：轨道保持可见，thumb 显示为满宽占位，提示“已全部显示”，而非隐藏拖拽条
+                track.classList.add('disabled');
+                thumb.style.display = '';
+                thumb.style.width = '100%';
+                thumb.style.left = '0';
+                thumb.style.cursor = 'default';
+                return;
+            }
+            track.classList.remove('disabled');
+            thumb.style.display = '';
+            var trackW = track.clientWidth;
+            var thumbW = Math.max(44, Math.round(trackW * (scroller.clientWidth / scroller.scrollWidth)));
+            thumb.style.width = thumbW + 'px';
+            var ratio = maxScroll > 0 ? scroller.scrollLeft / maxScroll : 0;
+            var x = ratio * (trackW - thumbW);
+            thumb.style.left = x + 'px';
         }
 
         // 关闭所有下拉
@@ -40982,6 +41287,10 @@ function showPcPortalSelector() {
             var entry = planMakeState.pendingList.find(function(p){return p.uid === uid;});
             if (!entry) return;
             entry[field] = value;
+            // 服务费用改动后实时刷新超额提示（onchange 已失焦，重渲染安全）
+            if (field === 'serviceFee') {
+                renderPlanMakePendingList();
+            }
         }
 
         // ===== 收费明细操作 =====
@@ -45910,7 +46219,11 @@ function showPcPortalSelector() {
             { id: 1, serviceNo: 'FW2024010001', insuredName: '肇庆市鑫达化工有限公司', policyNo: 'PXAZ20240100001', policyStatus: '在保', insuranceCompany: '中国人民财产保险股份有限公司肇庆分公司', category: '危险化学品', premium: 180000, insuredAddress: '肇庆市端州区工业大道18号', startDate: '2024-01-01', endDate: '2024-12-31', serviceForm: '安全生产技术服务机构', serviceCategory: '生产安全事故隐患排查', serviceOrg: '肇庆市安全生产协会', serviceFee: 8000, status: '服务完成', servicePerson: '张明华', serviceTime: '2024-06-15', pendingRectification: 0, pendingReview: 0, completedRectification: 3, hasMajorHazard: '否', createTime: '2024-05-20 09:00', remark: '', hasEvaluation: true, evaluation: { companyStar: 5, companyTags: '专业,准时,负责', companyComment: '服务团队非常专业，按时完成隐患排查工作，提出了很多建设性建议。', adminResult: '合格', adminScore: '95', adminComment: '服务流程规范，报告完整详实。' } },
             { id: 2, serviceNo: 'FW2024010002', insuredName: '四会市宏盛冶炼厂', policyNo: 'PXAZ20240200002', policyStatus: '在保', insuranceCompany: '中国太平洋财产保险股份有限公司', category: '金属冶炼', premium: 250000, insuredAddress: '四会市大沙镇工业园区', startDate: '2024-02-01', endDate: '2025-01-31', serviceForm: '安全生产技术服务机构', serviceCategory: '安全生产宣传教育培训', serviceOrg: '肇庆市应急管理服务中心', serviceFee: 5000, status: '专家服务中', servicePerson: '李建国', serviceTime: '2024-08-20', pendingRectification: 2, pendingReview: 1, completedRectification: 1, hasMajorHazard: '是', createTime: '2024-07-15 10:30', remark: '存在重大安全隐患需重点关注' },
             { id: 3, serviceNo: 'FW2024010003', insuredName: '高要区金鼎矿业公司', policyNo: 'PXAZ20240300003', policyStatus: '在保', insuranceCompany: '中国平安财产保险股份有限公司肇庆中心支公司', category: '非煤矿山', premium: 320000, insuredAddress: '高要区白土镇矿区', startDate: '2024-03-01', endDate: '2025-02-28', serviceForm: '安全生产技术服务机构', serviceCategory: '安全风险辨识评估和安全评价', serviceOrg: '广东省安全生产技术中心', serviceFee: 15000, status: '待服务机构指派专家', servicePerson: '', serviceTime: '', pendingRectification: 0, pendingReview: 0, completedRectification: 0, hasMajorHazard: '否', createTime: '2024-10-01 14:00', remark: '' },
-            { id: 4, serviceNo: 'FW2024010004', insuredName: '广宁县永安烟花爆竹经营部', policyNo: 'PXAZ20240400004', policyStatus: '脱保', insuranceCompany: '中华联合财产保险股份有限公司肇庆中心支公司', category: '烟花爆竹', premium: 95000, insuredAddress: '广宁县南街镇仓库', startDate: '2023-07-01', endDate: '2024-06-30', serviceForm: '安全生产技术服务机构', serviceCategory: '生产安全事故隐患排查', serviceOrg: '肇庆市安全生产协会', serviceFee: 6000, status: '报告编写中', servicePerson: '王秀芳', serviceTime: '2024-05-10', pendingRectification: 1, pendingReview: 2, completedRectification: 2, hasMajorHazard: '否', createTime: '2024-04-20 16:00', remark: '' },
+            { id: 4, serviceNo: 'FW2024010004', insuredName: '广宁县永安烟花爆竹经营部', policyNo: 'PXAZ20240400004', policyStatus: '脱保', insuranceCompany: '中华联合财产保险股份有限公司肇庆中心支公司', category: '烟花爆竹', premium: 95000, insuredAddress: '广宁县南街镇仓库', startDate: '2023-07-01', endDate: '2024-06-30', serviceForm: '安全生产技术服务机构', serviceCategory: '生产安全事故隐患排查', serviceOrg: '肇庆市安全生产协会', serviceFee: 6000, status: '报告编写中', servicePerson: '王秀芳', serviceTime: '2024-05-10', pendingRectification: 1, pendingReview: 2, completedRectification: 2, hasMajorHazard: '否', createTime: '2024-04-20 16:00', remark: '保险机构与服务机构联合审核退回，需修改后重新提交', reviewComments: [
+                    { id: 'rc1', reviewer: '保险机构审核员 周敏', role: '保险机构', text: '项目概况中在册员工人数（320人）与保单系统登记不一致，请核对并更新为最新数据。', targetBlockId: 'block_3', quote: '企业规模：中型企业（在册员工320人）', resolved: false, time: '2026-06-02 10:12' },
+                    { id: 'rc2', reviewer: '服务机构审核员 李建国', role: '服务机构', text: '第一条重大隐患（生产车间A区配电柜接地线断裂）的整改建议不够具体，需补充引用标准与验收要求。', targetBlockId: 'block_7', quote: '配电柜接地线断裂，存在漏电风险，可能导致触电事故', resolved: false, time: '2026-06-02 11:30' },
+                    { id: 'rc3', reviewer: '保险机构审核员 周敏', role: '保险机构', text: '卸货平台隐患的风险等级偏低，防护措施描述过于简略，建议细化整改要求。', targetBlockId: 'block_14', quote: '卸货平台边缘防护栏缺失，地面油污未清理存在滑倒隐患', resolved: false, time: '2026-06-02 14:05' }
+                ] },
             { id: 5, serviceNo: 'FW2024010005', insuredName: '鼎湖区建安建筑工程有限公司', policyNo: 'PXAZ20240500005', policyStatus: '在保', insuranceCompany: '中国人民财产保险股份有限公司肇庆分公司', category: '建筑施工', premium: 56000, insuredAddress: '鼎湖区坑口街道工地', startDate: '2024-05-01', endDate: '2025-04-30', serviceForm: '安全生产技术服务机构', serviceCategory: '安全生产宣传教育培训', serviceOrg: '肇庆市应急管理服务中心', serviceFee: 3000, status: '专家服务中', servicePerson: '陈志远', serviceTime: '2024-11-05', pendingRectification: 0, pendingReview: 0, completedRectification: 0, hasMajorHazard: '否', createTime: '2024-10-25 08:30', remark: '' },
             { id: 6, serviceNo: 'FW2024010006', insuredName: '怀集县顺达运输有限公司', policyNo: 'PAIC20240600011', policyStatus: '在保', insuranceCompany: '中国平安财产保险股份有限公司肇庆中心支公司', category: '交通运输', premium: 135000, insuredAddress: '怀集县冷坑镇国道旁', startDate: '2024-05-01', endDate: '2025-04-30', serviceForm: '安全生产技术服务机构', serviceCategory: '安全生产标准化建设', serviceOrg: '广东省安全生产技术中心', serviceFee: 12000, status: '待专家开展服务', servicePerson: '刘伟强', serviceTime: '2025-02-15', pendingRectification: 0, pendingReview: 0, completedRectification: 0, hasMajorHazard: '否', createTime: '2025-01-10 11:00', remark: '' },
             { id: 7, serviceNo: 'FW2024010007', insuredName: '德庆县信达建材有限公司', policyNo: 'CIC20240600012', policyStatus: '在保', insuranceCompany: '中华联合财产保险股份有限公司肇庆中心支公司', category: '建筑施工', premium: 88000, insuredAddress: '德庆县新圩镇工厂', startDate: '2024-02-15', endDate: '2025-02-14', serviceForm: '安全生产技术服务机构', serviceCategory: '生产安全事故应急预案编制与演练', serviceOrg: '肇庆市应急管理服务中心', serviceFee: 10000, status: '暂停服务', servicePerson: '张明华', serviceTime: '2024-09-20', pendingRectification: 1, pendingReview: 0, completedRectification: 1, hasMajorHazard: '是', createTime: '2024-08-05 15:20', remark: '企业主动暂停，要求更换服务人员' },
@@ -46758,31 +47071,39 @@ function showPcPortalSelector() {
         function previewServiceReport(id) {
             var item = preventServiceData.find(function(d) { return d.id === id; });
             if (!item) return;
-            var checkedModules = document.querySelectorAll('#serviceReportEditContent .report-module-item input[type="checkbox"]:checked');
-            var moduleNames = [];
-            checkedModules.forEach(function(cb) { moduleNames.push(cb.parentElement.textContent.trim()); });
-            var previewHtml = '<div style="padding:24px;max-width:800px;margin:0 auto;">';
-            previewHtml += '<div style="text-align:center;margin-bottom:24px;"><h2 style="font-size:20px;color:#333;margin:0 0 8px 0;">预防服务报告</h2><div style="color:#999;font-size:13px;">服务编号：' + item.serviceNo + ' | 被保险人：' + item.insuredName + '</div></div>';
-            previewHtml += '<div style="border-top:2px solid #1890ff;padding-top:16px;">';
-            if (moduleNames.length === 0) {
-                previewHtml += '<div style="text-align:center;color:#999;padding:40px 0;">请先在报告编辑页面勾选报告模块</div>';
-            } else {
-                moduleNames.forEach(function(name) {
-                    previewHtml += '<div style="margin-bottom:20px;"><div style="font-size:15px;font-weight:600;color:#333;margin-bottom:8px;padding-left:10px;border-left:3px solid #1890ff;">' + name + '</div>';
-                    previewHtml += '<div style="padding:12px 16px;background:#fafafa;border-radius:4px;color:#666;font-size:13px;">（此处为' + name + '的内容区域，实际填写后展示）</div></div>';
-                });
-            }
-            previewHtml += '</div></div>';
 
-            // 根据服务状态构建footer审核按钮
+            // 构建与报告编辑器「画布区域」完全一致的只读报告内容
+            var blocks = buildPreviewBlocks(item);
+
+            // 判断审核阶段 & 是否允许批注（服务机构审核 / 保险机构审核）
             var needOrgReview = (item.status === '报告编写中' || item.status === '待服务机构审核');
             var needInsReview = (item.status === '待保险机构审核');
-            var reviewBtnHtml = '';
-            if (needOrgReview) {
-                reviewBtnHtml = '<button class="insurance-list-btn insurance-list-btn-primary insurance-list-btn-sm" onclick="reviewServiceReport(' + id + ', \'org\')">服务机构审核</button>';
-            } else if (needInsReview) {
-                reviewBtnHtml = '<button class="insurance-list-btn insurance-list-btn-primary insurance-list-btn-sm" onclick="reviewServiceReport(' + id + ', \'ins\')">保险机构审核</button>';
+            var canAnnotate = needOrgReview || needInsReview;
+            var reviewerLabel = needInsReview ? '保险机构' : (needOrgReview ? '服务机构' : '');
+
+            var previewHtml = '<div class="preview-report-wrap">';
+            if (canAnnotate) {
+                previewHtml += '<div class="anno-toolbar" id="annoToolbar">';
+                previewHtml += '<span class="anno-tip">📝 ' + reviewerLabel + '审核批注</span>';
+                previewHtml += '<button class="anno-btn" data-tool="pen" onclick="annoSetTool(\'pen\')">✏️ 划线</button>';
+                previewHtml += '<button class="anno-btn" data-tool="rect" onclick="annoSetTool(\'rect\')">▭ 矩形圈地</button>';
+                previewHtml += '<button class="anno-btn" data-tool="ellipse" onclick="annoSetTool(\'ellipse\')">◯ 椭圆圈地</button>';
+                previewHtml += '<button class="anno-btn" data-tool="text" onclick="annoSetTool(\'text\')">🔤 文本批注</button>';
+                previewHtml += '<span class="anno-color"><input type="color" value="#ff4d4f" onchange="annoSetColor(this.value)" title="批注颜色"></span>';
+                previewHtml += '<button class="anno-btn anno-btn-ghost" onclick="annoUndo()">↶ 撤销</button>';
+                previewHtml += '<button class="anno-btn anno-btn-ghost" onclick="annoClear()">🗑 清空</button>';
+                previewHtml += '<span class="anno-mode" id="annoModeText">未开启批注工具</span>';
+                previewHtml += '</div>';
             }
+            previewHtml += '<div class="preview-report-head">服务编号：' + escHtml(item.serviceNo || '-') + ' ｜ 被保险人：' + escHtml(item.insuredName || '-') + ' ｜ 保单编号：' + escHtml(item.policyNo || '-') + '</div>';
+            previewHtml += '<div style="font-size:12px;color:#999;padding:6px 16px;background:#fafafa;border-bottom:1px solid #f0f0f0;">报告内容只读，不可修改；' + (canAnnotate ? '审核人员可在报告上划线 / 圈地 / 文本批注。' : '当前阶段不支持批注。') + '</div>';
+            previewHtml += '<div class="preview-report-scroll" id="previewReportScroll">';
+            previewHtml += '<div class="report-canvas report-canvas-preview" id="previewReportContent"></div>';
+            if (canAnnotate) {
+                previewHtml += '<svg class="preview-anno-svg" id="previewAnnoSvg" xmlns="http://www.w3.org/2000/svg"></svg>';
+            }
+            previewHtml += '</div>';
+            previewHtml += '</div>';
 
             var previewModal = document.getElementById('previewReportModal');
             if (!previewModal) {
@@ -46790,10 +47111,24 @@ function showPcPortalSelector() {
                 previewModal.id = 'previewReportModal';
                 previewModal.className = 'insurance-list-modal';
                 previewModal.style.cssText = 'min-width:600px;max-width:90vw;';
-                previewModal.innerHTML = '<div class="insurance-list-modal-header"><span class="insurance-list-modal-title">预览报告</span><button class="insurance-list-modal-close" onclick="closeModal(\'previewReportModal\')">×</button></div><div class="insurance-list-modal-body" id="previewReportBody" style="max-height:70vh;overflow-y:auto;"></div><div class="insurance-list-modal-footer" id="previewReportFooter" style="text-align:right;"></div>';
+                previewModal.innerHTML = '<div class="insurance-list-modal-header"><span class="insurance-list-modal-title">预览报告</span><button class="insurance-list-modal-close" onclick="closeModal(\'previewReportModal\')">×</button></div><div class="insurance-list-modal-body" id="previewReportBody" style="max-height:74vh;overflow:hidden;padding:0;"></div><div class="insurance-list-modal-footer" id="previewReportFooter" style="text-align:right;"></div>';
                 document.body.appendChild(previewModal);
             }
             document.getElementById('previewReportBody').innerHTML = previewHtml;
+
+            // 渲染只读报告（与编辑器画布同一套 block 渲染逻辑）
+            renderReportPreview(document.getElementById('previewReportContent'), blocks);
+
+            // 初始化审核批注系统
+            currentAnnoItem = item;
+            annoInit(item.annotations || [], canAnnotate);
+
+            var reviewBtnHtml = '';
+            if (needOrgReview) {
+                reviewBtnHtml = '<button class="insurance-list-btn insurance-list-btn-primary insurance-list-btn-sm" onclick="reviewServiceReport(' + id + ', \'org\')">服务机构审核</button>';
+            } else if (needInsReview) {
+                reviewBtnHtml = '<button class="insurance-list-btn insurance-list-btn-primary insurance-list-btn-sm" onclick="reviewServiceReport(' + id + ', \'ins\')">保险机构审核</button>';
+            }
             document.getElementById('previewReportFooter').innerHTML = reviewBtnHtml + '<button class="insurance-list-btn insurance-list-btn-gray insurance-list-btn-sm" onclick="closeModal(\'previewReportModal\')">关闭</button>';
             previewModal.setAttribute('data-service-id', id);
             showModal('previewReportModal');
@@ -69379,6 +69714,295 @@ function confirmImportPrice() {
 
     </script>
 
+    <style id="reportPreviewAnnoStyle">
+.report-canvas-preview { min-height: auto; margin: 16px auto; }
+.preview-report-scroll { position: relative; max-height: calc(74vh - 120px); overflow: auto; background: #f0f2f5; touch-action: manipulation; }
+.preview-block.report-block, .preview-block.report-block:hover, .preview-block.report-block.selected { cursor: default; border-color: transparent; background: transparent; }
+.rich-text-view { white-space: pre-wrap; line-height: 1.8; font-size: 14px; color: #333; }
+.preview-anno-svg { position: absolute; top: 0; left: 0; pointer-events: none; z-index: 5; }
+.preview-report-scroll.anno-active .preview-anno-svg { pointer-events: auto; cursor: crosshair; touch-action: none; }
+.anno-text { position: absolute; z-index: 6; pointer-events: none; min-width: 40px; max-width: 320px; padding: 2px 6px; font-size: 14px; font-weight: 600; line-height: 1.4; outline: 1px dashed rgba(0,0,0,0.2); background: rgba(255,255,255,0.7); white-space: pre-wrap; word-break: break-word; }
+.preview-report-scroll.anno-text-edit .anno-text { pointer-events: auto; cursor: text; }
+.anno-toolbar { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; padding: 8px 12px; background: #fff; border-bottom: 1px solid #f0f0f0; }
+.anno-tip { font-size: 13px; color: #333; font-weight: 600; }
+.anno-btn { border: 1px solid #d9d9d9; background: #fff; border-radius: 4px; padding: 5px 10px; font-size: 13px; cursor: pointer; color: #333; }
+.anno-btn:hover { border-color: #1890ff; color: #1890ff; }
+.anno-btn.active { background: #1890ff; border-color: #1890ff; color: #fff; }
+.anno-btn-ghost { color: #999; }
+.anno-color { display: inline-flex; align-items: center; }
+.anno-color input { width: 30px; height: 30px; border: none; background: none; cursor: pointer; padding: 0; }
+.anno-mode { font-size: 12px; color: #999; margin-left: auto; }
+.preview-report-head { padding: 10px 24px; background: #fafafa; border-bottom: 1px solid #f0f0f0; font-size: 13px; color: #666; }
+</style>
+
+    <script>
+    // ========== 预览报告（只读）+ 审核批注系统 ==========
+    function buildPreviewBlocks(item) {
+        var blocks = [];
+        var c = 0;
+        function add(type, data) { blocks.push({ id: 'pv_' + (++c), type: type, data: data }); }
+        var st = (item && item.serviceType) || 'hazard-inspection';
+        if (st === 'hazard-inspection') {
+            add('report-title', { title: '生产安全事故隐患排查报告', subtitle: '（安全检查技术服务）', orgName: enterpriseProfile.name, date: '2026年6月', autoFilled: true });
+            add('section-title', { title: '一、项目概况', level: 1 });
+            add('kv-pair', { pairs: [
+                { key: '企业名称', value: enterpriseProfile.name, uncertain: true },
+                { key: '行业类别', value: enterpriseProfile.industry + ' / ' + enterpriseProfile.subIndustry },
+                { key: '企业规模', value: enterpriseProfile.scale + '（在册员工' + enterpriseProfile.employees + '人）' },
+                { key: '安全标准化等级', value: enterpriseProfile.safetyLevel },
+                { key: '企业地址', value: enterpriseProfile.address },
+                { key: '主要产品', value: enterpriseProfile.mainProducts },
+                { key: '重大危险源', value: enterpriseProfile.majorHazardSources.join('、') },
+                { key: '关键设备设施', value: enterpriseProfile.keyDevices.join('、') },
+                { key: '近一年事故情况', value: enterpriseProfile.lastAccident }
+            ], autoFilled: true });
+            add('section-title', { title: '二、检查依据及范围', level: 1 });
+            add('rich-text', { content: '本次隐患排查依据《安全生产法》《消防法》《生产安全事故隐患排查治理暂行规定》（国家安监总局令第16号）、《建筑设计防火规范》（GB 50016）、《企业安全生产标准化基本规范》（GB/T 33000）等法律法规及相关技术标准。\n\n检查范围覆盖企业生产车间、仓储区域、公用工程（配电室、锅炉房）、办公生活区，重点检查电气安全、消防设施、特种设备、作业环境等内容。', autoFilled: true });
+            add('section-title', { title: '三、现场检查情况', level: 1 });
+            var sortedHazards = prefabHazardList.slice().sort(function(a, b) {
+                var order = { '重大': 0, '一般': 1, '轻微': 2 };
+                return (order[a.level] || 3) - (order[b.level] || 3);
+            });
+            sortedHazards.forEach(function(it) {
+                add('hazard-card', { location: it.location, hazard: it.description, level: it.level, type: it.type, action: '', deadline: '', photos: it.photos || [], rectifyPhotos: [], rectifyDesc: '', expert: it.expert || '', time: it.time || '', layout: 'left-right', polished: false, autoFilled: true });
+            });
+            add('section-title', { title: '四、整改建议', level: 1 });
+            add('rich-text', { content: '针对上述排查发现的安全隐患，建议企业按照"五定"原则（定整改方案、定整改资金、定整改责任人、定整改期限、定应急预案）逐项落实整改。重大隐患应立即停止相关作业并设置警戒区域；一般隐患应在规定期限内完成整改；轻微隐患可结合日常维护一并处理。\n\n所有整改完成后须由企业安全管理部门组织验收确认，形成闭环管理档案。', autoFilled: true });
+            add('section-title', { title: '五、声明', level: 1 });
+            add('rich-text', { content: '1. 本报告仅依据现场检查情况和提供的资料进行分析，不包含任何隐含或推断性内容。\n2. 本报告结论仅对检查当时的现场状况有效。\n3. 本报告为企业安全管理提供参考，不作为任何法律依据。\n4. 检查过程中已尽量周全，但不能保证覆盖所有潜在安全隐患。', autoFilled: true });
+        } else if (st === 'safety-check') {
+            add('report-title', { title: '安全生产检查报告', subtitle: '', orgName: (item ? item.insuredName : ''), date: '2026年6月' });
+            add('section-title', { title: '一、检查概况', level: 1 });
+            add('rich-text', { content: '（请在此处填写检查概况）' });
+        } else if (st === 'fire-special') {
+            add('report-title', { title: '消防安全专项检查报告', subtitle: '', orgName: (item ? item.insuredName : ''), date: '2026年6月' });
+            add('section-title', { title: '一、消防设施检查结果', level: 1 });
+            add('rich-text', { content: '（请在此处填写消防设施检查详情）' });
+        }
+        return blocks;
+    }
+
+    function renderReportPreview(container, blocks) {
+        if (!container) return;
+        if (!blocks || blocks.length === 0) {
+            container.innerHTML = '<div class="report-canvas-empty"><div class="empty-text">暂无报告内容</div></div>';
+            return;
+        }
+        var html = '';
+        blocks.forEach(function(block) {
+            html += '<div class="report-block preview-block" data-block-id="' + block.id + '">' + renderBlockContent(block, true) + '</div>';
+        });
+        container.innerHTML = html;
+    }
+
+    // ---- 审核批注状态 ----
+    var currentAnnoItem = null;
+    var annoState = { tool: null, color: '#ff4d4f', items: [], scrollEl: null, svgEl: null, drawing: false, startX: 0, startY: 0, tempEl: null, _winBound: false };
+
+    function annoInit(items) {
+        annoState.items = (items && items.length) ? items.slice() : [];
+        annoState.tool = null;
+        annoState.drawing = false;
+        annoState.tempEl = null;
+        annoState.scrollEl = document.getElementById('previewReportScroll');
+        annoState.svgEl = document.getElementById('previewAnnoSvg');
+        if (!annoState.scrollEl || !annoState.svgEl) return;
+        annoState.scrollEl.classList.remove('anno-active', 'anno-text-edit');
+        updateAnnoModeText();
+        if (!annoState._winBound) {
+            window.addEventListener('pointermove', annoPointerMove);
+            window.addEventListener('pointerup', annoPointerUp);
+            window.addEventListener('resize', annoResize);
+            annoState._winBound = true;
+        }
+        annoState.svgEl.addEventListener('pointerdown', annoPointerDown);
+        annoRenderAll();
+        setTimeout(annoResize, 0);
+    }
+
+    function annoSetTool(tool) {
+        if (!annoState.scrollEl) return;
+        if (annoState.tool === tool) tool = null;
+        annoState.tool = tool;
+        var btns = document.querySelectorAll('#annoToolbar .anno-btn[data-tool]');
+        for (var i = 0; i < btns.length; i++) {
+            btns[i].classList.toggle('active', btns[i].getAttribute('data-tool') === tool);
+        }
+        annoState.scrollEl.classList.toggle('anno-active', !!tool);
+        annoState.scrollEl.classList.toggle('anno-text-edit', tool === 'text');
+        updateAnnoModeText();
+    }
+
+    function annoSetColor(c) { annoState.color = c; }
+
+    function updateAnnoModeText() {
+        var el = document.getElementById('annoModeText');
+        if (!el) return;
+        var map = { pen: '划线', rect: '矩形圈地', ellipse: '椭圆圈地', text: '文本批注' };
+        el.textContent = annoState.tool ? ('当前工具：' + (map[annoState.tool] || '')) : '未开启批注工具（点击上方工具开始批注）';
+    }
+
+    function annoGetPoint(e) {
+        var s = annoState.scrollEl;
+        var rect = s.getBoundingClientRect();
+        return { x: e.clientX - rect.left + s.scrollLeft, y: e.clientY - rect.top + s.scrollTop };
+    }
+
+    function annoSvgEl(tag) { return document.createElementNS('http://www.w3.org/2000/svg', tag); }
+
+    function annoPointerDown(e) {
+        if (!annoState.tool) return;
+        e.preventDefault();
+        var p = annoGetPoint(e);
+        annoState.drawing = true;
+        annoState.startX = p.x; annoState.startY = p.y;
+        var svg = annoState.svgEl;
+        if (annoState.tool === 'pen') {
+            var path = annoSvgEl('path');
+            path.setAttribute('d', 'M ' + p.x + ' ' + p.y);
+            path.setAttribute('stroke', annoState.color);
+            path.setAttribute('stroke-width', '3');
+            path.setAttribute('fill', 'none');
+            path.setAttribute('stroke-linecap', 'round');
+            path.setAttribute('stroke-linejoin', 'round');
+            path.setAttribute('class', 'anno-shape');
+            svg.appendChild(path);
+            annoState.tempEl = path;
+        } else if (annoState.tool === 'rect') {
+            var r = annoSvgEl('rect');
+            r.setAttribute('x', p.x); r.setAttribute('y', p.y);
+            r.setAttribute('width', 0); r.setAttribute('height', 0);
+            r.setAttribute('stroke', annoState.color); r.setAttribute('stroke-width', '2');
+            r.setAttribute('fill', annoState.color); r.setAttribute('fill-opacity', '0.12');
+            r.setAttribute('class', 'anno-shape');
+            svg.appendChild(r);
+            annoState.tempEl = r;
+        } else if (annoState.tool === 'ellipse') {
+            var el = annoSvgEl('ellipse');
+            el.setAttribute('cx', p.x); el.setAttribute('cy', p.y);
+            el.setAttribute('rx', 0); el.setAttribute('ry', 0);
+            el.setAttribute('stroke', annoState.color); el.setAttribute('stroke-width', '2');
+            el.setAttribute('fill', annoState.color); el.setAttribute('fill-opacity', '0.12');
+            el.setAttribute('class', 'anno-shape');
+            svg.appendChild(el);
+            annoState.tempEl = el;
+        } else if (annoState.tool === 'text') {
+            annoState.drawing = false;
+            annoAddText(p.x, p.y, '');
+        }
+    }
+
+    function annoPointerMove(e) {
+        if (!annoState.drawing || !annoState.tempEl) return;
+        var p = annoGetPoint(e);
+        var el = annoState.tempEl;
+        if (el.tagName === 'path') {
+            el.setAttribute('d', el.getAttribute('d') + ' L ' + p.x + ' ' + p.y);
+        } else if (el.tagName === 'rect') {
+            var x = Math.min(p.x, annoState.startX), y = Math.min(p.y, annoState.startY);
+            el.setAttribute('x', x); el.setAttribute('y', y);
+            el.setAttribute('width', Math.abs(p.x - annoState.startX));
+            el.setAttribute('height', Math.abs(p.y - annoState.startY));
+        } else if (el.tagName === 'ellipse') {
+            el.setAttribute('cx', (p.x + annoState.startX) / 2);
+            el.setAttribute('cy', (p.y + annoState.startY) / 2);
+            el.setAttribute('rx', Math.abs(p.x - annoState.startX) / 2);
+            el.setAttribute('ry', Math.abs(p.y - annoState.startY) / 2);
+        }
+    }
+
+    function annoPointerUp() {
+        if (!annoState.drawing) return;
+        annoState.drawing = false;
+        var el = annoState.tempEl;
+        annoState.tempEl = null;
+        if (!el) return;
+        if (el.tagName === 'rect' && (parseFloat(el.getAttribute('width')) < 3 || parseFloat(el.getAttribute('height')) < 3)) { el.remove(); return; }
+        if (el.tagName === 'ellipse' && (parseFloat(el.getAttribute('rx')) < 3 || parseFloat(el.getAttribute('ry')) < 3)) { el.remove(); return; }
+        annoState.items.push({ tool: annoState.tool, color: annoState.color, svg: el.outerHTML });
+        annoSv();
+    }
+
+    function annoAddText(x, y, text) {
+        var div = document.createElement('div');
+        div.className = 'anno-text';
+        div.style.left = x + 'px';
+        div.style.top = y + 'px';
+        div.style.color = annoState.color;
+        div.contentEditable = 'true';
+        div.textContent = text || '';
+        annoState.scrollEl.appendChild(div);
+        div.focus();
+        try {
+            var range = document.createRange();
+            range.selectNodeContents(div);
+            var sel = window.getSelection();
+            sel.removeAllRanges();
+            sel.addRange(range);
+        } catch (err) {}
+        div.addEventListener('blur', function() {
+            var t = div.textContent.trim();
+            if (!t) { div.remove(); return; }
+            annoState.items.push({ tool: 'text', color: annoState.color, x: x, y: y, text: t });
+            annoSv();
+        });
+    }
+
+    function annoRenderAll() {
+        var svg = annoState.svgEl;
+        if (!svg) return;
+        while (svg.firstChild) svg.removeChild(svg.firstChild);
+        var texts = annoState.scrollEl.querySelectorAll('.anno-text');
+        for (var i = 0; i < texts.length; i++) texts[i].remove();
+        annoState.items.forEach(function(it) {
+            if (it.tool === 'text') {
+                var div = document.createElement('div');
+                div.className = 'anno-text';
+                div.style.left = it.x + 'px';
+                div.style.top = it.y + 'px';
+                div.style.color = it.color;
+                div.textContent = it.text;
+                annoState.scrollEl.appendChild(div);
+            } else if (it.svg) {
+                var tmp = annoSvgEl('svg');
+                tmp.innerHTML = it.svg;
+                while (tmp.firstChild) svg.appendChild(tmp.firstChild);
+            }
+        });
+    }
+
+    function annoSv() {
+        if (currentAnnoItem) {
+            currentAnnoItem.annotations = annoState.items.slice();
+        }
+    }
+
+    function annoUndo() {
+        if (!annoState.items.length) return;
+        annoState.items.pop();
+        annoRenderAll();
+        annoSv();
+    }
+
+    function annoClear() {
+        if (!annoState.items.length) return;
+        if (!confirm('确认清空全部批注？此操作不可撤销。')) return;
+        annoState.items = [];
+        annoRenderAll();
+        annoSv();
+    }
+
+    function annoResize() {
+        if (!annoState.scrollEl || !annoState.svgEl) return;
+        var w = annoState.scrollEl.scrollWidth;
+        var h = annoState.scrollEl.scrollHeight;
+        annoState.svgEl.setAttribute('width', w);
+        annoState.svgEl.setAttribute('height', h);
+        annoState.svgEl.style.width = w + 'px';
+        annoState.svgEl.style.height = h + 'px';
+    }
+    </script>
+
     <!-- ========== 报告编辑器全屏覆盖层（升级版） ========== -->
     <div class="report-editor-overlay" id="serviceReportEditorOverlay">
         <!-- 顶部吸顶栏 -->
@@ -69403,6 +70027,9 @@ function confirmImportPrice() {
                 <button class="primary" onclick="submitReportForReview()">📤 提交审核</button>
             </div>
         </div>
+
+        <!-- 退回提示横幅 -->
+        <div class="report-returned-banner" id="reportReturnedBanner" style="display:none;"></div>
 
         <!-- 三栏主体 -->
         <div class="report-editor-body">
@@ -69628,6 +70255,15 @@ function confirmImportPrice() {
                         <div id="aiQualityResult"></div>
                         <div id="aiMissingAlert"></div>
                     </div>
+
+                    <!-- 审核批注（退回处理）模块 -->
+                    <div class="report-right-section review-todo-section" id="reviewTodoSection" style="display:none;">
+                        <div class="review-todo-header" id="reviewTodoHeader" onclick="toggleReviewTodoPanel()">
+                            <span class="review-todo-title">🔴 审核意见 <span class="review-todo-count" id="reviewTodoCount">0</span></span>
+                            <span class="review-todo-collapse" id="reviewTodoCollapse">▾</span>
+                        </div>
+                        <div class="review-todo-list" id="reviewTodoList"></div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -69813,6 +70449,8 @@ function confirmImportPrice() {
                 action: '',
                 deadline: '',
                 photos: prefabItem.photos || [],
+                rectifyPhotos: [],
+                rectifyDesc: '',
                 expert: prefabItem.expert || '',
                 time: prefabItem.time || '',
                 layout: layout || 'default',
@@ -69980,6 +70618,8 @@ function confirmImportPrice() {
                         action: '',
                         deadline: '',
                         photos: item.photos || [],
+                        rectifyPhotos: [],
+                        rectifyDesc: '',
                         expert: item.expert || '',
                         time: item.time || '',
                         layout: 'left-right',
@@ -70072,7 +70712,7 @@ function confirmImportPrice() {
                 block.data = { rows: [{ location: '', hazard: '', level: '一般', action: '', deadline: '' }] };
                 break;
             case 'hazard-card':
-                block.data = { location: '', hazard: '', level: '一般', type: '', action: '', deadline: '', photos: [], expert: '', time: '', layout: 'default', polished: false };
+                block.data = { location: '', hazard: '', level: '一般', type: '', action: '', deadline: '', photos: [], rectifyPhotos: [], rectifyDesc: '', expert: '', time: '', layout: 'default', polished: false };
                 break;
             default:
                 block.data = {};
@@ -70199,12 +70839,53 @@ function confirmImportPrice() {
                 '<div class="prop-edit-row"><div class="prop-edit-label">风险等级</div><select class="prop-edit-select" onchange="updateBlockData(\'' + blockId + '\',\'level\',this.value)"><option value="重大"' + (block.data.level==='重大'?' selected':'') + '>重大</option><option value="一般"' + (block.data.level==='一般'?' selected':'') + '>一般</option><option value="轻微"' + (block.data.level==='轻微'?' selected':'') + '>轻微</option></select></div>' +
                 '<div class="prop-edit-row"><div class="prop-edit-label">隐患类型</div><input class="prop-edit-input" value="' + escHtml(block.data.type || '') + '" onchange="updateBlockData(\'' + blockId + '\',\'type\',this.value)"></div>' +
                 '<div class="prop-edit-row"><div class="prop-edit-label">整改措施</div><textarea class="prop-edit-input" style="min-height:60px;" onchange="updateBlockData(\'' + blockId + '\',\'action\',this.value)">' + escHtml(block.data.action || '') + '</textarea></div>' +
-                '<div class="prop-edit-row"><div class="prop-edit-label">整改期限</div><input class="prop-edit-input" value="' + escHtml(block.data.deadline || '') + '" onchange="updateBlockData(\'' + blockId + '\',\'deadline\',this.value)"></div>';
+                '<div class="prop-edit-row"><div class="prop-edit-label">整改期限</div><input class="prop-edit-input" value="' + escHtml(block.data.deadline || '') + '" onchange="updateBlockData(\'' + blockId + '\',\'deadline\',this.value)"></div>' +
+                '<div class="prop-edit-row"><div class="prop-edit-label">整改后描述</div><textarea class="prop-edit-input" style="min-height:60px;" onchange="updateBlockData(\'' + blockId + '\',\'rectifyDesc\',this.value)">' + escHtml(block.data.rectifyDesc || '') + '</textarea></div>' +
+                '<div class="prop-edit-row"><div class="prop-edit-label">整改后照片</div><div id="rectifyPhotoEditWrap_' + blockId + '">' + rectifyPhotoEditHtml(blockId) + '</div></div>';
         } else {
             bodyHtml = '<div style="text-align:center;color:#999;padding:20px;">此组件类型暂无属性设置面板</div>';
         }
         overlay.innerHTML = '<div class="block-settings-modal"><div class="bsm-header"><span class="bsm-title">组件设置 - ' + getBlockTypeName(block.type) + '</span><button class="bsm-close" onclick="this.closest(\'.block-settings-overlay\').remove()">×</button></div><div class="bsm-body">' + bodyHtml + '</div><div class="bsm-footer"><button onclick="this.closest(\'.block-settings-overlay\').remove();renderReportCanvas();updateReportOutline();" style="padding:6px 16px;border-radius:4px;cursor:pointer;border:1px solid #d9d9d9;background:#fff;">关闭</button><button onclick="this.closest(\'.block-settings-overlay\').remove();renderReportCanvas();updateReportOutline();" style="padding:6px 16px;border-radius:4px;cursor:pointer;border:1px solid #1890ff;background:#1890ff;color:#fff;">确认</button></div></div>';
         document.body.appendChild(overlay);
+    }
+
+    // ========== 整改后照片 编辑辅助 ==========
+    function rectifyPhotoEditHtml(blockId) {
+        var idx = getBlockIndex(blockId);
+        if (idx < 0) return '';
+        var photos = reportBlocks[idx].data.rectifyPhotos || [];
+        var html = '<div class="rectify-photo-list">';
+        photos.forEach(function(p, i) {
+            html += '<div class="rectify-photo-item">🖼<button type="button" class="rectify-photo-del" title="删除" onclick="event.stopPropagation();removeRectifyPhoto(\'' + blockId + '\',' + i + ')">×</button></div>';
+        });
+        html += '<div class="rectify-photo-item rectify-photo-add" title="添加整改后照片" onclick="event.stopPropagation();addRectifyPhoto(\'' + blockId + '\')">＋</div>';
+        html += '</div>';
+        if (photos.length === 0) html += '<div style="font-size:12px;color:#bbb;margin-top:4px;">暂无整改后照片，点击 ＋ 添加</div>';
+        return html;
+    }
+    function addRectifyPhoto(blockId) {
+        var idx = getBlockIndex(blockId);
+        if (idx < 0) return;
+        var photos = reportBlocks[idx].data.rectifyPhotos || [];
+        photos.push('整改照片' + (photos.length + 1) + '.jpg');
+        reportBlocks[idx].data.rectifyPhotos = photos;
+        renderReportCanvas();
+        if (typeof updateReportOutline === 'function') updateReportOutline();
+        var existing = document.querySelector('.block-settings-overlay');
+        if (existing) existing.remove();
+        openBlockSettings(blockId);
+    }
+    function removeRectifyPhoto(blockId, i) {
+        var idx = getBlockIndex(blockId);
+        if (idx < 0) return;
+        var photos = reportBlocks[idx].data.rectifyPhotos || [];
+        if (i >= 0 && i < photos.length) photos.splice(i, 1);
+        reportBlocks[idx].data.rectifyPhotos = photos;
+        renderReportCanvas();
+        if (typeof updateReportOutline === 'function') updateReportOutline();
+        var existing = document.querySelector('.block-settings-overlay');
+        if (existing) existing.remove();
+        openBlockSettings(blockId);
     }
 
     function updateBlockData(blockId, field, value) {
@@ -70213,7 +70894,7 @@ function confirmImportPrice() {
     }
 
     // ========== 渲染画布内容 ==========
-    function renderBlockContent(block) {
+    function renderBlockContent(block, readOnly) {
         var d = block.data || {};
         var autoClass = d.autoFilled ? ' auto-filled' : (d.uncertain ? ' uncertain-filled' : '');
         switch (block.type) {
@@ -70225,6 +70906,9 @@ function confirmImportPrice() {
             case 'section-title':
                 return '<div class="report-block-content' + autoClass + '"><h3>' + escHtml(d.title || '') + '</h3></div>';
             case 'rich-text':
+                if (readOnly) {
+                    return '<div class="report-block-content' + autoClass + '"><div class="rich-text-view">' + escHtml(d.content || '').replace(/\n/g, '<br>') + '</div></div>';
+                }
                 return '<div class="report-block-content' + autoClass + '"><textarea onchange="updateBlockData(\'' + block.id + '\',\'content\',this.value)">' + escHtml(d.content || '') + '</textarea></div>';
             case 'kv-pair':
                 var kvHtml = '<div class="report-block-content' + autoClass + '">';
@@ -70259,18 +70943,43 @@ function confirmImportPrice() {
                 if (d.deadline) {
                     cardHtml += '<div style="font-size:12px;color:#999;">⏰ 整改期限：' + escHtml(d.deadline) + '</div>';
                 }
-                cardHtml += '<div class="hc-actions">' +
-                    '<button class="hc-ai-polish-btn' + (d.polished ? ' done' : '') + '" onclick="event.stopPropagation();aiPolishBlock(\'' + block.id + '\')">' + (d.polished ? '✓ 已润色' : '✨ AI润色') + '</button>' +
-                    '<button class="hc-ai-polish-btn" onclick="event.stopPropagation();aiGenRectifyForBlock(\'' + block.id + '\')">📝 生成整改方案</button>' +
-                    '<button class="hc-ai-polish-btn" style="border-color:#ffadd2;color:#eb2f96;background:#fff0f6;" onclick="event.stopPropagation();cycleCardLayout(\'' + block.id + '\')">📐 切换排版</button>' +
-                    '</div></div></div></div></div>';
+                // 整改后情况（照片 + 描述）
+                if ((d.rectifyPhotos && d.rectifyPhotos.length > 0) || d.rectifyDesc) {
+                    cardHtml += '<div class="hc-rectify">';
+                    cardHtml += '<div class="hc-rectify-title">🔧 整改后情况</div>';
+                    if (d.rectifyPhotos && d.rectifyPhotos.length > 0) {
+                        cardHtml += '<div class="hc-photos hc-rectify-photos">';
+                        d.rectifyPhotos.forEach(function(photo, pi) {
+                            cardHtml += '<div class="hc-photo">🖼<span class="photo-caption">整改后' + (pi+1) + '</span></div>';
+                        });
+                        cardHtml += '</div>';
+                    }
+                    if (d.rectifyDesc) {
+                        cardHtml += '<div class="hc-rectify-desc">📝 整改后说明：' + escHtml(d.rectifyDesc) + '</div>';
+                    }
+                    cardHtml += '</div>';
+                }
+                if (!readOnly) {
+                    cardHtml += '<div class="hc-actions">' +
+                        '<button class="hc-ai-polish-btn' + (d.polished ? ' done' : '') + '" onclick="event.stopPropagation();aiPolishBlock(\'' + block.id + '\')">' + (d.polished ? '✓ 已润色' : '✨ AI润色') + '</button>' +
+                        '<button class="hc-ai-polish-btn" onclick="event.stopPropagation();aiGenRectifyForBlock(\'' + block.id + '\')">📝 生成整改方案</button>' +
+                        '<button class="hc-ai-polish-btn" style="border-color:#ffadd2;color:#eb2f96;background:#fff0f6;" onclick="event.stopPropagation();cycleCardLayout(\'' + block.id + '\')">📐 切换排版</button>' +
+                        '</div>';
+                }
+                cardHtml += '</div></div></div></div></div>';
                 return cardHtml;
             case 'hazard-table':
                 var htHtml = '<div class="report-block-content"><table class="hazard-table"><thead><tr><th>序号</th><th>隐患位置</th><th>隐患描述</th><th>风险等级</th><th>整改措施</th><th>整改期限</th></tr></thead><tbody>';
                 (d.rows || []).forEach(function(row, ri) {
-                    htHtml += '<tr><td>' + (ri+1) + '</td><td><input value="' + escHtml(row.location || '') + '" onchange="updateTableCell(\'' + block.id + '\',' + ri + ',\'location\',this.value)"></td><td><input value="' + escHtml(row.hazard || '') + '" onchange="updateTableCell(\'' + block.id + '\',' + ri + ',\'hazard\',this.value)"></td><td><input value="' + escHtml(row.level || '') + '" onchange="updateTableCell(\'' + block.id + '\',' + ri + ',\'level\',this.value)"></td><td><input value="' + escHtml(row.action || '') + '" onchange="updateTableCell(\'' + block.id + '\',' + ri + ',\'action\',this.value)"></td><td><input value="' + escHtml(row.deadline || '') + '" onchange="updateTableCell(\'' + block.id + '\',' + ri + ',\'deadline\',this.value)"></td></tr>';
+                    if (readOnly) {
+                        htHtml += '<tr><td>' + (ri+1) + '</td><td>' + escHtml(row.location || '') + '</td><td>' + escHtml(row.hazard || '') + '</td><td>' + escHtml(row.level || '') + '</td><td>' + escHtml(row.action || '') + '</td><td>' + escHtml(row.deadline || '') + '</td></tr>';
+                    } else {
+                        htHtml += '<tr><td>' + (ri+1) + '</td><td><input value="' + escHtml(row.location || '') + '" onchange="updateTableCell(\'' + block.id + '\',' + ri + ',\'location\',this.value)"></td><td><input value="' + escHtml(row.hazard || '') + '" onchange="updateTableCell(\'' + block.id + '\',' + ri + ',\'hazard\',this.value)"></td><td><input value="' + escHtml(row.level || '') + '" onchange="updateTableCell(\'' + block.id + '\',' + ri + ',\'level\',this.value)"></td><td><input value="' + escHtml(row.action || '') + '" onchange="updateTableCell(\'' + block.id + '\',' + ri + ',\'action\',this.value)"></td><td><input value="' + escHtml(row.deadline || '') + '" onchange="updateTableCell(\'' + block.id + '\',' + ri + ',\'deadline\',this.value)"></td></tr>';
+                    }
                 });
-                htHtml += '</tbody></table><div class="add-hazard-row" onclick="addHazardTableRow(\'' + block.id + '\')">+ 添加行</div></div>';
+                htHtml += '</tbody></table>';
+                if (!readOnly) htHtml += '<div class="add-hazard-row" onclick="addHazardTableRow(\'' + block.id + '\')">+ 添加行</div>';
+                htHtml += '</div>';
                 return htHtml;
             case 'rectify-notice':
                 return '<div class="report-block-content"><div class="rectify-block"><div class="rb-title">📋 ' + escHtml(d.title || '安全隐患整改通知单') + '</div>' +
@@ -70734,6 +71443,9 @@ function confirmImportPrice() {
         // 更新状态
         updateCompletionBar();
         updateRightPanel();
+
+        // 审核批注（被打回时）：展示横幅 + 右侧面板 + 自动定位第一条
+        initReviewTodoPanel(item);
     }
 
     function closeServiceReportEditor() {
@@ -70757,6 +71469,157 @@ function confirmImportPrice() {
         document.getElementById('aiMissingAlert').innerHTML = '';
         document.getElementById('aiComponentActions').style.display = 'none';
         document.getElementById('aiEmptyHint').style.display = '';
+        // 清理审核批注高亮与横幅
+        document.querySelectorAll('.report-block.highlight-error').forEach(function(b) { b.classList.remove('highlight-error'); });
+        var rb = document.getElementById('reportReturnedBanner');
+        if (rb) { rb.style.display = 'none'; rb.innerHTML = ''; }
+        var rs = document.getElementById('reviewTodoSection');
+        if (rs) { rs.style.display = 'none'; rs.classList.remove('collapsed', 'all-done'); }
+    }
+
+    // ========== 审核批注（退回处理）面板 ==========
+    function hasUnresolvedReview(item) {
+        return !!(item && item.reviewComments && item.reviewComments.some(function(c) { return !c.resolved; }));
+    }
+
+    // 进入被打回的报告时调用：展示横幅 + 审核批注面板，并自动定位第一条
+    function initReviewTodoPanel(item) {
+        var banner = document.getElementById('reportReturnedBanner');
+        var section = document.getElementById('reviewTodoSection');
+        if (!item || !item.reviewComments || item.reviewComments.length === 0) {
+            if (banner) { banner.style.display = 'none'; banner.innerHTML = ''; }
+            if (section) section.style.display = 'none';
+            return;
+        }
+        var unresolved = item.reviewComments.filter(function(c) { return !c.resolved; });
+        if (unresolved.length === 0) {
+            if (banner) { banner.style.display = 'none'; banner.innerHTML = ''; }
+            if (section) section.style.display = 'none';
+            return;
+        }
+        // 顶部黄色横幅：强提醒
+        if (banner) {
+            banner.style.display = 'flex';
+            banner.innerHTML = '<span style="font-size:16px;line-height:1;">⚠️</span>' +
+                '<span>报告已退回，请在右侧处理 <b id="bannerReviewCount">' + unresolved.length + '</b> 条审核意见</span>';
+        }
+        // 审核批注面板：默认展开
+        if (section) {
+            section.style.display = '';
+            section.classList.remove('collapsed', 'all-done');
+            var collapse = document.getElementById('reviewTodoCollapse');
+            if (collapse) collapse.textContent = '▾';
+        }
+        renderReviewTodoList(item);
+        // 自动高亮第一条 + 正文联动滚动（等待布局稳定）
+        var first = unresolved[0];
+        setTimeout(function() {
+            if (!first) return;
+            highlightReviewCard(first.id, true);
+            reviewLocate(first.id, true);
+        }, 350);
+    }
+
+    function renderReviewTodoList(item) {
+        var list = document.getElementById('reviewTodoList');
+        if (!list) return;
+        var comments = item.reviewComments || [];
+        var unresolved = comments.filter(function(c) { return !c.resolved; });
+        var countEl = document.getElementById('reviewTodoCount');
+        if (countEl) countEl.textContent = unresolved.length;
+        var bannerCount = document.getElementById('bannerReviewCount');
+        if (bannerCount) bannerCount.textContent = unresolved.length;
+        if (comments.length === 0) { list.innerHTML = '<div class="review-todo-empty">暂无审核意见</div>'; return; }
+        var html = '';
+        comments.forEach(function(c) {
+            var initial = (c.reviewer || '审').trim().charAt(0);
+            html += '<div class="review-todo-card' + (c.resolved ? ' resolved' : '') + '" id="reviewCard_' + c.id + '" data-comment-id="' + c.id + '">' +
+                '<div class="rtc-top">' +
+                    '<span class="rtc-avatar">' + escHtml(initial) + '</span>' +
+                    '<span class="rtc-reviewer">' + escHtml(c.reviewer || '审核员') + '</span>' +
+                    (c.role ? '<span class="rtc-role rtc-role-' + escHtml(c.role) + '">' + escHtml(c.role) + '</span>' : '') +
+                '</div>' +
+                '<div class="rtc-text">' + escHtml(c.text || '') + '</div>' +
+                (c.quote ? '<div class="rtc-quote">“' + escHtml(c.quote) + '”</div>' : '') +
+                '<div class="rtc-actions">' +
+                    '<button class="rtc-btn rtc-btn-locate" onclick="reviewLocate(\'' + c.id + '\')">去定位</button>' +
+                    '<button class="rtc-btn rtc-btn-resolve' + (c.resolved ? ' done' : '') + '" onclick="reviewResolve(\'' + c.id + '\')"' + (c.resolved ? ' disabled' : '') + '>' + (c.resolved ? '已完成' : '确认修改') + '</button>' +
+                '</div>' +
+            '</div>';
+        });
+        list.innerHTML = html;
+    }
+
+    function highlightReviewCard(commentId, active) {
+        document.querySelectorAll('.review-todo-card').forEach(function(card) { card.classList.remove('active'); });
+        if (!active) return;
+        var card = document.getElementById('reviewCard_' + commentId);
+        if (card) card.classList.add('active');
+    }
+
+    // 点击「去定位」：左侧正文平滑滚动到对应段落，加红色高亮框并闪烁
+    function reviewLocate(commentId) {
+        var item = currentReportData;
+        if (!item || !item.reviewComments) return;
+        var c = item.reviewComments.find(function(x) { return x.id === commentId; });
+        if (!c || !c.targetBlockId) return;
+        var el = document.querySelector('[data-block-id="' + c.targetBlockId + '"]');
+        if (!el) return;
+        // 仅保留当前批注的高亮（切换时清掉其它）
+        document.querySelectorAll('.report-block.highlight-error').forEach(function(b) { if (b !== el) b.classList.remove('highlight-error'); });
+        el.classList.remove('highlight-error');
+        void el.offsetWidth; // 触发重排以重启动画
+        el.classList.add('highlight-error');
+        el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        highlightReviewCard(commentId, true);
+        var card = document.getElementById('reviewCard_' + commentId);
+        if (card) card.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+    }
+
+    // 点击「确认修改」：标记已修改 -> 移除正文高亮 + 卡片置灰 + 计数-1；全部完成则收起
+    function reviewResolve(commentId) {
+        var item = currentReportData;
+        if (!item || !item.reviewComments) return;
+        var c = item.reviewComments.find(function(x) { return x.id === commentId; });
+        if (!c) return;
+        c.resolved = true;
+        if (c.targetBlockId) {
+            var el = document.querySelector('[data-block-id="' + c.targetBlockId + '"]');
+            if (el) el.classList.remove('highlight-error');
+        }
+        var card = document.getElementById('reviewCard_' + commentId);
+        if (card) {
+            card.classList.add('resolved');
+            card.classList.remove('active');
+            var btn = card.querySelector('.rtc-btn-resolve');
+            if (btn) { btn.textContent = '已完成'; btn.disabled = true; btn.classList.add('done'); }
+        }
+        var unresolved = item.reviewComments.filter(function(x) { return !x.resolved; }).length;
+        var countEl = document.getElementById('reviewTodoCount');
+        if (countEl) countEl.textContent = unresolved;
+        var bannerCount = document.getElementById('bannerReviewCount');
+        if (bannerCount) bannerCount.textContent = unresolved;
+        if (unresolved === 0) {
+            var banner = document.getElementById('reportReturnedBanner');
+            if (banner) {
+                banner.style.display = 'flex';
+                banner.innerHTML = '<span style="font-size:16px;line-height:1;">✅</span><span>全部审核意见已处理完毕，可重新提交审核</span>';
+            }
+            var section = document.getElementById('reviewTodoSection');
+            if (section) section.classList.add('all-done');
+            reportToast('全部审核意见已处理，可重新提交审核');
+        } else {
+            reportToast('已标记该意见为已修改');
+        }
+    }
+
+    // 折叠/展开审核批注面板
+    function toggleReviewTodoPanel() {
+        var section = document.getElementById('reviewTodoSection');
+        if (!section) return;
+        section.classList.toggle('collapsed');
+        var collapse = document.getElementById('reviewTodoCollapse');
+        if (collapse) collapse.textContent = section.classList.contains('collapsed') ? '▸' : '▾';
     }
 
     // ========== Toast 通知 ==========
