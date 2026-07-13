@@ -18293,6 +18293,31 @@
 .scc-tier-delete-btn:hover { background: #fff2f0; }
 .scc-tier-bar { height: 6px; border-radius: 3px; margin-top: 6px; position: relative; overflow: hidden; }
 .scc-tier-bar-fill { height: 100%; border-radius: 3px; transition: width 0.3s ease; }
+.scc-pkg-trigger { display:flex; flex-wrap:wrap; gap:4px; align-items:center; min-height:34px; padding:4px 8px; border:1px dashed #d9d9d9; border-radius:4px; cursor:pointer; background:#fafafa; transition:0.2s; }
+.scc-pkg-trigger:hover, .scc-pkg-trigger:focus { border-color:#1890ff; background:#f0f5ff; outline:none; }
+.scc-pkg-empty { color:#bbb; font-size:12px; }
+.scc-pkg-tag { display:inline-block; padding:2px 8px; background:#e6f7ff; color:#1890ff; border-radius:3px; font-size:12px; white-space:nowrap; }
+.scc-pkg-tag-ov { background:#fff7e6; color:#fa8c16; }
+.scc-pkg-section { border:1px solid #f0f0f0; border-radius:6px; padding:16px; margin-bottom:16px; background:#fff; }
+.scc-pkg-section-title { font-size:14px; font-weight:600; color:#333; margin-bottom:10px; display:flex; align-items:center; gap:8px; }
+.scc-pkg-divider { height:1px; background:#f0f0f0; margin:8px 0 16px; }
+.scc-pkg-standard-row { display:flex; align-items:center; gap:12px; padding:8px 0; border-bottom:1px dashed #f5f5f5; }
+.scc-pkg-standard-row:last-child { border-bottom:none; }
+.scc-pkg-standard-name { flex:1; font-size:13px; color:#333; }
+.scc-pkg-standard-row.disabled .scc-pkg-standard-name { color:#bbb; }
+.scc-pkg-override { border:1px solid #ffe7ba; background:#fffdf7; border-radius:6px; padding:14px 16px; margin-bottom:12px; }
+.scc-pkg-override-head { display:flex; align-items:center; gap:8px; margin-bottom:8px; }
+.scc-pkg-change { display:flex; flex-wrap:wrap; align-items:center; gap:8px; padding:8px 0; border-top:1px dashed #ffe7ba; }
+.scc-pkg-change:first-of-type { border-top:none; }
+.scc-pkg-add-btn { color:#1890ff; cursor:pointer; font-size:13px; background:none; border:none; padding:4px 0; }
+.scc-pkg-add-btn:hover { text-decoration:underline; }
+.scc-pkg-remove { color:#ff4d4f; cursor:pointer; background:none; border:none; font-size:13px; }
+.scc-pkg-remove:hover { text-decoration:underline; }
+.scc-pkg-inline-input { width:64px; height:30px; border:1px solid #d9d9d9; border-radius:4px; padding:0 6px; font-size:13px; box-sizing:border-box; }
+.scc-pkg-inline-input:focus { border-color:#1890ff; }
+.scc-pkg-inline-select { height:30px; border:1px solid #d9d9d9; border-radius:4px; padding:0 6px; font-size:13px; background:#fff; box-sizing:border-box; }
+.scc-pkg-inline-select:focus { border-color:#1890ff; }
+.scc-pkg-cond { font-size:13px; color:#666; }
 
 
         /* ============================================================
@@ -32182,7 +32207,6 @@
                     <div class="scc-header" style="margin:-24px -24px 20px -24px;border-radius:0;">
                         <div class="scc-header-title">安责险事故预防技术服务配置中心</div>
                         <div class="scc-header-actions">
-                            <button class="scc-btn-outline" onclick="sccPreviewConfig()">预览效果</button>
                             <button class="scc-btn-primary" onclick="sccSaveConfig()">保存配置</button>
                         </div>
                     </div>
@@ -32224,7 +32248,7 @@
                                             <th style="width:160px;">保费下限（万元）<br><span style="font-weight:400;color:#999;font-size:11px;">包含本数（≥）</span></th>
                                             <th style="width:160px;">保费上限（万元）<br><span style="font-weight:400;color:#999;font-size:11px;">不包含本数（&lt;）</span></th>
                                             <th style="width:180px;">事故加成系数</th>
-                                            <th style="width:120px;">基础频次（次/年）</th>
+                                            <th style="width:220px;">标准服务包</th>
                                             <th style="width:80px;">操作</th>
                                         </tr>
                                     </thead>
@@ -32240,122 +32264,22 @@
                                     添加档次
                                 </button>
                             </div>
-                            <!-- 实时预览计算器 -->
-                            <div style="margin-top:20px;padding:16px;background:#f0f5ff;border-radius:6px;border:1px solid #d6e4ff;">
-                                <div style="font-size:14px;font-weight:500;color:#333;margin-bottom:12px;">
-                                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#1890ff" stroke-width="2" style="vertical-align:middle;margin-right:6px;"><rect x="4" y="2" width="16" height="20" rx="2"></rect><line x1="8" y1="6" x2="16" y2="6"></line><line x1="8" y1="10" x2="10" y2="10"></line><line x1="14" y1="10" x2="16" y2="10"></line><line x1="8" y1="14" x2="10" y2="14"></line><line x1="14" y1="14" x2="16" y2="14"></line><line x1="8" y1="18" x2="10" y2="18"></line><line x1="14" y1="18" x2="16" y2="18"></line></svg>
-                                    规则验证计算器
-                                </div>
-                                <div style="display:flex;gap:16px;align-items:flex-end;">
-                                    <div class="scc-form-group" style="flex:1;margin-bottom:0;">
-                                        <label class="scc-form-label">模拟保费（万元）</label>
-                                        <input type="number" class="scc-form-input" id="sccEngineTestAmount" placeholder="输入保费金额" oninput="sccEngineCalc()" style="background:#fff;">
-                                    </div>
-                                    <div class="scc-form-group" style="flex:1;margin-bottom:0;">
-                                        <label class="scc-form-label">事故状态</label>
-                                        <select class="scc-form-select" id="sccEngineTestAccident" onchange="sccEngineCalc()" style="background:#fff;">
-                                            <option value="none">未发生事故</option>
-                                            <option value="occurred">发生事故</option>
-                                        </select>
-                                    </div>
-                                    <div style="flex:1;">
-                                        <label class="scc-form-label">计算结果</label>
-                                        <div id="sccEngineTestResult" style="padding:8px 12px;background:#fff;border-radius:4px;border:1px solid #d6e4ff;font-size:14px;font-weight:500;color:#1890ff;min-height:36px;display:flex;align-items:center;">
-                                            请输入保费进行计算
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
                     </div>
 
-                    <!-- CARD 1: 定档与基础规则 -->
-                    <div class="scc-card">
-                    <div class="scc-card-title">
-                        <span>实时定档预览（第二步：预览/测试层）</span>
-                    </div>
-                    <div class="scc-card-body" style="display:flex; gap:40px;">
-                        <!-- 左侧：保费与事故记录 -->
-                        <div style="flex:1;">
-                            <div class="scc-form-group">
-                                <label class="scc-form-label">保费规模</label>
-                                <div style="display:flex; gap:8px;">
-                                    <input type="number" class="scc-form-input" id="sccPremiumAmount" placeholder="请输入保费金额" value="350" oninput="sccCalcTier()" style="flex:1;">
-                                    <select class="scc-form-select" id="sccPremiumUnit" onchange="sccCalcTier()" style="width:80px;flex-shrink:0;">
-                                        <option value="wan">万元</option>
-                                        <option value="yi">亿元</option>
-                                    </select>
-                                </div>
-                                <div class="scc-mt-8" id="sccTierResult" style="font-size:13px;">
-                                    <span class="scc-result-tag tier2">当前保费属于第二档区间</span>
-                                </div>
-                            </div>
-                            <div class="scc-form-group">
-                                <label class="scc-form-label">上年度安全记录</label>
-                                <div class="scc-form-radio-group" id="sccSafetyRecord" onchange="sccCalcTier()">
-                                    <label class="scc-form-radio"><input type="radio" name="sccSafety" value="none" checked=""> 未发生事故</label>
-                                    <label class="scc-form-radio"><input type="radio" name="sccSafety" value="occurred"> 发生事故</label>
-                                </div>
-                            </div>
-                            <div class="scc-mt-16" style="padding:12px 16px; background:#f0f5ff; border-radius:4px; border:1px solid #d6e4ff;">
-                                <span style="font-size:13px; color:#666;">最终定档结果：</span>
-                                <span style="font-size:15px; font-weight:600; color:#1890ff;" id="sccFinalTier">第二档</span>
-                            </div>
-                        </div>
-                        <!-- 右侧：特殊规则挂载区 -->
-                        <div style="flex:1; border-left:1px solid #f0f0f0; padding-left:40px;">
-                            <div class="scc-flex-between scc-mb-16">
-                                <span style="font-size:14px; font-weight:500; color:#333;">行业/企业专属规则包</span>
-                                <button class="scc-link-btn" onclick="sccShowRuleModal()">+ 添加专项规则</button>
-                            </div>
-                            <div class="scc-rule-list" id="sccRuleList">
-                                <div class="scc-rule-item">
-                                    <div>
-                                        <span class="scc-tag scc-tag-orange" style="margin-right:8px;">化工行业</span>
-                                        <span class="scc-rule-item-name">增加防爆检测</span>
-                                    </div>
-                                    <div class="scc-rule-item-actions">
-                                        <button class="scc-link-btn" onclick="sccEditRule(0)">编辑</button>
-                                        <button class="scc-link-btn scc-text-danger" onclick="sccDeleteRule(0)">删除</button>
-                                    </div>
-                                </div>
-                                <div class="scc-rule-item">
-                                    <div>
-                                        <span class="scc-tag scc-tag-orange" style="margin-right:8px;">某某集团</span>
-                                        <span class="scc-rule-item-name">增加季度审计</span>
-                                    </div>
-                                    <div class="scc-rule-item-actions">
-                                        <button class="scc-link-btn" onclick="sccEditRule(1)">编辑</button>
-                                        <button class="scc-link-btn scc-text-danger" onclick="sccDeleteRule(1)">删除</button>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
+                <!-- 规则体系闭环说明：定档规则引擎 → 核心交互矩阵 → 新增标准 → 服务标准配置 -->
+                <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;padding:12px 16px;background:#f0f7ff;border:1px solid #bae0ff;border-radius:8px;margin-bottom:16px;font-size:13px;color:#555;">
+                    <span style="font-weight:600;color:#1890ff;">规则体系闭环：</span>
+                    <span style="padding:2px 10px;border-radius:12px;background:#e6f7ff;color:#1890ff;white-space:nowrap;">① 定档规则引擎</span>
+                    <span style="color:#bfbfbf;">→</span>
+                    <span style="padding:2px 10px;border-radius:12px;background:#e6f7ff;color:#1890ff;white-space:nowrap;">② 核心交互矩阵（适用档次 / 执行标准）</span>
+                    <span style="color:#bfbfbf;">→</span>
+                    <span style="padding:2px 10px;border-radius:12px;background:#e6f7ff;color:#1890ff;white-space:nowrap;">③ 新增标准</span>
+                    <span style="color:#bfbfbf;">→</span>
+                    <span style="padding:2px 10px;border-radius:12px;background:#e6f7ff;color:#1890ff;white-space:nowrap;">④ 服务标准配置</span>
+                    <span style="color:#999;margin-left:auto;">「适用档次」由定档规则引擎生成；新增标准后直达「服务标准配置」逐档细化</span>
                 </div>
 
-                <!-- CARD 2: 年度频次总控 -->
-                <div class="scc-card">
-                    <div class="scc-card-title">
-                        <span>年度频次总控（数据看板）</span>
-                    </div>
-                    <div class="scc-stat-row">
-                        <div class="scc-stat-card">
-                            <div class="scc-stat-value" style="color:#1890ff;" id="sccBaseFreq">6次/年</div>
-                            <div class="scc-stat-label">基础频次要求</div>
-                        </div>
-                        <div class="scc-stat-card">
-                            <div class="scc-stat-value" style="color:#faad14;" id="sccExtraFreq">+2次</div>
-                            <div class="scc-stat-label">额外叠加频次</div>
-                        </div>
-                        <div class="scc-stat-card">
-                            <div class="scc-stat-value" style="color:#52c41a;" id="sccTotalFreq">总计需完成 8 次服务</div>
-                            <div class="scc-stat-label">年度总目标</div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- CARD 3: 服务项目执行标准 -->
+                <!-- CARD 3: 服务项目执行标准（核心交互矩阵） -->
                 <div class="scc-card">
                     <div class="scc-card-title" style="display:flex;justify-content:space-between;align-items:center;">
                         <span>服务项目执行标准（核心交互矩阵）</span>
@@ -32364,7 +32288,7 @@
                     <!-- Tabs -->
                     <div class="scc-tabs">
                         <div class="scc-tab active" onclick="sccSwitchTab('general', this)">通用基础服务（<span id="sccGeneralCount">7</span>项）</div>
-                        <div class="scc-tab" onclick="sccSwitchTab('special', this)">行业/企业专项服务（<span id="sccSpecialCount">2</span>项）</div>
+                        <div class="scc-tab" onclick="sccSwitchTab('special', this)">专项服务（<span id="sccSpecialCount">5</span>项）</div>
                         <div class="scc-tab" onclick="sccSwitchTab('all', this)">全量视图</div>
                     </div>
 
@@ -32387,8 +32311,12 @@
                         </table>
                     </div>
 
-                    <!-- Tab 2: 行业/企业专项服务 -->
+                    <!-- Tab 2: 行业/企业专项服务（原「行业/企业专属规则包」合并至此，与核心交互矩阵同源） -->
                     <div id="sccTabSpecial" style="display:none;">
+                        <div class="scc-flex-between scc-mb-16">
+                            <div style="font-size:13px;color:#666;">专项服务覆盖行业、企业、服务机构、政府部门、保险机构等差异化对象，与核心交互矩阵共用同一套专项规则数据。具体要求在列表中通过「服务标准配置」抽屉逐条细化。</div>
+                            <button class="scc-btn-primary scc-btn-sm" onclick="sccShowRuleModal()" style="font-size:13px;padding:6px 16px;white-space:nowrap;">+ 添加专项规则</button>
+                        </div>
                         <div id="sccSpecialServiceList">
                             <!-- JS动态填充专项服务 -->
                         </div>
@@ -32552,8 +32480,11 @@
                 <div class="scc-mb-16">
                     <label class="scc-form-label" style="font-weight:500;color:#333;">第一步：定义范围（Where）</label>
                     <div class="scc-form-radio-group scc-mb-16">
-                        <label class="scc-form-radio"><input type="radio" name="sccRuleScope" value="industry" checked="" onchange="sccRuleScopeChange()"> 按行业属性</label>
-                        <label class="scc-form-radio"><input type="radio" name="sccRuleScope" value="enterprise" onchange="sccRuleScopeChange()"> 按特定企业名单</label>
+                        <label class="scc-form-radio"><input type="radio" name="sccRuleScope" value="industry" checked="" onchange="sccRuleScopeChange()"> 行业</label>
+                        <label class="scc-form-radio"><input type="radio" name="sccRuleScope" value="enterprise" onchange="sccRuleScopeChange()"> 企业</label>
+                        <label class="scc-form-radio"><input type="radio" name="sccRuleScope" value="agency" onchange="sccRuleScopeChange()"> 服务机构</label>
+                        <label class="scc-form-radio"><input type="radio" name="sccRuleScope" value="government" onchange="sccRuleScopeChange()"> 政府部门</label>
+                        <label class="scc-form-radio"><input type="radio" name="sccRuleScope" value="insurer" onchange="sccRuleScopeChange()"> 保险机构</label>
                     </div>
                     <div id="sccRuleScopeIndustry">
                         <label class="scc-form-label">选择行业（可多选）</label>
@@ -32564,16 +32495,18 @@
                             <option value="交通运输">交通运输</option>
                             <option value="冶金">冶金</option>
                             <option value="烟花爆竹">烟花爆竹</option>
+                            <option value="机械制造">机械制造</option>
+                            <option value="轻工">轻工</option>
                         </select>
                     </div>
-                    <div id="sccRuleScopeEnterprise" style="display:none;">
-                        <label class="scc-form-label">搜索并选择企业</label>
+                    <div id="sccRuleScopeSearchBox" style="display:none;">
+                        <label class="scc-form-label" id="sccRuleScopeSearchLabel">搜索并选择对象</label>
                         <div style="display:flex;gap:8px;">
-                            <input type="text" class="scc-form-input" id="sccRuleEnterpriseSearch" placeholder="输入企业名称搜索..." style="flex:1;">
-                            <button class="scc-btn-outline" onclick="sccSearchEnterprise()">搜索</button>
+                            <input type="text" class="scc-form-input" id="sccRuleScopeSearch" placeholder="输入名称搜索..." style="flex:1;">
+                            <button class="scc-btn-outline" onclick="sccRuleSearchScope()">搜索</button>
                         </div>
-                        <div class="scc-mt-8" id="sccRuleEnterpriseList" style="max-height:120px;overflow-y:auto;">
-                            <div style="font-size:12px;color:#999;padding:8px;">请输入关键词搜索企业</div>
+                        <div class="scc-mt-8" id="sccRuleScopeSearchList" style="max-height:120px;overflow-y:auto;">
+                            <div style="font-size:12px;color:#999;padding:8px;">请输入关键词搜索</div>
                         </div>
                     </div>
                 </div>
@@ -32595,8 +32528,9 @@
                         </select>
                     </div>
                     <div class="scc-form-group">
-                        <label class="scc-form-label">具体要求</label>
-                        <textarea class="scc-form-input" id="sccRuleRequirement" rows="3" placeholder="请输入具体要求描述..." style="height:80px;resize:vertical;"></textarea>
+                        <div style="font-size:12px;color:#666;background:#fafafa;border:1px dashed #e8e8e8;border-radius:6px;padding:10px 12px;line-height:1.7;">
+                            <b style="color:#333;">具体要求</b>将在保存后于「专项服务」列表的 <b style="color:#1890ff;">具体要求</b> 按钮中，通过「服务标准配置」抽屉逐条细化（服务内容综述 · 执行动作拆解 · 频次与时长校验）。
+                        </div>
                     </div>
                 </div>
                 <!-- Step 3: 定义约束 -->
@@ -32627,89 +32561,52 @@
             </div>
         </div>
 
-        <!-- Modal: 新增服务项目标准 -->
+        <!-- Modal: 新增服务项目标准（串联：定档规则引擎 → 核心交互矩阵 → 新增标准 → 服务标准配置） -->
         <div class="scc-modal-overlay" id="sccAddStandardModalOverlay" style="display:none;"></div>
-        <div class="scc-modal" id="sccAddStandardModal" style="display:none;width:600px;">
+        <div class="scc-modal" id="sccAddStandardModal" style="display:none;width:680px;">
             <div class="scc-modal-header" style="display:flex;justify-content:space-between;align-items:center;">
                 <h3 style="font-size:16px;font-weight:600;color:#333;margin:0;">新增服务项目标准</h3>
                 <button onclick="sccCloseAddStandardModal()" style="background:none;border:none;font-size:20px;cursor:pointer;color:#999;">✕</button>
             </div>
+            <!-- 串联流程提示（高亮「新增标准」当前步骤） -->
+            <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;padding:10px 20px;background:#f0f7ff;border-bottom:1px solid #e8e8e8;font-size:12px;color:#666;">
+                <span style="font-weight:600;color:#1890ff;">规则体系：</span>
+                <span style="padding:2px 8px;border-radius:10px;background:#e6f7ff;color:#1890ff;white-space:nowrap;">① 定档规则引擎</span>
+                <span style="color:#bfbfbf;">→</span>
+                <span style="padding:2px 8px;border-radius:10px;background:#e6f7ff;color:#1890ff;white-space:nowrap;">② 核心交互矩阵</span>
+                <span style="color:#bfbfbf;">→</span>
+                <span style="padding:2px 8px;border-radius:10px;background:#1890ff;color:#fff;white-space:nowrap;">③ 新增标准（当前）</span>
+                <span style="color:#bfbfbf;">→</span>
+                <span style="padding:2px 8px;border-radius:10px;background:#e6f7ff;color:#1890ff;white-space:nowrap;">④ 服务标准配置</span>
+            </div>
             <div class="scc-modal-body">
-                <div class="scc-mb-16">
-                    <label class="scc-form-label" style="font-weight:500;color:#333;">第一步：选择服务类型</label>
-                    <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:12px;">
-                        <div class="scc-service-type-card" id="sccServiceTypeGeneral" onclick="sccSelectServiceType('general')" style="padding:16px;border:2px solid #e8e8e8;border-radius:8px;cursor:pointer;transition:all 0.2s;">
-                            <div style="font-weight:600;color:#333;margin-bottom:4px;">通用基础服务</div>
-                            <div style="font-size:12px;color:#666;">适用于所有企业的标准化服务项目</div>
-                        </div>
-                        <div class="scc-service-type-card" id="sccServiceTypeSpecial" onclick="sccSelectServiceType('special')" style="padding:16px;border:2px solid #e8e8e8;border-radius:8px;cursor:pointer;transition:all 0.2s;">
-                            <div style="font-weight:600;color:#333;">行业/企业专项服务</div>
-                            <div style="font-size:12px;color:#666;">针对特定行业或企业的定制服务</div>
-                        </div>
+                <!-- 引擎上下文：适用档次来源于定档规则引擎 -->
+                <div style="font-size:12px;color:#666;background:#fafafa;border:1px solid #f0f0f0;border-radius:6px;padding:10px 12px;margin-bottom:16px;line-height:1.7;">
+                    当前「定档规则引擎」已配置 <b id="sccModalTierCount">4</b> 档：<span id="sccModalTierNames">第一档、第二档、第三档、第四档</span>。
+                    下方「适用档次」即取自该引擎，勾选后将在核心交互矩阵中自动生成对应档位的执行标准；保存后可直接进入「服务标准配置」逐档细化。
+                </div>
+                <div class="scc-form-group">
+                    <label class="scc-form-label"><span style="color:red;">*</span>服务项目名称</label>
+                    <select class="scc-form-select" id="sccAddGeneralName" onchange="sccGeneralServiceChange()">
+                        <option value="">请选择服务项目</option>
+                    </select>
+                </div>
+                <div class="scc-form-group">
+                    <label class="scc-form-label">服务内容描述</label>
+                    <textarea class="scc-form-input" id="sccAddGeneralDesc" rows="3" placeholder="服务内容描述..." style="height:80px;resize:vertical;" readonly=""></textarea>
+                    <div style="font-size:11px;color:#999;margin-top:4px;">(自动填充，可点击编辑)</div>
+                </div>
+                <div class="scc-form-group">
+                    <label class="scc-form-label"><span style="color:red;">*</span>适用档次（取自定档规则引擎）</label>
+                    <div id="sccAddGeneralTierBox" style="display:flex;flex-wrap:wrap;gap:8px;"></div>
+                    <div style="margin-top:6px;display:flex;gap:8px;">
+                        <button type="button" class="scc-btn-xs" onclick="sccSelectAllTiers(true)" style="font-size:12px;padding:2px 8px;">全选</button>
+                        <button type="button" class="scc-btn-xs" onclick="sccSelectAllTiers(false)" style="font-size:12px;padding:2px 8px;">取消</button>
                     </div>
                 </div>
-
-                <!-- 通用基础服务表单 -->
-                <div id="sccAddGeneralForm" style="display:none;">
-                    <div class="scc-form-group">
-                        <label class="scc-form-label"><span style="color:red;">*</span>服务项目名称</label>
-                        <select class="scc-form-select" id="sccAddGeneralName" onchange="sccGeneralServiceChange()">
-                            <option value="">请选择服务项目</option>
-                        </select>
-                    </div>
-                    <div class="scc-form-group">
-                        <label class="scc-form-label">服务内容描述</label>
-                        <textarea class="scc-form-input" id="sccAddGeneralDesc" rows="3" placeholder="服务内容描述..." style="height:80px;resize:vertical;" readonly=""></textarea>
-                        <div style="font-size:11px;color:#999;margin-top:4px;">(自动填充，可点击编辑)</div>
-                    </div>
-                    <div class="scc-form-group">
-                        <label class="scc-form-label"><span style="color:red;">*</span>适用档次</label>
-                        <div style="display:flex;flex-wrap:gap:8px;">
-                            <label class="scc-tier-checkbox"><input type="checkbox" name="sccAddGeneralTier" value="1"> <span class="scc-tier-tag tier1">第一档</span></label>
-                            <label class="scc-tier-checkbox"><input type="checkbox" name="sccAddGeneralTier" value="2"> <span class="scc-tier-tag tier2">第二档</span></label>
-                            <label class="scc-tier-checkbox"><input type="checkbox" name="sccAddGeneralTier" value="3"> <span class="scc-tier-tag tier3">第三档</span></label>
-                            <label class="scc-tier-checkbox"><input type="checkbox" name="sccAddGeneralTier" value="4"> <span class="scc-tier-tag tier4">第四档</span></label>
-                            <button type="button" class="scc-btn-xs" onclick="sccSelectAllTiers(true)" style="margin-left:8px;font-size:12px;padding:2px 8px;">全选</button>
-                            <button type="button" class="scc-btn-xs" onclick="sccSelectAllTiers(false)" style="font-size:12px;padding:2px 8px;">取消</button>
-                        </div>
-                    </div>
-                    <div class="scc-form-group">
-                        <label class="scc-form-label"><span style="color:red;">*</span>执行标准/要求</label>
-                        <textarea class="scc-form-input" id="sccAddGeneralStandard" rows="3" placeholder="请输入执行标准或要求..." style="height:80px;resize:vertical;"></textarea>
-                    </div>
-                    <div class="scc-form-group">
-                        <label class="scc-form-label">操作列配置</label>
-                        <label class="scc-form-checkbox"><input type="checkbox" id="sccAddGeneralDetail" checked=""> 开启详情按钮</label>
-                    </div>
-                </div>
-
-                <!-- 行业/企业专项服务表单 -->
-                <div id="sccAddSpecialForm" style="display:none;">
-                    <div class="scc-form-group">
-                        <label class="scc-form-label"><span style="color:red;">*</span>适用范围/客户</label>
-                        <select class="scc-form-select" id="sccAddSpecialScopeType">
-                            <option value="industry">按行业</option>
-                            <option value="enterprise">按企业</option>
-                        </select>
-                        <input type="text" class="scc-form-input" id="sccAddSpecialScopeName" placeholder="请输入行业名称或企业名称..." style="margin-top:8px;">
-                    </div>
-                    <div class="scc-form-group">
-                        <label class="scc-form-label"><span style="color:red;">*</span>服务名称</label>
-                        <input type="text" class="scc-form-input" id="sccAddSpecialName" placeholder="请输入服务名称...">
-                    </div>
-                    <div class="scc-form-group">
-                        <label class="scc-form-label"><span style="color:red;">*</span>具体要求</label>
-                        <textarea class="scc-form-input" id="sccAddSpecialRequirement" rows="3" placeholder="请输入具体要求描述..." style="height:80px;resize:vertical;"></textarea>
-                    </div>
-                    <div class="scc-form-group">
-                        <label class="scc-form-label">频次</label>
-                        <input type="text" class="scc-form-input" id="sccAddSpecialFrequency" placeholder="例如：1次/年、4次/年">
-                    </div>
-                    <div class="scc-form-group">
-                        <label class="scc-form-label">操作权限</label>
-                        <label class="scc-form-checkbox"><input type="checkbox" id="sccAddSpecialEdit"> 允许编辑</label>
-                        <label class="scc-form-checkbox"><input type="checkbox" id="sccAddSpecialDelete"> 允许删除</label>
-                    </div>
+                <div class="scc-form-group">
+                    <label class="scc-form-label">操作列配置</label>
+                    <label class="scc-form-checkbox"><input type="checkbox" id="sccAddGeneralDetail" checked=""> 开启详情按钮</label>
                 </div>
             </div>
             <div class="scc-modal-footer" style="display:flex;justify-content:flex-end;gap:12px;padding:16px;border-top:1px solid #e8e8e8;">
@@ -32731,6 +32628,25 @@
             <div class="scc-modal-footer" style="display:flex;justify-content:flex-end;gap:12px;padding:16px;border-top:1px solid #e8e8e8;">
                 <button class="scc-btn-outline" onclick="sccClosePreviewModal()">返回编辑</button>
                 <button class="scc-btn-primary" onclick="sccConfirmSaveStandard()">确认保存</button>
+            </div>
+        </div>
+
+        <!-- Modal: 标准服务包配置（定档规则引擎 · 保底服务 + 行业差异化） -->
+        <div class="scc-modal-overlay" id="sccPackageModalOverlay" style="display:none;" onclick="sccClosePackageModal()"></div>
+        <div class="scc-modal" id="sccPackageModal" style="display:none;width:760px;max-width:92vw;">
+            <div class="scc-modal-header" style="display:flex;justify-content:space-between;align-items:center;">
+                <h3 style="font-size:16px;font-weight:600;color:#333;margin:0;" id="sccPackageModalTitle">标准服务包配置</h3>
+                <button onclick="sccClosePackageModal()" style="background:none;border:none;font-size:20px;cursor:pointer;color:#999;line-height:1;">✕</button>
+            </div>
+            <div class="scc-modal-body" id="sccPackageModalBody" style="max-height:62vh;">
+                <!-- JS 动态渲染 -->
+            </div>
+            <div class="scc-modal-footer" style="display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;">
+                <div style="font-size:12px;color:#999;max-width:380px;">定义该档次下所有客户默认享有的“保底服务”，并支持按行业 / 企业类型差异化覆盖。</div>
+                <div style="display:flex;gap:8px;">
+                    <button class="scc-btn-outline" onclick="sccClosePackageModal()">取消</button>
+                    <button class="scc-btn-primary" onclick="sccSavePackageModal()">保存本档配置</button>
+                </div>
             </div>
         </div>
 
@@ -71721,8 +71637,20 @@ function confirmImportPrice() {
             html += '<option value="freq_up"' + (r.accident === 'freq_up' ? ' selected' : '') + '>频次+1</option>';
             html += '<option value="both"' + (r.accident === 'both' ? ' selected' : '') + '>降一档+频次+1</option>';
             html += '</select></td>';
-            // 基础频次
-            html += '<td><input type="number" class="scc-engine-input" value="' + r.freq + '" min="1" max="99" onchange="sccEngineUpdateField(' + i + ',\'freq\',parseInt(this.value)||1)"></td>';
+            // 标准服务包（点击配置保底服务 + 行业差异化）
+            sccEnsurePackage(r);
+            var pkgSum = sccPackageSummary(r);
+            var pkgCell = '<div class="scc-pkg-trigger" onclick="sccOpenPackageModal(' + i + ')" role="button" tabindex="0" title="点击配置标准服务包">';
+            if (pkgSum.standard.length === 0 && pkgSum.overrides === 0) {
+                pkgCell += '<span class="scc-pkg-empty">点击配置</span>';
+            } else {
+                pkgSum.standard.slice(0, 2).forEach(function(p) { pkgCell += '<span class="scc-pkg-tag">' + p + '</span>'; });
+                if (pkgSum.overrides > 0) pkgCell += '<span class="scc-pkg-tag scc-pkg-tag-ov">差异×' + pkgSum.overrides + '</span>';
+                var pkgExtra = pkgSum.standard.length - 2;
+                if (pkgExtra > 0) pkgCell += '<span class="scc-pkg-tag">+' + pkgExtra + '</span>';
+            }
+            pkgCell += '</div>';
+            html += '<td>' + pkgCell + '</td>';
             // 操作
             html += '<td style="text-align:center;">';
             if (sccEngineRules.length > 2) {
@@ -72062,9 +71990,48 @@ function confirmImportPrice() {
     ];
 
     // 专项规则数据（可动态增删）
+    // 专项服务范围类型：行业 / 企业 / 服务机构 / 政府部门 / 保险机构
+    var sccScopeTypeLabels = {
+        industry: '行业',
+        enterprise: '企业',
+        agency: '服务机构',
+        government: '政府部门',
+        insurer: '保险机构'
+    };
+    var sccScopeBadgeColors = {
+        industry:   { c: '#fa8c16', bg: '#fff7e6', bd: '#ffd591' },
+        enterprise: { c: '#722ed1', bg: '#f9f0ff', bd: '#d3adf7' },
+        agency:     { c: '#13c2c2', bg: '#e6fffb', bd: '#87e8de' },
+        government: { c: '#1890ff', bg: '#e6f7ff', bd: '#91d5ff' },
+        insurer:    { c: '#eb2f96', bg: '#fff0f6', bd: '#ffadd2' }
+    };
+    // 各范围类型的模拟检索对象（演示数据，实际接入后端检索）
+    var sccScopeMockTargets = {
+        industry:   ['化工', '矿山', '建筑', '交通运输', '冶金', '烟花爆竹', '机械制造', '轻工'],
+        enterprise: ['某某化工集团有限公司', '某某矿山开采有限公司', '某某建筑工程有限公司', '某某交通运输集团', '某某冶金实业股份有限公司'],
+        agency:     ['某某安全技术服务有限公司', '某某风险评估事务所', '某某职业健康检测机构', '某某安全评价中心'],
+        government: ['某某市应急管理局', '某某区消防救援支队', '某某市住房和城乡建设局', '某某区工业和信息化局'],
+        insurer:    ['某某财产保险股份有限公司', '某某人寿保险（集团）公司', '某某再保险经纪有限公司']
+    };
+    function sccScopeTypeOf(rule) {
+        if (rule.scopeType) return rule.scopeType;
+        if (rule.scope === '行业') return 'industry';
+        if (rule.scope === '企业') return 'enterprise';
+        return '';
+    }
+    function sccScopeBadge(rule) {
+        var t = sccScopeTypeOf(rule);
+        var meta = sccScopeBadgeColors[t] || sccScopeBadgeColors.industry;
+        var label = sccScopeTypeLabels[t] || rule.scope || '其他';
+        return '<span class="scc-tag" style="background:' + meta.bg + ';color:' + meta.c + ';border:1px solid ' + meta.bd + ';margin-right:6px;">' + label + '</span><span style="color:#333;">' + (rule.scopeName || '') + '</span>';
+    }
+
     var sccSpecialRules = [
-        { scope: '行业', scopeName: '化工行业', name: '增加防爆隐患排查', frequency: 1, requirement: '对化工企业涉爆场所进行专业防爆隐患排查，每年至少1次', relatedBase: '生产安全事故隐患排查' },
-        { scope: '企业', scopeName: '某某集团', name: '增加季度安全审计', frequency: 1, requirement: '每季度进行安全管理审计，出具审计报告', relatedBase: '安全生产标准化建设' }
+        { scopeType: 'industry', scopeName: '化工', name: '增加防爆隐患排查', frequency: 1, requirement: '', relatedBase: '生产安全事故隐患排查', standardsList: [] },
+        { scopeType: 'enterprise', scopeName: '某某集团', name: '增加季度安全审计', frequency: 1, requirement: '', relatedBase: '安全生产标准化建设', standardsList: [] },
+        { scopeType: 'agency', scopeName: '某某安全技术服务有限公司', name: '驻场安全技术服务', frequency: 4, requirement: '', relatedBase: '安全风险评估', standardsList: [] },
+        { scopeType: 'government', scopeName: '某某市应急管理局', name: '监管数据报送协同', frequency: 12, requirement: '', relatedBase: '', standardsList: [] },
+        { scopeType: 'insurer', scopeName: '某某财产保险股份有限公司', name: '事故理赔协同服务', frequency: 2, requirement: '', relatedBase: '', standardsList: [] }
     ];
 
     var sccCurrentDrawerServiceId = null;
@@ -72080,6 +72047,28 @@ function confirmImportPrice() {
         return null;
     }
 
+    // 专项规则唯一ID序列（用于抽屉按 id 定位）
+    var sccSpecialRuleSeq = 100;
+    function sccEnsureSpecialIds() {
+        for (var i = 0; i < sccSpecialRules.length; i++) {
+            if (typeof sccSpecialRules[i].id === 'undefined') sccSpecialRules[i].id = ++sccSpecialRuleSeq;
+        }
+    }
+    // 按当前抽屉上下文返回所在服务对象（通用 or 专项）
+    function sccGetCurrentSvc() {
+        if (sccCurrentDrawerIsSpecial) {
+            for (var i = 0; i < sccSpecialRules.length; i++) {
+                if (sccSpecialRules[i].id === sccCurrentDrawerServiceId) return sccSpecialRules[i];
+            }
+            return null;
+        }
+        return sccFindService(sccCurrentDrawerServiceId);
+    }
+    function sccGetCurrentStd() {
+        var svc = sccGetCurrentSvc();
+        return (svc && svc.standardsList) ? svc.standardsList[sccCurrentDrawerStdIndex] : null;
+    }
+
     function sccEnsureStdData(std) {
         if (!std.actions) std.actions = [];
         if (!std.freqConfig) std.freqConfig = { period: 'year', count: 1, duration: 2, scope: '全员', startDate: '', endDate: '' };
@@ -72088,6 +72077,40 @@ function confirmImportPrice() {
     }
 
     /* ====== 档位管理 ====== */
+    // 将「执行标准/要求」与所选「适用档次」对齐：每勾选一个档位即生成一条对应执行标准
+    function sccSyncStandardsToTiers(svc) {
+        var tiers = (svc.tiers || []).slice().sort();
+        var list = svc.standardsList || [];
+        var byTier = {};
+        list.forEach(function(std) { if (typeof std._tier !== 'undefined') byTier[std._tier] = std; });
+        var newList = [];
+        tiers.forEach(function(t, i) {
+            if (byTier[t]) {
+                byTier[t].tierLabel = sccTierNames[t] || (t + '档');
+                newList.push(byTier[t]);
+            } else {
+                var reused = (list[i] && typeof list[i]._tier === 'undefined') ? list[i] : null;
+                if (reused) {
+                    reused._tier = t;
+                    reused.tierLabel = sccTierNames[t] || (t + '档');
+                    if (!reused.freqConfig) reused.freqConfig = { period: 'year', count: 1, duration: 2, scope: '全员', startDate: '', endDate: '' };
+                    newList.push(reused);
+                } else {
+                    newList.push({
+                        _tier: t,
+                        tierLabel: sccTierNames[t] || (t + '档'),
+                        standard: '', duration: '', summary: '', inherited: true,
+                        actions: [],
+                        freqConfig: { period: 'year', count: 1, duration: 2, scope: '全员', startDate: '', endDate: '' }
+                    });
+                }
+            }
+        });
+        // 保留抽屉中额外新增的档位（无 _tier 标记），置于末尾
+        list.forEach(function(std) { if (typeof std._tier === 'undefined') newList.push(std); });
+        svc.standardsList = newList;
+    }
+
     function sccAddServiceTier(serviceId) {
         var svc = sccFindService(serviceId);
         if (!svc) return;
@@ -72126,23 +72149,49 @@ function confirmImportPrice() {
         var mainEl = document.getElementById('sccDrawerMain');
         var previewEl = document.getElementById('sccDrawerPreview');
 
-        if (isSpecial && sccSpecialRules[serviceId]) {
-            // 专项服务 - 简化展示
-            var rule = sccSpecialRules[serviceId];
-            titleEl.textContent = '专项服务详情';
-            nameEl.textContent = rule.name;
+        var svc = sccGetCurrentSvc();
+        if (!svc) return;
+
+        if (sccCurrentDrawerIsSpecial) {
+            // 专项服务 - 富配置抽屉（单档，无档位Tab，复用「服务标准配置」积木）
+            if (!svc.standardsList || svc.standardsList.length === 0) {
+                svc.standardsList = [{
+                    tierLabel: '具体要求',
+                    standard: svc.requirement || '',
+                    summary: svc.requirement || '',
+                    duration: '',
+                    actions: [],
+                    freqConfig: { period: 'year', count: svc.frequency || 1, duration: 2, scope: '全员', startDate: '', endDate: '' }
+                }];
+            }
+            var sl0 = svc.standardsList;
+            for (var k = 0; k < sl0.length; k++) sccEnsureStdData(sl0[k]);
+            var curStd = sl0[0];
+
+            titleEl.textContent = '服务标准配置（专项）';
+            var st = sccScopeTypeOf(svc);
+            nameEl.textContent = svc.name + ' · ' + (sccScopeTypeLabels[st] || '') + (svc.scopeName ? ('：' + svc.scopeName) : '');
             tierBar.style.display = 'none';
-            previewEl.style.display = 'none';
-            mainEl.innerHTML = '<div class="scc-module-card"><div class="scc-module-card-body">' +
-                '<div style="margin-bottom:12px;"><label style="font-size:13px;color:#999;">适用范围</label><div style="font-size:14px;color:#333;margin-top:4px;"><span class="scc-tag scc-tag-orange">' + rule.scopeName + '</span></div></div>' +
-                '<div style="margin-bottom:12px;"><label style="font-size:13px;color:#999;">服务描述</label><div style="font-size:14px;color:#666;margin-top:4px;line-height:1.8;">' + rule.requirement + '</div></div>' +
-                '<div style="margin-bottom:12px;"><label style="font-size:13px;color:#999;">关联基础项</label><div style="font-size:14px;color:#666;margin-top:4px;">' + (rule.relatedBase || '无') + '</div></div>' +
-                '<div><label style="font-size:13px;color:#999;">执行频次</label><div style="font-size:14px;color:#333;margin-top:4px;">' + rule.frequency + '次/年</div></div>' +
-                '</div></div>';
+            previewEl.style.display = '';
+
+            // 模块A：服务内容综述（即"具体要求"载体）
+            document.getElementById('sccDrawerSummary').innerHTML = curStd.summary || (svc.requirement ? svc.requirement : '');
+            // 模块B：执行动作拆解
+            sccRenderActionsList(curStd.actions || []);
+            // 模块C：频次与时长校验
+            var fc0 = curStd.freqConfig || { period: 'year', count: 1, duration: 2, scope: '全员', startDate: '', endDate: '' };
+            document.getElementById('sccFreqPeriod').value = fc0.period || 'year';
+            document.getElementById('sccFreqCount').value = fc0.count || 1;
+            document.getElementById('sccFreqDuration').value = fc0.duration || 2;
+            document.getElementById('sccFreqScope').value = fc0.scope || '全员';
+            document.getElementById('sccFreqStartDate').value = fc0.startDate || '';
+            document.getElementById('sccFreqEndDate').value = fc0.endDate || '';
+
+            sccEnsureModuleVisible('A'); sccEnsureModuleVisible('B'); sccEnsureModuleVisible('C');
+            sccUpdatePhonePreview();
         } else {
             // 通用服务 - 全功能积木式抽屉
-            var svc = sccFindService(serviceId);
-            if (!svc) return;
+            sccSyncStandardsToTiers(svc);
             sccEnsureStdData(svc.standardsList[0]);
             var sl = svc.standardsList;
             // 确保所有档位数据结构完整
@@ -72235,7 +72284,7 @@ function confirmImportPrice() {
     }
 
     function sccResetTier() {
-        var svc = sccFindService(sccCurrentDrawerServiceId);
+        var svc = sccGetCurrentSvc();
         if (!svc || !svc.standardsList) return;
         var cur = svc.standardsList[sccCurrentDrawerStdIndex];
         if (!cur) return;
@@ -72332,7 +72381,7 @@ function confirmImportPrice() {
     }
 
     function sccAddAction() {
-        var svc = sccFindService(sccCurrentDrawerServiceId);
+        var svc = sccGetCurrentSvc();
         if (!svc || !svc.standardsList) return;
         var cur = svc.standardsList[sccCurrentDrawerStdIndex];
         sccEnsureStdData(cur);
@@ -72342,7 +72391,7 @@ function confirmImportPrice() {
     }
 
     function sccDeleteAction(idx) {
-        var svc = sccFindService(sccCurrentDrawerServiceId);
+        var svc = sccGetCurrentSvc();
         if (!svc || !svc.standardsList) return;
         var cur = svc.standardsList[sccCurrentDrawerStdIndex];
         if (cur && cur.actions) {
@@ -72353,7 +72402,7 @@ function confirmImportPrice() {
     }
 
     function sccMoveAction(idx, dir) {
-        var svc = sccFindService(sccCurrentDrawerServiceId);
+        var svc = sccGetCurrentSvc();
         if (!svc || !svc.standardsList) return;
         var cur = svc.standardsList[sccCurrentDrawerStdIndex];
         if (!cur || !cur.actions) return;
@@ -72367,7 +72416,7 @@ function confirmImportPrice() {
     }
 
     function sccUpdateAction(idx, field, value) {
-        var svc = sccFindService(sccCurrentDrawerServiceId);
+        var svc = sccGetCurrentSvc();
         if (!svc || !svc.standardsList) return;
         var cur = svc.standardsList[sccCurrentDrawerStdIndex];
         if (cur && cur.actions && cur.actions[idx]) {
@@ -72377,7 +72426,7 @@ function confirmImportPrice() {
     }
 
     function sccToggleActionRequired(idx, el) {
-        var svc = sccFindService(sccCurrentDrawerServiceId);
+        var svc = sccGetCurrentSvc();
         if (!svc || !svc.standardsList) return;
         var cur = svc.standardsList[sccCurrentDrawerStdIndex];
         if (!cur || !cur.actions || !cur.actions[idx]) return;
@@ -72406,7 +72455,7 @@ function confirmImportPrice() {
     function sccDrop(e, targetIdx) {
         e.preventDefault();
         if (sccDragIdx < 0 || sccDragIdx === targetIdx) return;
-        var svc = sccFindService(sccCurrentDrawerServiceId);
+        var svc = sccGetCurrentSvc();
         if (!svc || !svc.standardsList) return;
         var cur = svc.standardsList[sccCurrentDrawerStdIndex];
         if (!cur || !cur.actions) return;
@@ -72425,7 +72474,7 @@ function confirmImportPrice() {
     function sccUpdatePhonePreview() {
         var screen = document.getElementById('sccPhoneScreen');
         if (!screen) return;
-        var svc = sccFindService(sccCurrentDrawerServiceId);
+        var svc = sccGetCurrentSvc();
         if (!svc || !svc.standardsList) { screen.innerHTML = '<div class="scc-phone-empty">暂无配置</div>'; return; }
         var cur = svc.standardsList[sccCurrentDrawerStdIndex];
         sccEnsureStdData(cur);
@@ -72454,8 +72503,8 @@ function confirmImportPrice() {
 
     /* ====== 刷新当前档数据到UI ====== */
     function sccFlushCurrentTierData() {
-        if (!sccCurrentDrawerServiceId || sccCurrentDrawerIsSpecial) return;
-        var svc = sccFindService(sccCurrentDrawerServiceId);
+        if (!sccCurrentDrawerServiceId) return;
+        var svc = sccGetCurrentSvc();
         if (!svc || !svc.standardsList) return;
         var cur = svc.standardsList[sccCurrentDrawerStdIndex];
         if (!cur) return;
@@ -72481,26 +72530,30 @@ function confirmImportPrice() {
 
     /* ====== 保存 ====== */
     function sccSaveDrawer() {
-        if (sccCurrentDrawerServiceId && !sccCurrentDrawerIsSpecial) {
-            sccFlushCurrentTierData();
-            var svc = sccFindService(sccCurrentDrawerServiceId);
-            if (svc && svc.standardsList && svc.standardsList.length > 0) {
-                var cur = svc.standardsList[sccCurrentDrawerStdIndex];
-                sccEnsureStdData(cur);
-                // 生成标准摘要文本
-                var actNames = [];
-                for (var i = 0; i < cur.actions.length; i++) { if (cur.actions[i].name) actNames.push(cur.actions[i].name); }
-                var freqText = '每' + ({year:'年',quarter:'季度',month:'月'}[cur.freqConfig.period] || '年') + '不少于' + cur.freqConfig.count + '次';
-                var durText = '每次不少于' + cur.freqConfig.duration + '小时';
-                cur.standard = actNames.length > 0 ? freqText + '，' + durText + '，覆盖' + cur.freqConfig.scope + '。动作项：' + actNames.join('、') : '';
-                cur.duration = freqText;
-                // 同步到svc.standard
+        if (!sccCurrentDrawerServiceId) { sccCloseDrawer(); return; }
+        sccFlushCurrentTierData();
+        var svc = sccGetCurrentSvc();
+        if (svc && svc.standardsList && svc.standardsList.length > 0) {
+            var cur = svc.standardsList[sccCurrentDrawerStdIndex];
+            sccEnsureStdData(cur);
+            // 生成标准摘要文本
+            var actNames = [];
+            for (var i = 0; i < cur.actions.length; i++) { if (cur.actions[i].name) actNames.push(cur.actions[i].name); }
+            var freqText = '每' + ({year:'年',quarter:'季度',month:'月'}[cur.freqConfig.period] || '年') + '不少于' + cur.freqConfig.count + '次';
+            var durText = '每次不少于' + cur.freqConfig.duration + '小时';
+            cur.standard = actNames.length > 0 ? freqText + '，' + durText + '，覆盖' + cur.freqConfig.scope + '。动作项：' + actNames.join('、') : '';
+            cur.duration = freqText;
+            if (sccCurrentDrawerIsSpecial) {
+                // 专项：回写「具体要求」文本与频次
+                svc.requirement = cur.summary || cur.standard;
+                svc.frequency = cur.freqConfig.count || 1;
+                sccRenderSpecialServices();
+            } else {
                 svc.standard = svc.standardsList[0].standard;
+                sccRenderGeneralTable();
             }
-            sccRenderGeneralTable();
         }
         sccCloseDrawer();
-        sccPreviewConfig();
     }
 
     var sccTierNames = { 1: '第一档', 2: '第二档', 3: '第三档', 4: '第四档' };
@@ -72508,6 +72561,8 @@ function confirmImportPrice() {
     var sccTierFrequencies = { 1: '2次/年', 2: '4次/年', 3: '6次/年', 4: '8次/年' };
 
     function sccInitPage() {
+        for (var i = 0; i < sccBaseServices.length; i++) sccSyncStandardsToTiers(sccBaseServices[i]);
+        sccEnsureSpecialIds();
         sccSyncEngineToGlobal();
         sccCalcTier();
         sccRenderGeneralTable();
@@ -72516,6 +72571,7 @@ function confirmImportPrice() {
     }
 
     function sccCalcTier() {
+        if (!document.getElementById('sccPremiumAmount')) return;
         var amount = parseFloat(document.getElementById('sccPremiumAmount').value) || 0;
         var unit = document.getElementById('sccPremiumUnit').value;
         var safetyRadio = document.querySelector('input[name="sccSafety"]:checked');
@@ -72567,19 +72623,23 @@ function confirmImportPrice() {
     }
 
     function sccRenderSpecialServices() {
+        sccEnsureSpecialIds();
         var container = document.getElementById('sccSpecialServiceList');
         var countEl = document.getElementById('sccSpecialCount');
         if (!container) return;
         var count = sccSpecialRules.length;
         if (countEl) countEl.textContent = count;
         if (count === 0) {
-            container.innerHTML = '<div class="scc-empty-state"><div class="scc-empty-icon">📋</div><div>暂无专项服务规则</div><div style="font-size:12px;margin-top:4px;">点击"添加专项规则"创建行业/企业专属服务</div></div>';
+            container.innerHTML = '<div class="scc-empty-state"><div class="scc-empty-icon">📋</div><div>暂无专项服务规则</div><div style="font-size:12px;margin-top:4px;">点击"添加专项规则"创建行业 / 企业 / 服务机构 / 政府部门 / 保险机构专项服务</div></div>';
             return;
         }
-        var html = '<table class="scc-table"><thead><tr><th style="width:50px;">序号</th><th style="width:100px;">范围</th><th style="width:160px;">服务名称</th><th>具体要求</th><th style="width:80px;">频次</th><th style="width:120px;">操作</th></tr></thead><tbody>';
+        var html = '<table class="scc-table"><thead><tr><th style="width:50px;">序号</th><th style="width:190px;">适用范围</th><th style="width:160px;">服务名称</th><th>具体要求（点击配置）</th><th style="width:80px;">频次</th><th style="width:170px;">操作</th></tr></thead><tbody>';
         for (var i = 0; i < sccSpecialRules.length; i++) {
             var rule = sccSpecialRules[i];
-            html += '<tr><td>' + (i+1) + '</td><td><span class="scc-tag scc-tag-orange">' + rule.scopeName + '</span></td><td style="font-weight:500;color:#333;">' + rule.name + '</td><td>' + rule.requirement + '</td><td>' + rule.frequency + '次</td><td><button class="scc-link-btn" onclick="sccEditRule(' + i + ')">编辑</button> <button class="scc-link-btn scc-text-danger" onclick="sccDeleteRule(' + i + ')">删除</button></td></tr>';
+            var rid = rule.id;
+            var done = rule.requirement && rule.requirement.trim() !== '';
+            var reqChip = '<button type="button" onclick="sccShowDrawer(' + rid + ', true, 0)" title="点击进入服务标准配置，细化该对象的具体要求" style="font-size:12px;padding:3px 10px;border-radius:12px;cursor:pointer;border:1px solid ' + (done ? '#52c41a' : '#d9d9d9') + ';background:' + (done ? '#f6ffed' : '#fff') + ';color:' + (done ? '#389e0d' : '#8c8c8c') + ';">' + (done ? '已配置 ✓' : '待配置 · 点击配置') + '</button>';
+            html += '<tr><td>' + (i+1) + '</td><td>' + sccScopeBadge(rule) + '</td><td style="font-weight:500;color:#333;">' + rule.name + '</td><td>' + reqChip + '</td><td>' + rule.frequency + '次</td><td><button class="scc-link-btn" onclick="sccShowDrawer(' + rid + ', true, 0)">具体要求</button> <button class="scc-link-btn" onclick="sccEditRule(' + i + ')">编辑</button> <button class="scc-link-btn scc-text-danger" onclick="sccDeleteRule(' + i + ')">删除</button></td></tr>';
         }
         html += '</tbody></table>';
         container.innerHTML = html;
@@ -72596,6 +72656,7 @@ function confirmImportPrice() {
     }
 
     function sccRenderAllTable() {
+        sccEnsureSpecialIds();
         var tbody = document.getElementById('sccAllServiceTable');
         if (!tbody) return;
         var html = '';
@@ -72607,7 +72668,8 @@ function confirmImportPrice() {
         }
         for (var j = 0; j < sccSpecialRules.length; j++) {
             var rule = sccSpecialRules[j]; idx++;
-            html += '<tr><td>' + idx + '</td><td><span class="scc-tag scc-tag-orange">专项</span></td><td style="font-weight:500;color:#333;">' + rule.name + '</td><td>' + rule.scopeName + '：' + rule.requirement + '</td><td>' + rule.frequency + '次</td><td><button class="scc-link-btn" onclick="sccEditRule(' + j + ')">编辑</button></td></tr>';
+            var sdone = rule.requirement && rule.requirement.trim() !== '';
+            html += '<tr><td>' + idx + '</td><td>' + sccScopeBadge(rule) + '</td><td style="font-weight:500;color:#333;">' + rule.name + '</td><td><button type="button" onclick="sccShowDrawer(' + rule.id + ', true, 0)" style="font-size:12px;padding:2px 8px;border-radius:10px;cursor:pointer;border:1px solid ' + (sdone ? '#52c41a' : '#d9d9d9') + ';background:' + (sdone ? '#f6ffed' : '#fff') + ';color:' + (sdone ? '#389e0d' : '#8c8c8c') + ';">' + (sdone ? '已配置 ✓' : '待配置') + '</button></td><td>' + rule.frequency + '次</td><td><button class="scc-link-btn" onclick="sccEditRule(' + j + ')">编辑</button></td></tr>';
         }
         tbody.innerHTML = html;
     }
@@ -72626,18 +72688,23 @@ function confirmImportPrice() {
             for (var t = 1; t <= tierCount; t++) {
                 tierTags += '<label class="scc-checkbox-label"><input type="checkbox"' + (svc.tiers.indexOf(t) > -1 ? ' checked' : '') + ' onchange="sccToggleServiceTier(' + svc.id + ',' + t + ')"> ' + (sccTierNames[t] || t + '档') + '</label>';
             }
-            // 多档标准展示
-            var standardsHtml = '';
-            var sl = svc.standardsList || [];
-            for (var s = 0; s < sl.length; s++) {
-                standardsHtml += '<span class="scc-std-tag" style="display:inline-block;padding:2px 8px;background:' + (s === 0 ? '#e6f7ff' : '#fff7e6') + ';border:1px solid ' + (s === 0 ? '#91d5ff' : '#ffd591') + ';border-radius:4px;font-size:12px;margin:2px;cursor:pointer;" title="点击查看详情" onclick="sccShowDrawer(' + svc.id + ', false, ' + s + ')">' + sl[s].tierLabel + '</span>';
+            // 执行标准/要求：与所选「适用档次」一一对应，点击进入「服务标准配置」逐档细化
+            sccSyncStandardsToTiers(svc);
+            var tiersSorted = (svc.tiers || []).slice().sort();
+            var stdChips = '';
+            for (var ti = 0; ti < tiersSorted.length; ti++) {
+                var tNum = tiersSorted[ti];
+                var std = (svc.standardsList && svc.standardsList[ti]) ? svc.standardsList[ti] : null;
+                var done = std && std.standard && std.standard.trim() !== '';
+                var tName = sccTierNames[tNum] || (tNum + '档');
+                stdChips += '<button type="button" onclick="sccShowDrawer(' + svc.id + ', false, ' + ti + ')" title="点击进入服务标准配置，细化该档执行标准" style="font-size:12px;padding:3px 10px;border-radius:12px;cursor:pointer;border:1px solid ' + (done ? '#52c41a' : '#d9d9d9') + ';background:' + (done ? '#f6ffed' : '#fff') + ';color:' + (done ? '#389e0d' : '#8c8c8c') + ';">' + tName + (done ? ' ✓' : ' · 待配置') + '</button>';
             }
             html += '<tr>';
             html += '<td>' + (i + 1) + '</td>';
             html += '<td style="font-weight:500;color:#333;">' + svc.name + '</td>';
             html += '<td>' + svc.desc + '</td>';
             html += '<td><div class="scc-checkbox-group">' + tierTags + '</div></td>';
-            html += '<td><div style="display:flex;flex-wrap:wrap;align-items:center;gap:4px;">' + standardsHtml + '<button class="scc-btn-xs" style="font-size:11px;padding:2px 6px;border:1px dashed #1890ff;color:#1890ff;background:none;border-radius:3px;cursor:pointer;" onclick="sccAddServiceTier(' + svc.id + ')" title="新建档位标准">+新建</button></div></td>';
+            html += '<td><div style="display:flex;flex-wrap:wrap;align-items:center;gap:6px;">' + (stdChips || '<span style="font-size:12px;color:#999;">未选适用档次</span>') + '</div><div style="font-size:11px;color:#999;margin-top:4px;">勾选上方「适用档次」即生成对应档位执行标准，点击进入服务标准配置</div></td>';
             html += '<td style="white-space:nowrap;"><button class="scc-link-btn" onclick="sccShowDrawer(' + svc.id + ', false, 0)">详情</button><button class="scc-link-btn" style="color:#722ed1;margin-left:8px;" onclick="sccOpenQCModal(' + svc.id + ')">质检标准</button></td>';
             html += '</tr>';
         }
@@ -72958,15 +73025,15 @@ function confirmImportPrice() {
         var modal = document.getElementById('sccRuleModal');
         overlay.classList.add('open');
         modal.classList.add('open');
+        sccEditingRuleIndex = -1;
         // 重置表单
         document.getElementById('sccRuleServiceName').value = '';
-        document.getElementById('sccRuleRequirement').value = '';
         document.getElementById('sccRuleFrequency').value = 1;
         document.getElementById('sccRuleRelatedBase').value = '';
         document.getElementById('sccRuleStartDate').value = '';
         document.getElementById('sccRuleEndDate').value = '';
-        document.getElementById('sccRuleEnterpriseSearch').value = '';
-        document.getElementById('sccRuleEnterpriseList').innerHTML = '<div style="font-size:12px;color:#999;padding:8px;">请输入关键词搜索企业</div>';
+        document.getElementById('sccRuleScopeSearch').value = '';
+        document.getElementById('sccRuleScopeSearchList').innerHTML = '<div style="font-size:12px;color:#999;padding:8px;">请输入关键词搜索</div>';
         // 默认行业
         document.querySelector('input[name="sccRuleScope"][value="industry"]').checked = true;
         sccRuleScopeChange();
@@ -72979,18 +73046,37 @@ function confirmImportPrice() {
 
     var sccCurrentServiceType = '';
     var sccCurrentStandardData = {};
+    var sccEditingRuleIndex = -1;
+
+    // 根据定档规则引擎动态生成「适用档次」选项
+    function sccRenderAddStandardTiers() {
+        var box = document.getElementById('sccAddGeneralTierBox');
+        if (!box) return;
+        var html = '';
+        for (var i = 0; i < sccEngineRules.length; i++) {
+            var t = i + 1;
+            var name = sccTierNames[t] || ('第' + t + '档');
+            html += '<label class="scc-tier-checkbox"><input type="checkbox" name="sccAddGeneralTier" value="' + t + '"> <span class="scc-tier-tag tier' + t + '">' + name + '</span></label>';
+        }
+        box.innerHTML = html;
+    }
 
     function sccShowAddStandardModal() {
         sccResetAddStandardForm();
-        document.getElementById('sccAddStandardModalOverlay').style.display = 'block';
-        document.getElementById('sccAddStandardModal').style.display = 'block';
-        document.getElementById('sccAddStandardModal').classList.add('open');
-        
+        sccRenderAddStandardTiers();
+        // 引擎上下文：适用档次来源于定档规则引擎
+        var cnt = sccEngineRules.length;
+        var names = sccEngineRules.map(function(r, i) { return sccTierNames[i + 1] || r.name || ('第' + (i + 1) + '档'); }).join('、');
+        var cEl = document.getElementById('sccModalTierCount'); if (cEl) cEl.textContent = cnt;
+        var nEl = document.getElementById('sccModalTierNames'); if (nEl) nEl.textContent = names;
         var select = document.getElementById('sccAddGeneralName');
         select.innerHTML = '<option value="">请选择服务项目</option>';
         for (var i = 0; i < sccBaseServices.length; i++) {
             select.innerHTML += '<option value="' + sccBaseServices[i].id + '">' + sccBaseServices[i].name + '</option>';
         }
+        document.getElementById('sccAddStandardModalOverlay').style.display = 'block';
+        document.getElementById('sccAddStandardModal').style.display = 'block';
+        document.getElementById('sccAddStandardModal').classList.add('open');
     }
 
     function sccCloseAddStandardModal() {
@@ -72999,23 +73085,15 @@ function confirmImportPrice() {
         document.getElementById('sccAddStandardModal').classList.remove('open');
     }
 
+    // 新增标准弹窗现已统一为「通用基础服务」，无需服务类型切换；保留占位以免遗留引用报错
     function sccSelectServiceType(type) {
-        sccCurrentServiceType = type;
-        
-        document.getElementById('sccServiceTypeGeneral').style.borderColor = type === 'general' ? '#1890ff' : '#e8e8e8';
-        document.getElementById('sccServiceTypeSpecial').style.borderColor = type === 'special' ? '#1890ff' : '#e8e8e8';
-        document.getElementById('sccServiceTypeGeneral').style.backgroundColor = type === 'general' ? '#e6f7ff' : '#fff';
-        document.getElementById('sccServiceTypeSpecial').style.backgroundColor = type === 'special' ? '#e6f7ff' : '#fff';
-        
-        document.getElementById('sccAddGeneralForm').style.display = type === 'general' ? '' : 'none';
-        document.getElementById('sccAddSpecialForm').style.display = type === 'special' ? '' : 'none';
+        sccCurrentServiceType = type || 'general';
     }
 
     function sccGeneralServiceChange() {
         var serviceId = parseInt(document.getElementById('sccAddGeneralName').value);
         if (!serviceId) {
             document.getElementById('sccAddGeneralDesc').value = '';
-            document.getElementById('sccAddGeneralStandard').value = '';
             document.querySelectorAll('input[name="sccAddGeneralTier"]').forEach(function(el) { el.checked = false; });
             return;
         }
@@ -73023,7 +73101,6 @@ function confirmImportPrice() {
         var service = sccBaseServices.find(function(s) { return s.id === serviceId; });
         if (service) {
             document.getElementById('sccAddGeneralDesc').value = service.desc;
-            document.getElementById('sccAddGeneralStandard').value = service.standard;
             document.querySelectorAll('input[name="sccAddGeneralTier"]').forEach(function(el) {
                 el.checked = service.tiers.indexOf(parseInt(el.value)) >= 0;
             });
@@ -73039,25 +73116,14 @@ function confirmImportPrice() {
     function sccPreviewStandard() {
         var data = sccCollectStandardData();
         if (!data) return;
-        
+
         sccCurrentStandardData = data;
-        
-        var html = '';
-        if (data.type === 'general') {
-            html += '<div style="padding:16px;background:#fafafa;border-radius:8px;"><div style="font-size:14px;color:#666;margin-bottom:8px;">以下内容将添加到 <strong>通用基础服务</strong> 列表中：</div>';
-            html += '<table class="scc-table" style="margin-top:12px;"><thead><tr><th>服务项目名称</th><th>服务内容描述</th><th>适用档次</th><th>执行标准</th><th>操作</th></tr></thead><tbody>';
-            html += '<tr><td>' + data.name + '</td><td>' + data.desc + '</td><td>' + data.tiersText + '</td><td>' + data.standard + '</td><td>' + (data.showDetail ? '详情' : '-') + '</td></tr>';
-            html += '</tbody></table></div>';
-        } else {
-            html += '<div style="padding:16px;background:#fafafa;border-radius:8px;"><div style="font-size:14px;color:#666;margin-bottom:8px;">以下内容将添加到 <strong>行业/企业专项服务</strong> 列表中：</div>';
-            html += '<table class="scc-table" style="margin-top:12px;"><thead><tr><th>适用范围</th><th>服务名称</th><th>具体要求</th><th>频次</th><th>操作</th></tr></thead><tbody>';
-            html += '<tr><td>' + (data.scopeType === 'industry' ? '行业：' : '企业：') + data.scopeName + '</td><td>' + data.name + '</td><td>' + data.requirement + '</td><td>' + (data.frequency || '-') + '</td><td>';
-            if (data.allowEdit) html += '编辑 ';
-            if (data.allowDelete) html += '删除';
-            html += '</td></tr>';
-            html += '</tbody></table></div>';
-        }
-        
+
+        var html = '<div style="padding:16px;background:#fafafa;border-radius:8px;"><div style="font-size:14px;color:#666;margin-bottom:8px;">以下内容将添加到 <strong>核心交互矩阵 · 通用基础服务</strong>，保存后进入「服务标准配置」逐档细化：</div>';
+        html += '<table class="scc-table" style="margin-top:12px;"><thead><tr><th>服务项目名称</th><th>服务内容描述</th><th>适用档次</th><th>执行标准</th><th>操作</th></tr></thead><tbody>';
+        html += '<tr><td>' + data.name + '</td><td>' + data.desc + '</td><td>' + data.tiersText + '</td><td style="color:#999;">保存后在「服务标准配置」中逐档细化</td><td>' + (data.showDetail ? '详情' : '-') + '</td></tr>';
+        html += '</tbody></table></div>';
+
         document.getElementById('sccPreviewContent').innerHTML = html;
         document.getElementById('sccAddStandardModal').style.display = 'none';
         document.getElementById('sccPreviewModalOverlay').style.display = 'block';
@@ -73071,62 +73137,28 @@ function confirmImportPrice() {
     }
 
     function sccCollectStandardData() {
-        if (!sccCurrentServiceType) {
-            alert('请先选择服务类型');
+        var serviceId = parseInt(document.getElementById('sccAddGeneralName').value);
+        var name = document.getElementById('sccAddGeneralName').options[document.getElementById('sccAddGeneralName').selectedIndex].text;
+        var desc = document.getElementById('sccAddGeneralDesc').value.trim();
+        var tiers = [];
+        document.querySelectorAll('input[name="sccAddGeneralTier"]:checked').forEach(function(el) {
+            tiers.push(parseInt(el.value));
+        });
+        var showDetail = document.getElementById('sccAddGeneralDetail').checked;
+
+        if (!serviceId) {
+            alert('请选择服务项目名称');
             return null;
         }
-        
-        if (sccCurrentServiceType === 'general') {
-            var serviceId = parseInt(document.getElementById('sccAddGeneralName').value);
-            var name = document.getElementById('sccAddGeneralName').options[document.getElementById('sccAddGeneralName').selectedIndex].text;
-            var desc = document.getElementById('sccAddGeneralDesc').value.trim();
-            var standard = document.getElementById('sccAddGeneralStandard').value.trim();
-            var tiers = [];
-            document.querySelectorAll('input[name="sccAddGeneralTier"]:checked').forEach(function(el) {
-                tiers.push(parseInt(el.value));
-            });
-            var showDetail = document.getElementById('sccAddGeneralDetail').checked;
-            
-            if (!serviceId) {
-                alert('请选择服务项目名称');
-                return null;
-            }
-            if (!standard) {
-                alert('请输入执行标准/要求');
-                return null;
-            }
-            if (tiers.length === 0) {
-                alert('请选择至少一个适用档次');
-                return null;
-            }
-            
-            var tiersText = tiers.map(function(t) { return sccTierNames[t]; }).join(', ');
-            
-            return { type: 'general', id: serviceId, name: name, desc: desc, standard: standard, tiers: tiers, tiersText: tiersText, showDetail: showDetail };
-        } else {
-            var scopeType = document.getElementById('sccAddSpecialScopeType').value;
-            var scopeName = document.getElementById('sccAddSpecialScopeName').value.trim();
-            var name = document.getElementById('sccAddSpecialName').value.trim();
-            var requirement = document.getElementById('sccAddSpecialRequirement').value.trim();
-            var frequency = document.getElementById('sccAddSpecialFrequency').value.trim();
-            var allowEdit = document.getElementById('sccAddSpecialEdit').checked;
-            var allowDelete = document.getElementById('sccAddSpecialDelete').checked;
-            
-            if (!scopeName) {
-                alert('请输入适用范围/客户名称');
-                return null;
-            }
-            if (!name) {
-                alert('请输入服务名称');
-                return null;
-            }
-            if (!requirement) {
-                alert('请输入具体要求');
-                return null;
-            }
-            
-            return { type: 'special', scopeType: scopeType, scopeName: scopeName, name: name, requirement: requirement, frequency: frequency, allowEdit: allowEdit, allowDelete: allowDelete };
+        if (tiers.length === 0) {
+            alert('请至少选择一个适用档次（取自定档规则引擎）');
+            return null;
         }
+        tiers.sort();
+
+        var tiersText = tiers.map(function(t) { return sccTierNames[t] || (t + '档'); }).join('、');
+
+        return { type: 'general', id: serviceId, name: name, desc: desc, standard: '', tiers: tiers, tiersText: tiersText, showDetail: showDetail };
     }
 
     function sccSaveStandard() {
@@ -73140,84 +73172,75 @@ function confirmImportPrice() {
     }
 
     function sccDoSaveStandard(data) {
-        if (data.type === 'general') {
-            var newService = {
-                id: sccBaseServices.length + 1,
-                name: data.name,
-                desc: data.desc,
-                tiers: data.tiers,
-                standard: data.standard
-            };
-            sccBaseServices.push(newService);
-        } else {
-            var newRule = {
-                scope: data.scopeType === 'industry' ? '行业' : '企业',
-                scopeName: data.scopeName,
-                name: data.name,
-                frequency: data.frequency ? parseInt(data.frequency) : 1,
-                requirement: data.requirement,
-                relatedBase: '',
-                allowEdit: data.allowEdit,
-                allowDelete: data.allowDelete
-            };
-            sccSpecialRules.push(newRule);
-        }
-        
+        if (!data) return;
+        var newService = {
+            id: sccBaseServices.length + 1,
+            name: data.name,
+            desc: data.desc,
+            tiers: data.tiers.slice(),
+            standard: data.standard,
+            standardsList: []
+        };
+        // 依据所选「适用档次」生成逐档执行标准骨架
+        sccSyncStandardsToTiers(newService);
+        (newService.standardsList || []).forEach(function(std) { if (!std.standard) std.standard = data.standard; });
+        sccBaseServices.push(newService);
+
         document.getElementById('sccPreviewModalOverlay').style.display = 'none';
         document.getElementById('sccPreviewModal').style.display = 'none';
         document.getElementById('sccAddStandardModalOverlay').style.display = 'none';
         document.getElementById('sccAddStandardModal').style.display = 'none';
-        
+
         sccRenderGeneralTable();
-        sccRenderSpecialServices();
-        document.getElementById('sccSpecialCount').textContent = sccSpecialRules.length;
-        
-        alert('保存成功！');
+        sccRefreshStats();
+        // 串联：保存后直接进入「服务标准配置」逐档细化
+        sccShowDrawer(newService.id, false, 0);
     }
 
     function sccResetAddStandardForm() {
-        sccCurrentServiceType = '';
+        sccCurrentServiceType = 'general';
         sccCurrentStandardData = {};
-        
-        document.getElementById('sccServiceTypeGeneral').style.borderColor = '#e8e8e8';
-        document.getElementById('sccServiceTypeSpecial').style.borderColor = '#e8e8e8';
-        document.getElementById('sccServiceTypeGeneral').style.backgroundColor = '#fff';
-        document.getElementById('sccServiceTypeSpecial').style.backgroundColor = '#fff';
-        
-        document.getElementById('sccAddGeneralForm').style.display = 'none';
-        document.getElementById('sccAddSpecialForm').style.display = 'none';
-        
+
         document.getElementById('sccAddGeneralName').value = '';
         document.getElementById('sccAddGeneralDesc').value = '';
-        document.getElementById('sccAddGeneralStandard').value = '';
-        document.querySelectorAll('input[name="sccAddGeneralTier"]').forEach(function(el) { el.checked = false; });
         document.getElementById('sccAddGeneralDetail').checked = true;
-        
-        document.getElementById('sccAddSpecialScopeType').value = 'industry';
-        document.getElementById('sccAddSpecialScopeName').value = '';
-        document.getElementById('sccAddSpecialName').value = '';
-        document.getElementById('sccAddSpecialRequirement').value = '';
-        document.getElementById('sccAddSpecialFrequency').value = '';
-        document.getElementById('sccAddSpecialEdit').checked = false;
-        document.getElementById('sccAddSpecialDelete').checked = false;
+        var box = document.getElementById('sccAddGeneralTierBox');
+        if (box) box.innerHTML = '';
     }
 
     function sccRuleScopeChange() {
         var scope = document.querySelector('input[name="sccRuleScope"]:checked');
         if (!scope) return;
-        var isIndustry = scope.value === 'industry';
+        var rt = scope.value;
+        var isIndustry = rt === 'industry';
         document.getElementById('sccRuleScopeIndustry').style.display = isIndustry ? '' : 'none';
-        document.getElementById('sccRuleScopeEnterprise').style.display = isIndustry ? 'none' : '';
+        document.getElementById('sccRuleScopeSearchBox').style.display = isIndustry ? 'none' : '';
+        if (!isIndustry) {
+            var labels = {
+                enterprise: '搜索并选择企业',
+                agency: '搜索并选择服务机构',
+                government: '搜索并选择政府部门',
+                insurer: '搜索并选择保险机构'
+            };
+            var placeholders = {
+                enterprise: '输入企业名称搜索...',
+                agency: '输入服务机构名称搜索...',
+                government: '输入政府部门名称搜索...',
+                insurer: '输入保险机构名称搜索...'
+            };
+            document.getElementById('sccRuleScopeSearchLabel').textContent = labels[rt] || '搜索并选择对象';
+            document.getElementById('sccRuleScopeSearch').placeholder = placeholders[rt] || '输入名称搜索...';
+            document.getElementById('sccRuleScopeSearch').value = '';
+            document.getElementById('sccRuleScopeSearchList').innerHTML = '<div style="font-size:12px;color:#999;padding:8px;">请输入关键词搜索</div>';
+        }
     }
 
     function sccSaveRule() {
         var name = document.getElementById('sccRuleServiceName').value.trim();
-        var requirement = document.getElementById('sccRuleRequirement').value.trim();
         var frequency = parseInt(document.getElementById('sccRuleFrequency').value) || 1;
         var relatedBase = document.getElementById('sccRuleRelatedBase').value;
 
         if (!name) { alert('请输入服务名称'); return; }
-        if (!requirement) { alert('请输入具体要求'); return; }
 
         var scopeRadio = document.querySelector('input[name="sccRuleScope"]:checked');
         var scopeType = scopeRadio ? scopeRadio.value : 'industry';
@@ -73229,19 +73252,33 @@ function confirmImportPrice() {
             for (var i = 0; i < sel.options.length; i++) {
                 if (sel.options[i].selected) selected.push(sel.options[i].value);
             }
-            scopeName = selected.join('、') || '未选择';
+            scopeName = selected.join('、') || '未选择行业';
         } else {
-            scopeName = document.getElementById('sccRuleEnterpriseSearch').value.trim() || '指定企业';
+            scopeName = document.getElementById('sccRuleScopeSearch').value.trim() || '未指定对象';
         }
 
-        sccSpecialRules.push({
-            scope: scopeType === 'industry' ? '行业' : '企业',
-            scopeName: scopeName,
-            name: name,
-            frequency: frequency,
-            requirement: requirement,
-            relatedBase: relatedBase
-        });
+        if (sccEditingRuleIndex >= 0 && sccSpecialRules[sccEditingRuleIndex]) {
+            var old = sccSpecialRules[sccEditingRuleIndex];
+            old.scopeType = scopeType;
+            old.scopeName = scopeName;
+            old.name = name;
+            old.frequency = frequency;
+            old.relatedBase = relatedBase;
+            // requirement 与 standardsList 保留，不覆盖
+        } else {
+            sccSpecialRuleSeq++;
+            sccSpecialRules.push({
+                id: sccSpecialRuleSeq,
+                scopeType: scopeType,
+                scopeName: scopeName,
+                name: name,
+                frequency: frequency,
+                requirement: '',
+                relatedBase: relatedBase,
+                standardsList: []
+            });
+        }
+        sccEditingRuleIndex = -1;
 
         sccRenderRuleList();
         sccRenderSpecialServices();
@@ -73252,18 +73289,27 @@ function confirmImportPrice() {
     function sccEditRule(index) {
         if (index < 0 || index >= sccSpecialRules.length) return;
         var rule = sccSpecialRules[index];
-        // 打开弹窗并填充数据
+        // 打开弹窗并填充数据（sccShowRuleModal 会重置 sccEditingRuleIndex，需在之后赋值）
         sccShowRuleModal();
+        sccEditingRuleIndex = index;
         document.getElementById('sccRuleServiceName').value = rule.name;
-        document.getElementById('sccRuleRequirement').value = rule.requirement;
         document.getElementById('sccRuleFrequency').value = rule.frequency;
         document.getElementById('sccRuleRelatedBase').value = rule.relatedBase || '';
 
-        // 先删除旧条目，保存时会重新添加
-        sccSpecialRules.splice(index, 1);
-        sccRenderRuleList();
-        sccRenderSpecialServices();
-        sccRefreshStats();
+        // 恢复范围类型与范围值
+        var rt = rule.scopeType || (rule.scope === '行业' ? 'industry' : (rule.scope === '企业' ? 'enterprise' : 'industry'));
+        var radio = document.querySelector('input[name="sccRuleScope"][value="' + rt + '"]');
+        if (radio) radio.checked = true;
+        sccRuleScopeChange();
+        if (rt === 'industry') {
+            var sel = document.getElementById('sccRuleIndustry');
+            var parts = (rule.scopeName || '').split('、');
+            for (var o = 0; o < sel.options.length; o++) {
+                sel.options[o].selected = parts.indexOf(sel.options[o].value) >= 0;
+            }
+        } else {
+            document.getElementById('sccRuleScopeSearch').value = rule.scopeName || '';
+        }
     }
 
     function sccDeleteRule(index) {
@@ -73286,38 +73332,34 @@ function confirmImportPrice() {
         for (var i = 0; i < sccSpecialRules.length; i++) {
             var rule = sccSpecialRules[i];
             html += '<div class="scc-rule-item">';
-            html += '<div><span class="scc-tag scc-tag-orange" style="margin-right:8px;">' + rule.scopeName + '</span><span class="scc-rule-item-name">' + rule.name + '</span></div>';
+            html += '<div>' + sccScopeBadge(rule) + '<span class="scc-rule-item-name" style="margin-left:4px;">' + rule.name + '</span></div>';
             html += '<div class="scc-rule-item-actions"><button class="scc-link-btn" onclick="sccEditRule(' + i + ')">编辑</button><button class="scc-link-btn scc-text-danger" onclick="sccDeleteRule(' + i + ')">删除</button></div>';
             html += '</div>';
         }
         container.innerHTML = html;
     }
 
-    function sccSearchEnterprise() {
-        var keyword = document.getElementById('sccRuleEnterpriseSearch').value.trim();
-        var container = document.getElementById('sccRuleEnterpriseList');
+    function sccRuleSearchScope() {
+        var scope = document.querySelector('input[name="sccRuleScope"]:checked');
+        var rt = scope ? scope.value : 'enterprise';
+        var keyword = document.getElementById('sccRuleScopeSearch').value.trim();
+        var container = document.getElementById('sccRuleScopeSearchList');
         if (!keyword) {
-            container.innerHTML = '<div style="font-size:12px;color:#999;padding:8px;">请输入关键词搜索企业</div>';
+            container.innerHTML = '<div style="font-size:12px;color:#999;padding:8px;">请输入关键词搜索</div>';
             return;
         }
-        // 模拟搜索结果
-        var mockResults = [
-            { name: '某某化工集团有限公司', id: 'E001' },
-            { name: '某某矿山开采有限公司', id: 'E002' },
-            { name: '某某建筑工程有限公司', id: 'E003' },
-            { name: '某某交通运输集团', id: 'E004' }
-        ].filter(function(e) { return e.name.indexOf(keyword) > -1; });
+        var mockResults = (sccScopeMockTargets[rt] || []).filter(function(n) { return n.indexOf(keyword) > -1; });
 
         if (mockResults.length === 0) {
-            container.innerHTML = '<div style="font-size:12px;color:#999;padding:8px;">未找到匹配企业</div>';
+            container.innerHTML = '<div style="font-size:12px;color:#999;padding:8px;">未找到匹配对象</div>';
             return;
         }
 
         var html = '';
         for (var i = 0; i < mockResults.length; i++) {
-            html += '<div style="display:flex;align-items:center;gap:6px;padding:6px 8px;cursor:pointer;border-bottom:1px solid #f0f0f0;font-size:13px;" onclick="document.getElementById(\'sccRuleEnterpriseSearch\').value=\'' + mockResults[i].name + '\'">';
+            html += '<div style="display:flex;align-items:center;gap:6px;padding:6px 8px;cursor:pointer;border-bottom:1px solid #f0f0f0;font-size:13px;" onclick="document.getElementById(\'sccRuleScopeSearch\').value=\'' + mockResults[i] + '\'">';
             html += '<input type="checkbox" style="margin:0;">';
-            html += '<span>' + mockResults[i].name + '</span>';
+            html += '<span>' + mockResults[i] + '</span>';
             html += '</div>';
         }
         container.innerHTML = html;
@@ -73326,19 +73368,24 @@ function confirmImportPrice() {
     function sccToggleServiceTier(serviceId, tier) {
         for (var i = 0; i < sccBaseServices.length; i++) {
             if (sccBaseServices[i].id === serviceId) {
-                var idx = sccBaseServices[i].tiers.indexOf(tier);
+                var svc = sccBaseServices[i];
+                var idx = svc.tiers.indexOf(tier);
                 if (idx > -1) {
-                    sccBaseServices[i].tiers.splice(idx, 1);
+                    svc.tiers.splice(idx, 1);
                 } else {
-                    sccBaseServices[i].tiers.push(tier);
-                    sccBaseServices[i].tiers.sort();
+                    svc.tiers.push(tier);
+                    svc.tiers.sort();
                 }
+                // 适用档次变化后，自动同步生成对应档位的执行标准
+                sccSyncStandardsToTiers(svc);
                 break;
             }
         }
+        sccRenderGeneralTable();
     }
 
     function sccRefreshStats(forcedTier) {
+        if (!document.getElementById('sccBaseFreq')) return;
         var tier = forcedTier;
         if (tier === undefined) {
             var amount = parseFloat(document.getElementById('sccPremiumAmount').value) || 0;
@@ -73421,23 +73468,278 @@ function confirmImportPrice() {
     }
 
     function sccSaveConfig() {
-        // 收集当前全部配置数据
+        // 收集当前全部配置数据（预览/测试层已移除，仅保存配置本体）
         var config = {
-            premium: {
-                amount: parseFloat(document.getElementById('sccPremiumAmount').value) || 0,
-                unit: document.getElementById('sccPremiumUnit').value
-            },
-            safetyRecord: (document.querySelector('input[name="sccSafety"]:checked') || {}).value || 'none',
-            tier: (document.getElementById('sccFinalTier').textContent || '').replace('第', '').replace('档', ''),
             baseServices: sccBaseServices.map(function(s) { return { id: s.id, name: s.name, tiers: s.tiers.slice(), standard: s.standard }; }),
-            specialRules: sccSpecialRules.slice()
+            specialRules: sccSpecialRules.slice(),
+            tierPackages: sccEngineRules.map(function(r) { sccEnsurePackage(r); return { name: r.name, package: r.package }; })
         };
 
         try {
             localStorage.setItem('sccConfig', JSON.stringify(config));
         } catch(e) { /* ignore */ }
 
-        alert('配置保存成功！\n\n已保存至本地存储，包含：\n- 定档规则：' + config.tier + '档\n- 通用服务：' + config.baseServices.length + '项\n- 专项规则：' + config.specialRules.length + '项');
+        alert('配置保存成功！\n\n已保存至本地存储，包含：\n- 定档规则：' + sccEngineRules.length + '档\n- 通用服务：' + config.baseServices.length + '项\n- 专项规则：' + config.specialRules.length + '项\n- 标准服务包：' + config.tierPackages.length + '档已配置');
+    }
+
+    // ============================================================
+    //  标准服务包（定档规则引擎的“保底服务” + 行业差异化覆盖）
+    // ============================================================
+    // 标准服务配置的选项，直接复用「服务项目执行标准 → 通用基础服务」中的 7 项
+    function sccGetServiceCatalog() {
+        var list = [];
+        for (var i = 0; i < sccBaseServices.length; i++) {
+            var s = sccBaseServices[i];
+            var fc = (s.standardsList && s.standardsList[0]) ? s.standardsList[0].freqConfig : null;
+            var period = fc ? fc.period : 'year';
+            var unitMap = { year: '次/年', quarter: '次/季', month: '次/月' };
+            list.push({
+                key: String(s.id),
+                name: s.name,
+                defaultCount: fc ? fc.count : 1,
+                unit: unitMap[period] || '次/年'
+            });
+        }
+        return list;
+    }
+    var sccPackageIndustries = ['化工','建筑施工','烟花爆竹','民用爆炸物品','金属冶炼','煤矿','非煤矿山','工贸','交通运输','其他'];
+    var sccPackageCompanyTypes = ['外资','国有','民营','合资','上市公司','中小微'];
+    var sccPackageEditingIndex = -1;
+
+    function sccEnsurePackage(rule) {
+        if (!rule) return;
+        if (!rule.package) rule.package = { standard: [], overrides: [] };
+        if (!rule.package.standard) rule.package.standard = [];
+        if (!rule.package.overrides) rule.package.overrides = [];
+        // 以「通用基础服务」7 项为基准，保证标准服务包与之同步（保留用户已改的配置）
+        var cat = sccGetServiceCatalog();
+        var prevMap = {};
+        rule.package.standard.forEach(function(x) { prevMap[x.key] = x; });
+        rule.package.standard = cat.map(function(s) {
+            var ex = prevMap[s.key];
+            return {
+                key: s.key,
+                enabled: ex ? ex.enabled : true,
+                count: ex ? ex.count : s.defaultCount,
+                unlimited: ex ? ex.unlimited : false,
+                unit: s.unit
+            };
+        });
+    }
+
+    function sccServiceName(key) {
+        for (var i = 0; i < sccBaseServices.length; i++) {
+            if (String(sccBaseServices[i].id) === String(key)) return sccBaseServices[i].name;
+        }
+        return key;
+    }
+
+    function sccPackageSummary(rule) {
+        sccEnsurePackage(rule);
+        var std = [];
+        rule.package.standard.forEach(function(s) {
+            if (s.enabled) std.push(sccServiceName(s.key) + ' ' + (s.unlimited ? '不限' : (s.count + (s.unit || '次/年'))));
+        });
+        return { standard: std, overrides: rule.package.overrides.length };
+    }
+
+    function sccOpenPackageModal(index) {
+        if (index < 0 || index >= sccEngineRules.length) return;
+        sccPackageEditingIndex = index;
+        var rule = sccEngineRules[index];
+        sccEnsurePackage(rule);
+        var titleEl = document.getElementById('sccPackageModalTitle');
+        if (titleEl) titleEl.textContent = '标准服务包配置 · ' + rule.name;
+        sccRenderPackageModal(rule);
+        var ov = document.getElementById('sccPackageModalOverlay');
+        var md = document.getElementById('sccPackageModal');
+        ov.style.display = 'block'; ov.classList.add('open');
+        md.style.display = 'block'; md.classList.add('open');
+    }
+
+    function sccClosePackageModal() {
+        var ov = document.getElementById('sccPackageModalOverlay');
+        var md = document.getElementById('sccPackageModal');
+        if (ov) { ov.style.display = 'none'; ov.classList.remove('open'); }
+        if (md) { md.style.display = 'none'; md.classList.remove('open'); }
+        sccPackageEditingIndex = -1;
+    }
+
+    function sccRenderPackageModal(rule) {
+        var body = document.getElementById('sccPackageModalBody');
+        if (!body) return;
+        var idx = sccPackageEditingIndex;
+        var html = '';
+
+        // ---- Section A: 标准服务配置 ----
+        html += '<div class="scc-pkg-section">';
+        html += '  <div class="scc-pkg-section-title"><span class="scc-tag scc-tag-blue" style="font-size:11px;">保底服务</span> 标准服务配置</div>';
+        html += '  <div style="font-size:12px;color:#999;margin-bottom:8px;">勾选并设定该档次下所有客户默认享有的服务项（保底服务）。</div>';
+        rule.package.standard.forEach(function(s, si) {
+            var name = sccServiceName(s.key);
+            var rowCls = s.enabled ? 'scc-pkg-standard-row' : 'scc-pkg-standard-row disabled';
+            html += '<div class="' + rowCls + '">';
+            html += '  <label class="scc-form-checkbox" style="margin:0;display:flex;align-items:center;gap:6px;"><input type="checkbox" ' + (s.enabled ? 'checked' : '') + ' onchange="sccPkgToggleStandard(' + idx + ',' + si + ',this.checked)"> <span style="font-weight:500;">' + name + '</span></label>';
+            html += '  <div style="display:flex;align-items:center;gap:6px;">';
+            if (s.unlimited) {
+                html += '<span style="font-size:13px;color:#52c41a;font-weight:500;">不限</span>';
+                html += '<button type="button" class="scc-pkg-add-btn" onclick="sccPkgToggleUnlimited(' + idx + ',' + si + ',false)">设定次数</button>';
+            } else {
+                html += '<input type="number" min="0" class="scc-pkg-inline-input" value="' + s.count + '" onchange="sccPkgSetCount(' + idx + ',' + si + ',this.value)"> <span style="font-size:13px;color:#666;">' + (s.unit || '次/年') + '</span>';
+                html += '<button type="button" class="scc-pkg-add-btn" onclick="sccPkgToggleUnlimited(' + idx + ',' + si + ',true)">不限</button>';
+            }
+            html += '  </div>';
+            html += '</div>';
+        });
+        html += '</div>';
+
+        // ---- Section B: 行业差异化覆盖 ----
+        html += '<div class="scc-pkg-divider"></div>';
+        html += '<div class="scc-pkg-section" style="border-color:#ffe7ba;background:#fffdf7;">';
+        html += '  <div class="scc-pkg-section-title"><span class="scc-tag scc-tag-orange" style="font-size:11px;">可选</span> 特殊行业 / 企业差异化覆盖</div>';
+        html += '  <div style="font-size:12px;color:#999;margin-bottom:8px;">当客户属于特定行业或企业类型时，如何覆盖上面的标准服务配置。</div>';
+
+        if (rule.package.overrides.length === 0) {
+            html += '<div style="font-size:13px;color:#bbb;padding:8px 0;">暂无差异化规则，点击下方按钮添加。</div>';
+        }
+        rule.package.overrides.forEach(function(ovRule, oi) {
+            html += '<div class="scc-pkg-override">';
+            html += '  <div class="scc-pkg-override-head">';
+            html += '    <span class="scc-pkg-cond">当</span>';
+            html += '    <select class="scc-pkg-inline-select" onchange="sccPkgSetOverrideDim(' + idx + ',' + oi + ',this.value)">';
+            html += '      <option value="industry"' + (ovRule.dim === 'industry' ? ' selected' : '') + '>行业</option>';
+            html += '      <option value="companyType"' + (ovRule.dim === 'companyType' ? ' selected' : '') + '>企业类型</option>';
+            html += '    </select>';
+            html += '    <select class="scc-pkg-inline-select" onchange="sccPkgSetOverrideOp(' + idx + ',' + oi + ',this.value)">';
+            html += '      <option value="eq"' + (ovRule.op === 'eq' ? ' selected' : '') + '>等于</option>';
+            html += '      <option value="neq"' + (ovRule.op === 'neq' ? ' selected' : '') + '>不等于</option>';
+            html += '    </select>';
+            var opts = ovRule.dim === 'companyType' ? sccPackageCompanyTypes : sccPackageIndustries;
+            html += '    <select class="scc-pkg-inline-select" onchange="sccPkgSetOverrideValue(' + idx + ',' + oi + ',this.value)">';
+            for (var oi2 = 0; oi2 < opts.length; oi2++) {
+                html += '      <option value="' + opts[oi2] + '"' + (ovRule.value === opts[oi2] ? ' selected' : '') + '>' + opts[oi2] + '</option>';
+            }
+            html += '    </select>';
+            html += '    <span class="scc-pkg-cond">时：</span>';
+            html += '    <span style="flex:1;"></span>';
+            html += '    <button class="scc-pkg-remove" onclick="sccPkgRemoveOverride(' + idx + ',' + oi + ')">删除规则</button>';
+            html += '  </div>';
+            ovRule.changes.forEach(function(ch, ci) {
+                html += '<div class="scc-pkg-change">';
+                html += '  <select class="scc-pkg-inline-select" onchange="sccPkgSetChangeAction(' + idx + ',' + oi + ',' + ci + ',this.value)">';
+                html += '    <option value="set"' + (ch.action === 'set' ? ' selected' : '') + '>修改频次为</option>';
+                html += '    <option value="cancel"' + (ch.action === 'cancel' ? ' selected' : '') + '>取消服务</option>';
+                html += '    <option value="double"' + (ch.action === 'double' ? ' selected' : '') + '>频次翻倍</option>';
+                html += '    <option value="add"' + (ch.action === 'add' ? ' selected' : '') + '>新增服务</option>';
+                html += '  </select>';
+                if (ch.action === 'add') {
+                    html += '  <input type="text" class="scc-pkg-inline-input" style="width:120px;" placeholder="服务名称" value="' + (ch.name || '') + '" onchange="sccPkgSetChangeName(' + idx + ',' + oi + ',' + ci + ',this.value)">';
+                    html += '  <input type="number" min="0" class="scc-pkg-inline-input" value="' + (ch.count || 1) + '" onchange="sccPkgSetChangeCount(' + idx + ',' + oi + ',' + ci + ',this.value)"> <span style="font-size:13px;color:#666;">次/年</span>';
+                } else {
+                    html += '  <select class="scc-pkg-inline-select" onchange="sccPkgSetChangeKey(' + idx + ',' + oi + ',' + ci + ',this.value)">';
+                    for (var si2 = 0; si2 < rule.package.standard.length; si2++) {
+                        var sk = rule.package.standard[si2].key;
+                        html += '    <option value="' + sk + '"' + (ch.key === sk ? ' selected' : '') + '>' + sccServiceName(sk) + '</option>';
+                    }
+                    html += '  </select>';
+                    if (ch.action === 'set') {
+                        html += '  <input type="number" min="0" class="scc-pkg-inline-input" value="' + (ch.count || 0) + '" onchange="sccPkgSetChangeCount(' + idx + ',' + oi + ',' + ci + ',this.value)"> <span style="font-size:13px;color:#666;">次/年</span>';
+                    }
+                }
+                html += '  <span style="flex:1;"></span>';
+                html += '  <button class="scc-pkg-remove" onclick="sccPkgRemoveChange(' + idx + ',' + oi + ',' + ci + ')">移除</button>';
+                html += '</div>';
+            });
+            html += '  <button class="scc-pkg-add-btn" onclick="sccPkgAddChange(' + idx + ',' + oi + ')">+ 添加变更</button>';
+            html += '</div>';
+        });
+        html += '<button class="scc-pkg-add-btn" style="font-size:14px;" onclick="sccPkgAddOverride(' + idx + ')">+ 添加差异化规则</button>';
+        html += '</div>';
+
+        body.innerHTML = html;
+    }
+
+    function sccPkgToggleStandard(idx, si, val) {
+        var r = sccEngineRules[idx]; sccEnsurePackage(r);
+        r.package.standard[si].enabled = val;
+        sccRenderPackageModal(r);
+    }
+    function sccPkgSetCount(idx, si, val) {
+        var r = sccEngineRules[idx]; sccEnsurePackage(r);
+        var n = parseInt(val); if (isNaN(n) || n < 0) n = 0;
+        r.package.standard[si].count = n;
+        sccRenderPackageModal(r);
+    }
+    function sccPkgToggleUnlimited(idx, si, val) {
+        var r = sccEngineRules[idx]; sccEnsurePackage(r);
+        r.package.standard[si].unlimited = val;
+        if (val) r.package.standard[si].count = 0;
+        sccRenderPackageModal(r);
+    }
+    function sccPkgAddOverride(idx) {
+        var r = sccEngineRules[idx]; sccEnsurePackage(r);
+        r.package.overrides.push({ id: 'ov_' + Date.now() + '_' + Math.floor(Math.random() * 1000), dim: 'industry', op: 'eq', value: sccPackageIndustries[0], changes: [] });
+        sccRenderPackageModal(r);
+    }
+    function sccPkgRemoveOverride(idx, oi) {
+        var r = sccEngineRules[idx]; sccEnsurePackage(r);
+        r.package.overrides.splice(oi, 1);
+        sccRenderPackageModal(r);
+    }
+    function sccPkgSetOverrideDim(idx, oi, val) {
+        var r = sccEngineRules[idx]; sccEnsurePackage(r);
+        var ovRule = r.package.overrides[oi];
+        ovRule.dim = val;
+        ovRule.value = (val === 'companyType') ? sccPackageCompanyTypes[0] : sccPackageIndustries[0];
+        sccRenderPackageModal(r);
+    }
+    function sccPkgSetOverrideOp(idx, oi, val) {
+        var r = sccEngineRules[idx]; sccEnsurePackage(r);
+        r.package.overrides[oi].op = val;
+        sccRenderPackageModal(r);
+    }
+    function sccPkgSetOverrideValue(idx, oi, val) {
+        var r = sccEngineRules[idx]; sccEnsurePackage(r);
+        r.package.overrides[oi].value = val;
+    }
+    function sccPkgAddChange(idx, oi) {
+        var r = sccEngineRules[idx]; sccEnsurePackage(r);
+        var firstKey = r.package.standard.length ? r.package.standard[0].key : 'onsite';
+        r.package.overrides[oi].changes.push({ action: 'set', key: firstKey, count: 1 });
+        sccRenderPackageModal(r);
+    }
+    function sccPkgRemoveChange(idx, oi, ci) {
+        var r = sccEngineRules[idx]; sccEnsurePackage(r);
+        r.package.overrides[oi].changes.splice(ci, 1);
+        sccRenderPackageModal(r);
+    }
+    function sccPkgSetChangeAction(idx, oi, ci, val) {
+        var r = sccEngineRules[idx]; sccEnsurePackage(r);
+        var ch = r.package.overrides[oi].changes[ci];
+        ch.action = val;
+        if (val === 'add') { ch.name = '专项检查'; ch.count = 1; }
+        if (val === 'set') { ch.count = 0; }
+        sccRenderPackageModal(r);
+    }
+    function sccPkgSetChangeKey(idx, oi, ci, val) {
+        var r = sccEngineRules[idx]; sccEnsurePackage(r);
+        r.package.overrides[oi].changes[ci].key = val;
+    }
+    function sccPkgSetChangeName(idx, oi, ci, val) {
+        var r = sccEngineRules[idx]; sccEnsurePackage(r);
+        r.package.overrides[oi].changes[ci].name = val;
+    }
+    function sccPkgSetChangeCount(idx, oi, ci, val) {
+        var r = sccEngineRules[idx]; sccEnsurePackage(r);
+        var n = parseInt(val); if (isNaN(n) || n < 0) n = 0;
+        r.package.overrides[oi].changes[ci].count = n;
+    }
+    function sccSavePackageModal() {
+        var r = sccEngineRules[sccPackageEditingIndex];
+        var name = r ? r.name : '';
+        sccClosePackageModal();
+        sccRenderEngineTable();
+        sccShowToast('已保存「' + name + '」标准服务包配置');
     }
 
     </script>
